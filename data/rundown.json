@@ -1,5 +1,119 @@
 {
-  "_note": "PLACEHOLDER — no rundown published yet. An empty days[] makes every rundown surface render the Coming Soon state. Replace with the real Jakarta agenda when the client provides it.",
+  "_note": "YPDS Jakarta 2026 Summit Rundown. Updates as agenda is finalized.",
   "timezone": "Asia/Jakarta",
-  "days": []
+  "summit_tagline": "Empower. Connect. Lead.",
+  "days": [
+    {
+      "date": "2026-08-20",
+      "day": "Thursday",
+      "theme": "Opening & Strategy Foundations",
+      "sessions": [
+        {
+          "time": "09:00 - 09:30",
+          "title": "Welcome & Opening Remarks",
+          "type": "keynote",
+          "description": "Opening ceremony with keynote speeches by diplomatic leaders, setting the vision for YPDS Jakarta 2026.",
+          "location": "Main Hall"
+        },
+        {
+          "time": "10:00 - 12:00",
+          "title": "Public Diplomacy in the 21st Century",
+          "type": "workshop",
+          "description": "Interactive session exploring how young leaders can leverage public diplomacy to foster cross-cultural understanding and influence international affairs.",
+          "location": "Conference Room A"
+        },
+        {
+          "time": "13:00 - 14:30",
+          "title": "Lunch & Networking",
+          "type": "social",
+          "description": "Authentic Indonesian culinary experience with delegates from diverse regions.",
+          "location": "Dining Hall"
+        },
+        {
+          "time": "15:00 - 17:00",
+          "title": "Asia and the Mediterranean: Regional Strategies",
+          "type": "panel",
+          "description": "Strategic perspectives on regional cooperation, security, and economic opportunities across Asia and the Mediterranean.",
+          "location": "Conference Room B"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-21",
+      "day": "Friday",
+      "theme": "Peace, Power & Policy",
+      "sessions": [
+        {
+          "time": "09:00 - 11:00",
+          "title": "Peace by Peaceful Means",
+          "type": "workshop",
+          "description": "Exploring youth roles in conflict resolution, peace-building, and diplomatic negotiations in a multipolar world.",
+          "location": "Conference Room A"
+        },
+        {
+          "time": "11:30 - 13:00",
+          "title": "Strategic Communication",
+          "type": "masterclass",
+          "description": "Techniques for effective advocacy, media engagement, and narrative-building in modern diplomacy.",
+          "location": "Conference Room B"
+        },
+        {
+          "time": "14:00 - 16:00",
+          "title": "Grand Strategy vs Economic Strategy",
+          "type": "debate",
+          "description": "Youth-led debate on balancing national interests, regional cooperation, and global economic challenges.",
+          "location": "Main Hall"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-22",
+      "day": "Saturday",
+      "theme": "Youth Innovation Labs",
+      "sessions": [
+        {
+          "time": "09:00 - 12:00",
+          "title": "Youth Innovation & Policy Labs",
+          "type": "workshop",
+          "description": "Hands-on session where young leaders design actionable policy proposals addressing regional and global challenges.",
+          "location": "Workshop Spaces"
+        },
+        {
+          "time": "13:00 - 14:30",
+          "title": "Dinner Reception",
+          "type": "social",
+          "description": "Evening gathering at Tugu Kunstkring Paleis for networking and cultural immersion.",
+          "location": "Tugu Kunstkring Paleis"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-23",
+      "day": "Sunday",
+      "theme": "Closing & Vision Forward",
+      "sessions": [
+        {
+          "time": "10:00 - 11:30",
+          "title": "Presentation of Policy Recommendations",
+          "type": "presentation",
+          "description": "Youth teams present their policy innovations to the YPDS steering committee and diplomatic advisors.",
+          "location": "Main Hall"
+        },
+        {
+          "time": "12:00 - 13:30",
+          "title": "Closing Ceremony & Awards",
+          "type": "ceremony",
+          "description": "Celebrating emerging leaders, announcing next steps, and vision for continued engagement.",
+          "location": "Main Hall"
+        },
+        {
+          "time": "14:00 - 15:00",
+          "title": "Farewell Networking",
+          "type": "social",
+          "description": "Final gathering before departure. Connect with peers and mentors.",
+          "location": "Outdoor Terrace"
+        }
+      ]
+    }
+  ]
 }

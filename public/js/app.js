@@ -148,6 +148,8 @@
     applyStageNav();
     const initialTab = NAV_ORDER.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'dashboard';
     switchScreen(initialTab);
+    // Warm the interview form in the background so opening the tab is instant.
+    if (isApplicant() && profile.interview_status !== 'submitted') renderInterview();
     refreshNotifications();
     setInterval(refreshNotifications, 60000);
     setInterval(() => { if (current === 'rundown') renderRundown(); if (current === 'dashboard') renderDashboard(); }, 60000);
@@ -203,7 +205,7 @@
     // Interview gets a wide, focused layout: drop the max-width cap + the rail.
     if (el('view-app')) el('view-app').classList.toggle('focus-interview', name === 'interview');
     // Applicants (not yet enrolled) see Coming Soon in place of event screens.
-    if (name === 'interview') renderInterview();
+    if (name === 'interview') { renderInterview(); track('interview_open'); }
     else if (isApplicant() && EVENT_SCREENS.includes(name)) renderComingSoon(name);
     else if (name === 'dashboard') renderDashboard();
     else if (name === 'rundown') renderRundown();
@@ -600,35 +602,44 @@
   /* ===================== INTERVIEW ===================== */
   // The form URL is never in the bundle — it is fetched per-session from the
   // server, which only returns it to an entitled applicant.
+  // Rendered once and reused. Called eagerly right after login (while the user
+  // is on the dashboard) so the AidaForm iframe is already loaded by the time
+  // they open the Interview tab. Guard prevents a reload on every re-click.
   async function renderInterview() {
+    if (rendered.interview) return;
     const root = el('interview-content');
-    root.innerHTML = '<div class="skel h28 w100"></div><div class="skel h16 w70"></div>';
+    const visible = current === 'interview';           // preload runs while hidden — no skeleton flash
+    if (visible) root.innerHTML = '<div class="skel h28 w100"></div><div class="skel h16 w70"></div>';
     let data;
     try { data = await api('/me/interview'); }
-    catch (e) { root.innerHTML = interviewNotice('Something went wrong', 'We could not load your interview just now. Please refresh and try again.'); return; }
+    catch (e) { if (visible) root.innerHTML = interviewNotice('Something went wrong', 'We could not load your interview just now. Please refresh and try again.'); return; }
 
     if (data.state === 'open') {
-      track('interview_open');
+      rendered.interview = true;
+      // eager (not lazy) so the form loads in the background before the tab is opened.
       root.innerHTML =
         `<div class="interview-frame-wrap">
            <iframe class="interview-frame" src="${esc(data.url)}" title="CSCD Interview"
-                   allow="camera; microphone; fullscreen" loading="lazy"></iframe>
+                   allow="camera; microphone; fullscreen" loading="eager"></iframe>
          </div>
          <p class="interview-hint">Trouble with the embedded form?
            <a href="${esc(data.url)}" target="_blank" rel="noopener">Open it in a new tab →</a></p>`;
       return;
     }
     if (data.state === 'submitted') {
+      rendered.interview = true;
       const when = data.submitted_at ? new Date(data.submitted_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : null;
       root.innerHTML = interviewNotice('Interview submitted' + (when ? ` · ${esc(when)}` : ''),
         'Thank you. Your responses are in and our team is reviewing them. Watch this portal for the outcome — nothing more is needed from you right now.', true);
       return;
     }
     if (data.state === 'not_applicable') {
+      rendered.interview = true;
       root.innerHTML = interviewNotice('You are all set', 'Your place is confirmed — the interview stage is behind you. Explore the event sections as they open up.', true);
       return;
     }
-    root.innerHTML = interviewNotice('Interview opens soon', 'Your interview is not quite ready. Please check back shortly — we will notify you here when it is live.');
+    // 'unavailable' / not configured yet — do NOT memoize, so a later open retries.
+    if (visible) root.innerHTML = interviewNotice('Interview opens soon', 'Your interview is not quite ready. Please check back shortly — we will notify you here when it is live.');
   }
   function interviewNotice(title, body, done) {
     return `<div class="interview-notice${done ? ' is-done' : ''}">

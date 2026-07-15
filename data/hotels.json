@@ -1,4 +1,27 @@
 {
-  "_note": "PLACEHOLDER — hotel not confirmed yet. An empty hotels{} makes /api/hotel return null, which renders Coming Soon. Key the real entry as 'jakarta-main' to match delegates.hotel_id.",
-  "hotels": {}
+  "_note": "Hotel + venue information. Key entries by 'jakarta-main' or similar to match delegates.hotel_id.",
+  "hotels": {
+    "jakarta-main": {
+      "name": "Tugu Kunstkring Paleis",
+      "subtitle": "Historic Cultural Venue & Restaurant",
+      "location": "Jakarta, Indonesia",
+      "description": "An iconic historical building serving as a venue for dining and cultural experiences. Home to the Kunstkring Paleis (Art Circle Palace), this architectural gem combines Jakarta's rich heritage with contemporary hospitality.",
+      "highlights": [
+        "Authentic Indonesian dining experiences",
+        "Beautifully preserved historic architecture",
+        "Intimate networking spaces",
+        "Cultural ambiance ideal for diplomatic gatherings"
+      ],
+      "amenities": [
+        "Dinner venue for summit events",
+        "Private dining rooms",
+        "Photography-friendly design",
+        "WiFi access"
+      ],
+      "image": "/img/tugu-kunstkring.webp",
+      "address": "Jakarta, Indonesia",
+      "checkin": "Event day",
+      "checkout": "Post-event"
+    }
+  }
 }

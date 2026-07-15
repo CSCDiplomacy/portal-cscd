@@ -1,4 +1,33 @@
 {
-  "_note": "PLACEHOLDER — institutional visits not announced yet. Empty array renders Coming Soon.",
-  "visits": []
+  "_note": "Institutional visits and experiences during YPDS Jakarta 2026.",
+  "visits": [
+    {
+      "id": 1,
+      "name": "Tugu Kunstkring Paleis",
+      "type": "Cultural & Dining Experience",
+      "description": "Dinner reception at Jakarta's historic Kunstkring Paleis — an architectural gem blending heritage with contemporary diplomacy. Networking opportunity in an authentic Indonesian cultural setting.",
+      "highlights": [
+        "Authentic Indonesian cuisine",
+        "Historic architecture & cultural ambiance",
+        "Intimate networking with peers and mentors",
+        "Photography opportunities"
+      ],
+      "date": "August 22 (Evening)",
+      "duration": "2 hours"
+    },
+    {
+      "id": 2,
+      "name": "Regional Institutions & Policy Centers",
+      "type": "Strategic Engagement",
+      "description": "Guided visits to think tanks, policy institutes, and diplomatic missions in Jakarta showcasing regional cooperation frameworks.",
+      "highlights": [
+        "Behind-the-scenes access to policy-making",
+        "Conversations with strategists & analysts",
+        "Understanding regional geopolitics",
+        "Exploring Indonesia's diplomatic role"
+      ],
+      "date": "TBD",
+      "duration": "Half-day"
+    }
+  ]
 }
