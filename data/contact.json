@@ -2,7 +2,7 @@
   "org": "Center for Strategic and Cultural Diplomacy (CSCD)",
   "venue": null,
   "contacts": [
-    { "label": "CSCD coordination", "value": "programs@thecscd.org", "type": "email" }
+    { "label": "CSCD coordination", "value": "contact@thecscd.org", "type": "email" }
   ],
   "socials": [
     { "label": "Website", "value": "https://thecscd.org", "type": "url" },
