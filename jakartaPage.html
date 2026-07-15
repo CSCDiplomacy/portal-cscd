@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YPDS Jakarta 2026 | Young Public Diplomacy Summit</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            important: '#ysf-custom-page', // Scopes Tailwind to prevent Elementor conflicts
+            corePlugins: {
+                preflight: false, // Disables global reset so it doesn't break WordPress header/footer
+            },
+            theme: {
+                extend: {
+                    colors: {
+                        ysfRed: '#ea0558',
+                        ysfYellow: '#E6EB1C',
+                        ysfBeige: '#F9F6F0',
+                        ysfDark: '#2c2825',
+                    },
+                    fontFamily: {
+                        roman: ['Cinzel', 'serif'],
+                        vintage: ['Cormorant Garamond', 'serif'],
+                        sans: ['Lato', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'texture': "url('https://www.transparenttextures.com/patterns/cream-paper.png')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Scoped Reset for Zero WordPress/Elementor Conflicts */
+        #ysf-custom-page {
+            background-color: #F9F6F0;
+            background-image: url('https://www.transparenttextures.com/patterns/stucco.png');
+            color: #2c2825;
+            font-family: 'Lato', sans-serif;
+        }
+        #ysf-custom-page * {
+            box-sizing: border-box;
+        }
+        #ysf-custom-page h1, #ysf-custom-page h2, #ysf-custom-page h3, #ysf-custom-page h4, #ysf-custom-page p {
+            margin-top: 0;
+        }
+        #ysf-custom-page ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        #ysf-custom-page img, #ysf-custom-page video {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        #ysf-custom-page a {
+            text-decoration: none;
+        }
+        #ysf-custom-page button, #ysf-custom-page a {
+            outline: none;
+        }
+
+        /* Vintage Roman Backgrounds */
+        .bg-statue {
+            background-image: linear-gradient(rgba(249, 246, 240, 0.9), rgba(249, 246, 240, 0.9)), url('https://images.unsplash.com/photo-1606558641198-d3e9134a621e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Styling elements */
+        .roman-border {
+            border: 2px solid #2c2825;
+            padding: 4px;
+            position: relative;
+        }
+        .roman-border::after {
+            content: '';
+            position: absolute;
+            top: -6px; left: -6px; right: -6px; bottom: -6px;
+            border: 1px solid #ea0558;
+            pointer-events: none;
+        }
+
+        /* Vintage Image Filter */
+        .vintage-img {
+            filter: sepia(0.4) contrast(1.1) brightness(0.9) grayscale(0.2);
+            mix-blend-mode: multiply;
+        }
+
+        /* Marquee Animation for Partners */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            width: 100%;
+            border-top: 1px solid rgba(44, 40, 37, 0.2);
+            border-bottom: 1px solid rgba(44, 40, 37, 0.2);
+            padding: 2rem 0;
+            background-color: rgba(249, 246, 240, 0.8);
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Accordion Transitions */
+        .faq-content {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .faq-item.active .faq-content {
+            max-height: 1500px;
+            opacity: 1;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        /* FAQ Brand Colors */
+        #ysf-custom-page .faq-title-bar {
+            background-color: #ea0558; /* ysfRed */
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        #ysf-custom-page .faq-item.active .faq-title-bar {
+            background-color: #E6EB1C; /* ysfYellow */
+            color: #2c2825; /* ysfDark */
+        }
+
+        /* Scroll Reveal Animations */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(80px);
+            transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .reveal-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-80px);
+            transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .reveal-left.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(80px);
+            transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .reveal-right.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* SLEEK Animated Glowing Light Border (Fixed) */
+        .animated-border-box {
+            position: relative;
+            background: transparent;
+            overflow: hidden;
+            border-radius: 0.25rem;
+        }
+        .animated-border-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent 0%, transparent 85%, rgba(234,5,88,0.7) 95%, #ea0558 100%);
+            animation: border-spin 4s linear infinite;
+            z-index: 0;
+        }
+        .animated-border-inner {
+            position: absolute;
+            inset: 1px; 
+            background: #fff;
+            z-index: 1;
+            border-radius: 0.2rem;
+            padding: 4px;
+        }
+        .animated-border-image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #F9F6F0;
+        }
+        @keyframes border-spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 3D Report Cards */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+        }
+        .rotate-x-6 {
+            transform: rotateX(6deg);
+        }
+        .-rotate-y-6 {
+            transform: rotateY(-6deg);
+        }
+
+        /* Interactive 3D Gallery Stack */
+        .gallery-container {
+            perspective: 1200px;
+        }
+        .gallery-stack {
+            transform-style: preserve-3d;
+            transform: rotateX(15deg) rotateY(-15deg) rotateZ(5deg);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+        }
+        .gallery-container:hover .gallery-stack {
+            transform: rotateX(5deg) rotateY(-5deg) rotateZ(2deg);
+        }
+        
+        .gallery-card {
+            position: absolute;
+            inset: 0;
+            background: #fff;
+            padding: 8px;
+            border-radius: 0.25rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-back {
+            transform: translateZ(-60px) translateX(25px) translateY(-25px);
+            filter: brightness(0.4);
+            opacity: 0.8;
+            z-index: 10;
+        }
+        .card-middle {
+            transform: translateZ(-30px) translateX(12px) translateY(-12px);
+            filter: brightness(0.7);
+            opacity: 0.9;
+            z-index: 20;
+        }
+        .card-front {
+            transform: translateZ(0px) translateX(0) translateY(0);
+            filter: brightness(1);
+            opacity: 1;
+            z-index: 30;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7);
+        }
+        .card-hidden {
+            transform: translateZ(-90px) translateX(35px) translateY(-35px);
+            filter: brightness(0.2);
+            opacity: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* Interactive Hover Enhancements */
+        .gallery-container:hover .card-back {
+            transform: translateZ(-60px) translateX(40px) translateY(-10px) rotate(8deg);
+        }
+        .gallery-container:hover .card-middle {
+            transform: translateZ(-30px) translateX(-20px) translateY(-5px) rotate(-6deg);
+            filter: brightness(0.85);
+        }
+        .gallery-container:hover .card-front {
+            transform: translateZ(20px) scale(1.02);
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.125rem;
+            filter: grayscale(0.8) sepia(0.2) contrast(1.2);
+            transition: filter 0.6s ease;
+        }
+        .gallery-container:hover .card-front .card-image {
+            filter: grayscale(0) sepia(0) contrast(1.1);
+        }
+
+        /* Custom Selection */
+        ::selection {
+            background-color: #ea0558;
+            color: #F9F6F0;
+        }
+    </style>
+</head>
+<body class="m-0 p-0">
+    
+    <!-- SECURE WRAPPER FOR WORDPRESS / ELEMENTOR -->
+    <!-- This wrapper isolates the styles and guarantees zero-conflict with your theme while preventing mobile overflow -->
+    <div id="ysf-custom-page" class="w-full max-w-[100vw] relative overflow-x-hidden font-sans antialiased text-ysfDark">
+
+    <!-- HERO SECTION -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <!-- Fullscreen Video Background -->
+        <div class="absolute inset-0 z-0 bg-ysfDark">
+            <video
+                autoplay muted loop playsinline
+                disablepictureinpicture
+                style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; filter: brightness(0.55) sepia(0.25) contrast(1.1);">
+                <source src="https://thecscd.org/wp-content/uploads/2026/06/vecteezy_semanggi-jakarta-2023-aerial-drone-view-ofjakarta-night_34890643-1.mp4" type="video/mp4">
+            </video>
+            <!-- Overlay Gradients -->
+            <div class="absolute inset-0 bg-gradient-to-b from-ysfDark via-transparent to-ysfDark/90 pointer-events-none"></div>
+        </div>
+
+        <!-- Hero Content -->
+        <div class="relative z-10 w-full max-w-6xl mx-auto px-4 flex flex-col items-center text-center mt-10 pb-12">
+            
+            <!-- Top Badge -->
+            <div class="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md mb-8 shadow-xl">
+                <span class="w-2 h-2 rounded-full bg-ysfYellow animate-pulse"></span>
+                <span class="font-sans text-xs md:text-sm tracking-[0.2em] uppercase text-white font-semibold">Center for Strategy & Cultural Diplomacy</span>
+            </div>
+
+            <!-- Main Title -->
+            <h1 class="font-roman text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-4 drop-shadow-2xl uppercase">
+                Young Public Diplomacy
+            </h1>
+            
+            <!-- Accent Title -->
+            <div class="flex items-center justify-center gap-6 mb-12 w-full">
+                <div class="hidden md:block flex-1 max-w-[100px] h-[1px] bg-gradient-to-r from-transparent to-ysfRed"></div>
+                <h2 class="font-vintage text-4xl md:text-6xl italic text-ysfYellow font-bold drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
+                    Summit 2026
+                </h2>
+                <div class="hidden md:block flex-1 max-w-[100px] h-[1px] bg-gradient-to-l from-transparent to-ysfRed"></div>
+            </div>
+
+            <!-- Glassmorphism Event Info & Countdown Card -->
+            <div class="p-6 md:p-8 rounded-2xl bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16 w-full max-w-4xl">
+                
+                <!-- Event Details -->
+                <div class="flex flex-col gap-5 text-left border-b md:border-b-0 md:border-r border-white/20 pb-6 md:pb-0 md:pr-12 w-full md:w-auto">
+                    <div class="flex items-center gap-4 text-white">
+                        <div class="p-2.5 rounded-full bg-gradient-to-br from-ysfRed to-red-900 shadow-inner"><i data-lucide="map-pin" class="w-5 h-5 text-white"></i></div>
+                        <div>
+                            <p class="font-sans text-[10px] tracking-widest uppercase opacity-70">Location</p>
+                            <p class="font-roman text-lg md:text-xl font-bold tracking-wide">Jakarta, Indonesia</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 text-white">
+                        <div class="p-2.5 rounded-full bg-gradient-to-br from-ysfYellow to-yellow-600 shadow-inner"><i data-lucide="calendar" class="w-5 h-5 text-ysfDark"></i></div>
+                        <div>
+                            <p class="font-sans text-[10px] tracking-widest uppercase opacity-70">Dates</p>
+                            <p class="font-roman text-lg md:text-xl font-bold tracking-wide">August 20–23, 2026</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Countdown Timer -->
+                <div class="flex flex-col justify-center items-center flex-1">
+                    <span class="font-sans text-[10px] tracking-[0.2em] uppercase text-ysfYellow font-bold mb-3 text-center bg-ysfDark/50 px-4 py-1.5 rounded-full border border-ysfYellow/30 shadow-lg">Registration Deadline: July 15, 2026</span>
+                    <div class="flex justify-center items-center gap-3 sm:gap-6 font-roman text-white w-full">
+                        <div class="flex flex-col items-center">
+                            <span class="cd-days text-3xl md:text-5xl font-bold drop-shadow-lg text-white">00</span>
+                            <span class="font-sans text-[10px] tracking-[0.2em] uppercase mt-1 text-ysfRed font-bold">Days</span>
+                        </div>
+                        <span class="text-2xl md:text-3xl opacity-50 mb-4 font-bold">:</span>
+                        <div class="flex flex-col items-center">
+                            <span class="cd-hours text-3xl md:text-5xl font-bold drop-shadow-lg text-white">00</span>
+                            <span class="font-sans text-[10px] tracking-[0.2em] uppercase mt-1 text-ysfRed font-bold">Hours</span>
+                        </div>
+                        <span class="text-2xl md:text-3xl opacity-50 mb-4 font-bold">:</span>
+                        <div class="flex flex-col items-center">
+                            <span class="cd-minutes text-3xl md:text-5xl font-bold drop-shadow-lg text-white">00</span>
+                            <span class="font-sans text-[10px] tracking-[0.2em] uppercase mt-1 text-ysfRed font-bold">Mins</span>
+                        </div>
+                        <span class="text-2xl md:text-3xl opacity-50 mb-4 font-bold">:</span>
+                        <div class="flex flex-col items-center">
+                            <span class="cd-seconds text-3xl md:text-5xl font-bold drop-shadow-lg text-white">00</span>
+                            <span class="font-sans text-[10px] tracking-[0.2em] uppercase mt-1 text-ysfRed font-bold">Secs</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CTAs -->
+            <div class="mt-12 flex flex-col sm:flex-row gap-6">
+                <a href="#pricing" class="px-10 py-4 bg-ysfRed text-white font-sans text-sm tracking-[0.2em] uppercase font-bold hover:bg-ysfYellow hover:text-ysfDark hover:scale-105 transition-all duration-300 rounded-sm shadow-[0_0_20px_rgba(234,5,88,0.5)]">
+                    Secure Your Spot
+                </a>
+                <a href="#about" class="px-10 py-4 bg-transparent text-white font-sans text-sm tracking-[0.2em] uppercase font-bold hover:bg-white hover:text-ysfDark hover:scale-105 transition-all duration-300 rounded-sm" style="border: 1px solid rgba(255,255,255,0.4);">
+                    Discover Agenda
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- HORIZONTAL & ANIMATED: The Global Journey Section -->
+    <section id="journey" class="py-32 md:py-48 relative bg-[#F9F6F0] overflow-hidden">
+        <!-- Background accents -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-ysfRed/5 rounded-full blur-[100px] pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-ysfYellow/10 rounded-full blur-[100px] pointer-events-none -translate-x-1/3 translate-y-1/3"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-20 reveal-up">
+            <span class="text-ysfRed font-sans tracking-[0.2em] text-sm uppercase font-bold">A Legacy of Diplomacy</span>
+            <h2 class="font-roman text-5xl md:text-6xl text-ysfDark mt-4">The Global Journey</h2>
+            <p class="font-vintage text-xl italic text-ysfDark/70 mt-6 max-w-2xl mx-auto">
+                Tracing the footsteps of emerging strategic leaders across the globe.
+            </p>
+        </div>
+
+        <div id="journey-container" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div id="journey-grid" class="grid grid-cols-1 md:grid-cols-4 gap-6 lg:gap-8 relative z-10">
+                
+                <!-- Mobile Vertical Track -->
+                <div class="md:hidden absolute left-1/2 -translate-x-1/2 w-[2px] bg-ysfDark/10 z-0" id="mobile-track">
+                    <div id="timelineFillV" class="w-full bg-ysfRed h-0 transition-all duration-100 shadow-[0_0_10px_#ea0558]"></div>
+                </div>
+
+                <!-- Chapter I: Baku 2024 -->
+                <div class="group flex flex-col items-center text-center reveal-up" style="transition-delay: 100ms;">
+                    <!-- Image -->
+                    <div class="w-full animated-border-box shadow-xl relative aspect-[4/3] group-hover:-translate-y-2 transition-transform duration-500">
+                        <div class="animated-border-inner">
+                            <div class="animated-border-image-container">
+                                <img src="https://thecscd.org/wp-content/uploads/2026/04/IMG_3796-scaled.webp" alt="Baku" class="w-full h-full object-cover vintage-img group-hover:scale-105 transition-transform duration-1000">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Timeline Node -->
+                    <div class="relative w-full flex justify-center py-6 md:py-8 node-container">
+                        <!-- Desktop Horizontal Track -->
+                        <div class="hidden md:block absolute top-1/2 left-1/2 -translate-y-1/2 h-[2px] bg-ysfDark/10 z-0 w-[calc(300%+3rem)] lg:w-[calc(300%+4rem)]">
+                            <div id="timelineFillH" class="absolute top-0 left-0 h-full bg-ysfRed shadow-[0_0_10px_#ea0558] w-0 transition-all duration-100 ease-out"></div>
+                        </div>
+                        <!-- The Dot -->
+                        <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-[#F9F6F0] border-[4px] border-ysfDark/20 transition-all duration-300 z-10 relative"></div>
+                    </div>
+
+                    <!-- Text Content -->
+                    <div class="flex-1 px-2">
+                        <span class="font-sans text-ysfRed tracking-[0.2em] font-bold text-xs uppercase">Chapter I</span>
+                        <h3 class="font-roman text-2xl lg:text-3xl font-bold text-ysfDark mt-2 mb-3">Baku 2024</h3>
+                        <p class="font-vintage text-lg lg:text-xl italic text-ysfDark/70 mb-4">The Genesis of Dialogue</p>
+                        <p class="font-sans text-xs lg:text-sm leading-relaxed text-ysfDark/80">
+                            Bringing together youth leaders to discuss energy security and Eurasian cultural diplomacy in Azerbaijan.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Chapter II: Istanbul 2024 -->
+                <div class="group flex flex-col items-center text-center reveal-up" style="transition-delay: 200ms;">
+                    <!-- Image -->
+                    <div class="w-full animated-border-box shadow-xl relative aspect-[4/3] group-hover:-translate-y-2 transition-transform duration-500">
+                        <div class="animated-border-inner">
+                            <div class="animated-border-image-container">
+                                <img src="https://thecscd.org/wp-content/uploads/2026/04/IMG_0611-scaled.webp" alt="Istanbul" class="w-full h-full object-cover vintage-img group-hover:scale-105 transition-transform duration-1000">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Timeline Node -->
+                    <div class="relative w-full flex justify-center py-6 md:py-8 node-container">
+                        <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-[#F9F6F0] border-[4px] border-ysfDark/20 transition-all duration-300 z-10 relative"></div>
+                    </div>
+                    <!-- Text Content -->
+                    <div class="flex-1 px-2">
+                        <span class="font-sans text-ysfRed tracking-[0.2em] font-bold text-xs uppercase">Chapter II</span>
+                        <h3 class="font-roman text-2xl lg:text-3xl font-bold text-ysfDark mt-2 mb-3">Istanbul 2024</h3>
+                        <p class="font-vintage text-lg lg:text-xl italic text-ysfDark/70 mb-4">Crossroads of Diplomacy</p>
+                        <p class="font-sans text-xs lg:text-sm leading-relaxed text-ysfDark/80">
+                            Bridging continents and cultures. Exploring Mediterranean geopolitics and cultural synergies.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Chapter III: Tashkent 2025 -->
+                <div class="group flex flex-col items-center text-center reveal-up" style="transition-delay: 300ms;">
+                    <!-- Image -->
+                    <div class="w-full animated-border-box shadow-xl relative aspect-[4/3] group-hover:-translate-y-2 transition-transform duration-500">
+                        <div class="animated-border-inner">
+                            <div class="animated-border-image-container">
+                                <img src="https://thecscd.org/wp-content/uploads/2026/04/WhatsApp-Image-2025-04-20-at-10.29.05-PM-2.webp" alt="Tashkent" class="w-full h-full object-cover vintage-img group-hover:scale-105 transition-transform duration-1000">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Timeline Node -->
+                    <div class="relative w-full flex justify-center py-6 md:py-8 node-container">
+                        <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-[#F9F6F0] border-[4px] border-ysfDark/20 transition-all duration-300 z-10 relative"></div>
+                    </div>
+                    <!-- Text Content -->
+                    <div class="flex-1 px-2">
+                        <span class="font-sans text-ysfRed tracking-[0.2em] font-bold text-xs uppercase">Chapter III</span>
+                        <h3 class="font-roman text-2xl lg:text-3xl font-bold text-ysfDark mt-2 mb-3">Tashkent 2025</h3>
+                        <p class="font-vintage text-lg lg:text-xl italic text-ysfDark/70 mb-4">Expanding Horizons</p>
+                        <p class="font-sans text-xs lg:text-sm leading-relaxed text-ysfDark/80">
+                            Expanding our reach to the Silk Road. Focused on regional connectivity and bridging historical divides.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Chapter IV: Jakarta 2026 -->
+                <div class="group flex flex-col items-center text-center reveal-up" style="transition-delay: 400ms;">
+                    <!-- Image -->
+                    <div class="w-full animated-border-box shadow-xl relative aspect-[4/3] group-hover:-translate-y-2 transition-transform duration-500">
+                        <div class="animated-border-inner">
+                            <div class="animated-border-image-container">
+                                <img src="https://thecscd.org/wp-content/uploads/2026/05/bayu-syaits-Uz-LsnjxJ6U-unsplash-scaled.jpg" alt="Jakarta" class="w-full h-full object-cover vintage-img group-hover:scale-105 transition-transform duration-1000">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Timeline Node -->
+                    <div class="relative w-full flex justify-center py-6 md:py-8 node-container">
+                        <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-[#F9F6F0] border-[4px] border-ysfDark/20 transition-all duration-300 z-10 relative"></div>
+                    </div>
+                    <!-- Text Content -->
+                    <div class="flex-1 px-2">
+                        <span class="font-sans text-ysfYellow bg-ysfDark px-3 py-1 rounded-full tracking-[0.2em] font-bold text-[10px] lg:text-xs uppercase shadow-md">Now Presenting</span>
+                        <h3 class="font-roman text-2xl lg:text-3xl font-bold text-ysfDark mt-4 mb-3">Jakarta 2026</h3>
+                        <p class="font-vintage text-lg lg:text-xl italic text-ysfDark/70 mb-4">Convergence of Power</p>
+                        <p class="font-sans text-xs lg:text-sm leading-relaxed text-ysfDark/80">
+                            Our next grand destination. Debate grand strategy and peace alongside international leaders.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DYNAMIC: Objectives Section (Sticky Scroll FIXED) -->
+    <section class="py-32 md:py-48 bg-ysfYellow text-ysfDark relative border-y border-ysfDark/10 overflow-hidden">
+        <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-ysfRed/5 rounded-full blur-[100px] pointer-events-none translate-x-1/2 -translate-y-1/2"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col lg:flex-row gap-16 lg:gap-24 items-stretch">
+            <div class="w-full lg:w-1/3 relative reveal-left">
+                <div class="lg:sticky lg:top-32 h-fit">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="w-12 h-[1px] bg-ysfDark"></span>
+                        <span class="font-sans tracking-[0.3em] text-xs uppercase font-bold text-ysfDark">Our Mission</span>
+                    </div>
+                    <h2 class="font-roman text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-8 text-ysfDark drop-shadow-sm">
+                        Core <br>
+                        <span class="italic font-vintage text-ysfRed">Objectives</span>
+                    </h2>
+                    <p class="font-sans text-sm md:text-base leading-relaxed text-ysfDark/80 mb-10 max-w-sm">
+                        Our platform empowers the next generation of leaders by cultivating strategic thinking, fostering cultural diplomacy, and providing actionable platforms for global innovation.
+                    </p>
+                    <div class="relative w-32 h-32 hidden lg:flex items-center justify-center">
+                        <svg class="w-full h-full animate-[spin_15s_linear_infinite] text-ysfDark/20" viewBox="0 0 100 100">
+                            <path fill="currentColor" d="M50,0 L53.5,35.5 L85.5,14.5 L64.5,46.5 L100,50 L64.5,53.5 L85.5,85.5 L53.5,64.5 L50,100 L46.5,64.5 L14.5,85.5 L35.5,53.5 L0,50 L35.5,46.5 L14.5,14.5 L46.5,35.5 Z"></path>
+                        </svg>
+                        <i data-lucide="globe" class="absolute w-8 h-8 text-ysfRed"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full lg:w-2/3 border-t-2 border-ysfDark relative z-10">
+                <div class="group relative border-b border-ysfDark/20 overflow-hidden cursor-pointer reveal-up" style="transition-delay: 100ms;">
+                    <div class="absolute inset-0 bg-ysfDark origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.3,1)] z-0"></div>
+                    <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-12 transition-colors duration-500 group-hover:text-ysfBeige">
+                        <div class="font-roman text-5xl md:text-6xl text-ysfRed font-bold opacity-80 group-hover:opacity-100 transition-opacity duration-500">01</div>
+                        <div class="flex-1">
+                            <h3 class="font-roman text-2xl md:text-3xl mb-3 font-bold group-hover:translate-x-2 transition-all duration-500 group-hover:!text-white">Develop Strategic Thinking</h3>
+                            <p class="font-sans text-sm md:text-base opacity-70 group-hover:opacity-90 max-w-md group-hover:translate-x-2 transition-all duration-500 delay-75 group-hover:!text-white">Equip youth with the tools to analyze international affairs, regional security, and economic strategies.</p>
+                        </div>
+                        <div class="hidden md:flex shrink-0">
+                            <i data-lucide="arrow-up-right" class="w-10 h-10 text-ysfYellow opacity-0 -translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 delay-100"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="group relative border-b border-ysfDark/20 overflow-hidden cursor-pointer reveal-up" style="transition-delay: 200ms;">
+                    <div class="absolute inset-0 bg-ysfDark origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.3,1)] z-0"></div>
+                    <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-12 transition-colors duration-500 group-hover:text-ysfBeige">
+                        <div class="font-roman text-5xl md:text-6xl text-ysfRed font-bold opacity-80 group-hover:opacity-100 transition-opacity duration-500">02</div>
+                        <div class="flex-1">
+                            <h3 class="font-roman text-2xl md:text-3xl mb-3 font-bold group-hover:translate-x-2 transition-all duration-500 group-hover:!text-white">Promote Cultural Engagement</h3>
+                            <p class="font-sans text-sm md:text-base opacity-70 group-hover:opacity-90 max-w-md group-hover:translate-x-2 transition-all duration-500 delay-75 group-hover:!text-white">Encourage cross-cultural understanding and networking among youth from diverse backgrounds.</p>
+                        </div>
+                        <div class="hidden md:flex shrink-0">
+                            <i data-lucide="arrow-up-right" class="w-10 h-10 text-ysfYellow opacity-0 -translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 delay-100"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="group relative border-b border-ysfDark/20 overflow-hidden cursor-pointer reveal-up" style="transition-delay: 300ms;">
+                    <div class="absolute inset-0 bg-ysfDark origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.3,1)] z-0"></div>
+                    <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-12 transition-colors duration-500 group-hover:text-ysfBeige">
+                        <div class="font-roman text-5xl md:text-6xl text-ysfRed font-bold opacity-80 group-hover:opacity-100 transition-opacity duration-500">03</div>
+                        <div class="flex-1">
+                            <h3 class="font-roman text-2xl md:text-3xl mb-3 font-bold group-hover:translate-x-2 transition-all duration-500 group-hover:!text-white">Encourage Policy Innovation</h3>
+                            <p class="font-sans text-sm md:text-base opacity-70 group-hover:opacity-90 max-w-md group-hover:translate-x-2 transition-all duration-500 delay-75 group-hover:!text-white">Provide platforms for youth to design actionable policy proposals addressing regional and global challenges.</p>
+                        </div>
+                        <div class="hidden md:flex shrink-0">
+                            <i data-lucide="arrow-up-right" class="w-10 h-10 text-ysfYellow opacity-0 -translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 delay-100"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="group relative border-b border-ysfDark/20 overflow-hidden cursor-pointer reveal-up" style="transition-delay: 400ms;">
+                    <div class="absolute inset-0 bg-ysfDark origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.3,1)] z-0"></div>
+                    <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-12 transition-colors duration-500 group-hover:text-ysfBeige">
+                        <div class="font-roman text-5xl md:text-6xl text-ysfRed font-bold opacity-80 group-hover:opacity-100 transition-opacity duration-500">04</div>
+                        <div class="flex-1">
+                            <h3 class="font-roman text-2xl md:text-3xl mb-3 font-bold group-hover:translate-x-2 transition-all duration-500 group-hover:!text-white">Strengthen Global Networks</h3>
+                            <p class="font-sans text-sm md:text-base opacity-70 group-hover:opacity-90 max-w-md group-hover:translate-x-2 transition-all duration-500 delay-75 group-hover:!text-white">Connect participants with international institutions, think tanks, and embassies based in Jakarta.</p>
+                        </div>
+                        <div class="hidden md:flex shrink-0">
+                            <i data-lucide="arrow-up-right" class="w-10 h-10 text-ysfYellow opacity-0 -translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 delay-100"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="group relative border-b border-ysfDark/20 overflow-hidden cursor-pointer reveal-up" style="transition-delay: 500ms;">
+                    <div class="absolute inset-0 bg-ysfDark origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.3,1)] z-0"></div>
+                    <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-12 transition-colors duration-500 group-hover:text-ysfBeige">
+                        <div class="font-roman text-5xl md:text-6xl text-ysfRed font-bold opacity-80 group-hover:opacity-100 transition-opacity duration-500">05</div>
+                        <div class="flex-1">
+                            <h3 class="font-roman text-2xl md:text-3xl mb-3 font-bold group-hover:translate-x-2 transition-all duration-500 group-hover:!text-white">Empower Youth Leadership</h3>
+                            <p class="font-sans text-sm md:text-base opacity-70 group-hover:opacity-90 max-w-md group-hover:translate-x-2 transition-all duration-500 delay-75 group-hover:!text-white">Foster critical thinking, public speaking, and negotiation skills through practical simulations.</p>
+                        </div>
+                        <div class="hidden md:flex shrink-0">
+                            <i data-lucide="arrow-up-right" class="w-10 h-10 text-ysfYellow opacity-0 -translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500 delay-100"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About & Mission Section -->
+    <section id="about" class="py-32 md:py-48 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="font-roman text-4xl text-ysfRed mb-6">The Legacy of Diplomacy</h2>
+                    <h3 class="font-vintage text-2xl mb-6 italic">Background and Rationale</h3>
+                    <p class="mb-6 leading-relaxed">
+                        Following successful editions of the Young Public Diplomacy Summit (YPDS) in Baku, Istanbul, and Tashkent, the summit continues to expand as a platform for engaging young leaders in international dialogue and diplomacy.
+                    </p>
+                    <p class="mb-8 leading-relaxed">
+                        Jakarta, as the capital of Indonesia, serves as a key center of diplomacy, governance, and international cooperation, hosting numerous embassies, policy institutions, and academic centers. Its strategic position at the heart of Southeast Asia makes it an ideal setting for discussions on public diplomacy and global engagement.
+                    </p>
+                    <h3 class="font-vintage text-2xl mb-4 italic mt-10">Target Participants</h3>
+                    <div class="p-6 border-l-4 border-ysfRed bg-ysfDark/5">
+                        <p class="font-semibold">Emerging youth leaders, university students, and young professionals (Ages 16–40)</p>
+                        <p class="text-sm mt-2 text-ysfDark/70">Representing regions from Asia, Europe, Africa, and the Middle East.</p>
+                    </div>
+                </div>
+                <div class="relative flex justify-center">
+                    <div class="roman-border max-w-md bg-white p-2 shadow-xl">
+                        <!-- Removed 'vintage-img' and 'opacity-90' to display the GIF in its original colors -->
+                        <img src="https://thecscd.org/wp-content/uploads/2026/05/YPDS-Ankara.gif" alt="Diplomacy Statue" class="w-full h-auto">
+                    </div>
+                    <div class="absolute -z-10 w-full h-full border border-ysfYellow top-6 left-6 max-w-md"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Experience / Venue Section (HIDDEN - Remove 'hidden' class below to display) -->
+    <section id="ankara-experience" class="hidden py-32 md:py-48 relative bg-white border-b border-ysfDark/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative order-2 lg:order-1">
+                    <div class="roman-border bg-ysfBeige p-2 shadow-xl relative z-10">
+                        <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Jakarta Architecture" class="w-full h-auto vintage-img">
+                    </div>
+                    <div class="absolute -z-0 w-full h-full bg-ysfRed/10 top-8 -left-8 max-w-md border border-ysfRed/20"></div>
+                </div>
+                <div class="order-1 lg:order-2">
+                    <span class="text-ysfRed font-sans tracking-[0.2em] text-sm uppercase">The Destination</span>
+                    <h2 class="font-roman text-4xl text-ysfDark mt-4 mb-6">The Jakarta Experience</h2>
+                    <p class="font-vintage text-xl italic text-ysfDark/70 mb-6">More than just a forum—an immersion into the heart of Indonesia.</p>
+                    <p class="font-sans text-sm text-ysfDark/80 leading-relaxed mb-6">
+                        Delegates will experience Jakarta not just as tourists, but as active participants in its enduring legacy of statecraft. The forum includes exclusive access to historic sites, guided architectural walks discussing modern governance, and networking events set against the backdrop of iconic Indonesian landmarks.
+                    </p>
+                    <ul class="space-y-4 font-sans text-sm text-ysfDark/80">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="landmark" class="w-5 h-5 text-ysfRed shrink-0 mt-0.5"></i>
+                            <span>Exclusive venue hosting inside a prominent policy institution.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="map" class="w-5 h-5 text-ysfRed shrink-0 mt-0.5"></i>
+                            <span>Curated cultural excursions including historic Jakarta and its iconic landmarks.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="utensils" class="w-5 h-5 text-ysfRed shrink-0 mt-0.5"></i>
+                            <span>Authentic Indonesian culinary experiences and networking dinners.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CREATIVE VIBRANT PINK: Teaser Section -->
+    <section class="relative py-32 md:py-48 bg-ysfRed overflow-hidden border-y border-ysfDark/10 !text-white">
+        <div class="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/stucco.png')] mix-blend-multiply"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none opacity-[0.04]">
+            <h2 class="font-roman text-[25vw] md:text-[20rem] font-bold leading-none tracking-tighter whitespace-nowrap !text-white">JAKARTA</h2>
+        </div>
+
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col items-center gap-16">
+                <div class="relative z-20 text-center">
+                    <div class="inline-block px-5 py-1.5 mb-8 border border-ysfYellow text-ysfDark font-sans text-xs tracking-[0.3em] uppercase rounded-full bg-ysfYellow shadow-md">
+                        Achievement of the Year
+                    </div>
+                    <h2 class="font-vintage text-4xl md:text-6xl italic mb-2 opacity-90 leading-tight !text-white">
+                        Award Winner Of
+                    </h2>
+                    <h2 class="font-roman text-6xl md:text-[7rem] font-bold !text-white leading-none mb-8 tracking-tighter drop-shadow-lg uppercase">
+                        signs of peace
+                    </h2>
+                    <p class="font-sans text-base md:text-lg !text-white max-w-2xl mx-auto leading-relaxed mb-10 opacity-90">
+                        Awarded to CSCD by the Municipality of Rome during Made in Italy Day at Palazzo Valentini, Rome - Italy on April 15, 2026  </p>
+                </div>
+
+                <!-- YouTube Video Embed -->
+                <div class="relative w-full max-w-4xl mx-auto z-20 group cursor-pointer">
+                    <div class="relative bg-white/10 p-4 md:p-6 rounded-[2rem] backdrop-blur-md border border-white/30 shadow-2xl transition-transform duration-500 hover:-translate-y-2">
+                        <div class="relative aspect-video rounded-xl overflow-hidden bg-ysfDark shadow-inner">
+                            <iframe src="https://www.youtube.com/embed/n6741VN-tIM?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full absolute inset-0"></iframe>
+                        </div>
+                    </div>
+                    <div class="absolute -bottom-8 -left-8 w-24 h-24 border border-ysfYellow/60 rounded-full animate-[spin_15s_linear_infinite] pointer-events-none hidden md:block"></div>
+                    <div class="absolute top-10 -right-8 w-12 h-12 border-2 border-white/50 pointer-events-none hidden md:block rotate-45"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Program Modules & Thematic Focus -->
+    <section id="themes" class="py-32 md:py-48 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="font-roman text-4xl text-ysfDark">Thematic Focus</h2>
+                <p class="font-vintage text-xl mt-4 max-w-3xl mx-auto italic text-ysfDark/70">
+                    The Idea of Diplomacy: a platform to explore Jakarta’s legacy in culture and international policy.
+                </p>
+                <div class="w-24 h-1 bg-ysfRed mx-auto mt-6"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                <div class="flex gap-4 p-6 hover:bg-white transition-colors border-b border-ysfDark/10">
+                    <div class="text-ysfRed font-roman text-2xl font-bold">I.</div>
+                    <div>
+                        <h4 class="font-roman text-xl font-bold mb-2">Public Diplomacy in the 21st Century</h4>
+                        <p class="text-sm font-sans text-ysfDark/80">Understanding the intersection of culture and governance.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 p-6 hover:bg-white transition-colors border-b border-ysfDark/10">
+                    <div class="text-ysfRed font-roman text-2xl font-bold">II.</div>
+                    <div>
+                        <h4 class="font-roman text-xl font-bold mb-2">Asia and the Mediterranean</h4>
+                        <p class="text-sm font-sans text-ysfDark/80">Past, Present & Future – Regional cooperation and strategic opportunities.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 p-6 hover:bg-white transition-colors border-b border-ysfDark/10">
+                    <div class="text-ysfRed font-roman text-2xl font-bold">III.</div>
+                    <div>
+                        <h4 class="font-roman text-xl font-bold mb-2">Peace by Peaceful Means</h4>
+                        <p class="text-sm font-sans text-ysfDark/80">Youth roles in conflict resolution and diplomacy.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 p-6 hover:bg-white transition-colors border-b border-ysfDark/10">
+                    <div class="text-ysfRed font-roman text-2xl font-bold">IV.</div>
+                    <div>
+                        <h4 class="font-roman text-xl font-bold mb-2">Soft, Smart, and Hard Power</h4>
+                        <p class="text-sm font-sans text-ysfDark/80">Analyzing tools of influence in international relations.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 p-6 hover:bg-white transition-colors border-b border-ysfDark/10">
+                    <div class="text-ysfRed font-roman text-2xl font-bold">V.</div>
+                    <div>
+                        <h4 class="font-roman text-xl font-bold mb-2">Strategic Communication</h4>
+                        <p class="text-sm font-sans text-ysfDark/80">Techniques for effective advocacy, public diplomacy, and media engagement.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 p-6 hover:bg-white transition-colors border-b border-ysfDark/10">
+                    <div class="text-ysfRed font-roman text-2xl font-bold">VI.</div>
+                    <div>
+                        <h4 class="font-roman text-xl font-bold mb-2">Grand Strategy vs Economic Strategy</h4>
+                        <p class="text-sm font-sans text-ysfDark/80">Balancing national interests, regional cooperation, and global challenges.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ALTERNATIVE OPTION: Featured Keynotes (Tall Portrait Cards) -->
+    <section class="py-32 md:py-48 bg-[#050505] text-white relative overflow-hidden border-t border-ysfRed/20">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[500px] bg-ysfRed/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal-up">
+                <div>
+                    <span class="text-ysfRed font-sans tracking-[0.2em] text-sm uppercase font-bold">Global Voices</span>
+                    <h2 class="font-roman text-4xl md:text-5xl mt-4 text-white">Past keynote speakers of YPDS</h2>
+                </div>
+                <div class="mt-8 md:mt-0">
+                    <a href="#" class="inline-flex items-center gap-2 text-ysfYellow font-sans text-sm tracking-widest uppercase hover:text-white transition-colors pb-1 border-b border-ysfYellow hover:border-white">
+                        View All Speakers <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-y-10">
+                <div class="group relative h-[450px] md:h-[550px] rounded-xl overflow-hidden cursor-pointer reveal-up shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-white/10 hover:border-ysfRed/50 transition-colors duration-500" style="transition-delay: 100ms;">
+                    <img src="https://thecscd.org/wp-content/uploads/2026/04/Mr.-Novruz-Mammadov.webp" alt="Novruz Mammadov" class="absolute inset-0 w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-12 group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                        <div class="w-8 h-1 bg-ysfRed mb-5 group-hover:w-16 transition-all duration-500"></div>
+                        <h3 class="font-roman text-2xl md:text-3xl text-white font-bold mb-1">Novruz Mammadov</h3>
+                        <p class="font-sans text-[10px] text-ysfYellow uppercase tracking-widest mb-4">Former Prime Minister of Azerbaijan</p>
+                        <p class="font-sans text-sm text-white/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-3">
+                            Keynote speaker at the Young Public Diplomacy Summit, Baku 2024, sharing unparalleled insights into statecraft and national strategy.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="group relative h-[450px] md:h-[550px] rounded-xl overflow-hidden cursor-pointer reveal-up shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-white/10 hover:border-ysfRed/50 transition-colors duration-500" style="transition-delay: 200ms;">
+                    <img src="https://thecscd.org/wp-content/uploads/2026/04/His_Excellency_Mr._Bilal_Hayee-scaled.webp" alt="H.E. Bilal Hayee" class="absolute inset-0 w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-12 group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                        <div class="w-8 h-1 bg-ysfRed mb-5 group-hover:w-16 transition-all duration-500"></div>
+                        <h3 class="font-roman text-2xl md:text-3xl text-white font-bold mb-1">H.E. Bilal Hayee</h3>
+                        <p class="font-sans text-[10px] text-ysfYellow uppercase tracking-widest mb-4">Ambassador of Pakistan to Azerbaijan</p>
+                        <p class="font-sans text-sm text-white/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-3">
+                            Featured speaker at YPDS Baku 2024, emphasizing bilateral relations and cultural diplomacy in the Eurasian region.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="group relative h-[450px] md:h-[550px] rounded-xl overflow-hidden cursor-pointer reveal-up shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-white/10 hover:border-ysfRed/50 transition-colors duration-500" style="transition-delay: 300ms;">
+                    <img src="https://thecscd.org/wp-content/uploads/2026/04/Mr._Vusal_Gurbanov-scaled.webp" alt="Mr. Vusal Gurbanov" class="absolute inset-0 w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-12 group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                        <div class="w-8 h-1 bg-ysfRed mb-5 group-hover:w-16 transition-all duration-500"></div>
+                        <h3 class="font-roman text-2xl md:text-3xl text-white font-bold mb-1">Mr. Vusal Gurbanov</h3>
+                        <p class="font-sans text-[10px] text-ysfYellow uppercase tracking-widest mb-4">Acting Director General, ICYF-ERC</p>
+                        <p class="font-sans text-sm text-white/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-3">
+                            Leading discussions on regional security, Mediterranean geopolitics, and the future of Eurasian diplomacy.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="group relative h-[450px] md:h-[550px] rounded-xl overflow-hidden cursor-pointer reveal-up shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-white/10 hover:border-ysfRed/50 transition-colors duration-500" style="transition-delay: 400ms;">
+                    <img src="https://thecscd.org/wp-content/uploads/2026/04/Ms._Gulnara_Aslenbyli-scaled.webp" alt="Ms. Gulnara Aslenbyli" class="absolute inset-0 w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-12 group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                        <div class="w-8 h-1 bg-ysfRed mb-5 group-hover:w-16 transition-all duration-500"></div>
+                        <h3 class="font-roman text-2xl md:text-3xl text-white font-bold mb-1">Ms. Gulnara Aslenbyli</h3>
+                        <p class="font-sans text-[10px] text-ysfYellow uppercase tracking-widest mb-4">Official Representative, AmChamp</p>
+                        <p class="font-sans text-sm text-white/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-3">
+                            A leading voice in economic grand strategy, focusing on bridging the economic divides between emerging and developed nations.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="group relative h-[450px] md:h-[550px] rounded-xl overflow-hidden cursor-pointer reveal-up shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-white/10 hover:border-ysfRed/50 transition-colors duration-500" style="transition-delay: 100ms;">
+                    <img src="https://thecscd.org/wp-content/uploads/2026/04/Bakhshillo-Khodjaev.webp" alt="Bakhshillo Khodjaev" class="absolute inset-0 w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-12 group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                        <div class="w-8 h-1 bg-ysfRed mb-5 group-hover:w-16 transition-all duration-500"></div>
+                        <h3 class="font-roman text-2xl md:text-3xl text-white font-bold mb-1">Bakhshillo Khodjaev</h3>
+                        <p class="font-sans text-[10px] text-ysfYellow uppercase tracking-widest mb-4">Rector, Tashkent State Univ. of Law</p>
+                        <p class="font-sans text-sm text-white/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-3">
+                            Keynote at YPDS Tashkent 2025, addressing the intersection of legal frameworks and international public diplomacy.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="group relative h-[450px] md:h-[550px] rounded-xl overflow-hidden cursor-pointer reveal-up shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-white/10 hover:border-ysfRed/50 transition-colors duration-500" style="transition-delay: 200ms;">
+                    <img src="https://thecscd.org/wp-content/uploads/2026/04/H.E.-Mr.-Ahmed-Farooq.webp" alt="H.E. Ahmed Farooq" class="absolute inset-0 w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-12 group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                        <div class="w-8 h-1 bg-ysfRed mb-5 group-hover:w-16 transition-all duration-500"></div>
+                        <h3 class="font-roman text-2xl md:text-3xl text-white font-bold mb-1">H.E. Ahmed Farooq</h3>
+                        <p class="font-sans text-[10px] text-ysfYellow uppercase tracking-widest mb-4">Ambassador of Pakistan to Uzbekistan</p>
+                        <p class="font-sans text-sm text-white/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-3">
+                            Distinguished speaker at YPDS Tashkent 2025, discussing regional connectivity and the strategic importance of Central Asia.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="group relative h-[450px] md:h-[550px] rounded-xl overflow-hidden cursor-pointer reveal-up shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-white/10 hover:border-ysfRed/50 transition-colors duration-500" style="transition-delay: 300ms;">
+                    <img src="https://thecscd.org/wp-content/uploads/2026/04/Prof.-Dr.-Mehmet-Ozkan.jpg.webp" alt="Dr. Mehmet Ozkan" class="absolute inset-0 w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-12 group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                        <div class="w-8 h-1 bg-ysfRed mb-5 group-hover:w-16 transition-all duration-500"></div>
+                        <h3 class="font-roman text-2xl md:text-3xl text-white font-bold mb-1">Dr. Mehmet Ozkan</h3>
+                        <p class="font-sans text-[10px] text-ysfYellow uppercase tracking-widest mb-4">Institutional Expert, Maarif Foundation</p>
+                        <p class="font-sans text-sm text-white/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-3">
+                            Expert in conflict resolution, emphasizing soft power and strategic communication in high-tension environments.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="group relative h-[450px] md:h-[550px] rounded-xl overflow-hidden cursor-pointer reveal-up shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-white/10 hover:border-ysfRed/50 transition-colors duration-500" style="transition-delay: 400ms;">
+                    <img src="https://thecscd.org/wp-content/uploads/2026/04/Muhammed-Malik-TAYLAN-scaled.webp" alt="M. Malik Taylan" class="absolute inset-0 w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity duration-500"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 transform translate-y-12 group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]">
+                        <div class="w-8 h-1 bg-ysfRed mb-5 group-hover:w-16 transition-all duration-500"></div>
+                        <h3 class="font-roman text-2xl md:text-3xl text-white font-bold mb-1">M. Malik Taylan</h3>
+                        <p class="font-sans text-[10px] text-ysfYellow uppercase tracking-widest mb-4">VP / External Relations, TUGVA</p>
+                        <p class="font-sans text-sm text-white/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-3">
+                            Renowned strategist exploring the crossroads of modern cultural diplomacy and digital statecraft.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Agenda Section -->
+    <section id="agenda" class="py-32 md:py-48 bg-white border-y border-ysfDark/10">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <span class="text-ysfRed font-sans tracking-[0.2em] text-sm uppercase">Program Structure</span>
+                <h2 class="font-roman text-4xl mt-2">Days of Strategy</h2>
+            </div>
+
+            <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-ysfRed/30 before:to-transparent">
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-ysfRed bg-ysfBeige text-ysfRed font-roman font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10">1</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 bg-ysfBeige border border-ysfDark/10 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-ysfRed font-sans text-sm uppercase tracking-wider">August 20, 2026</span>
+                        </div>
+                        <h3 class="font-roman text-xl font-bold mb-2">Opening & Strategy Modules</h3>
+                        <p class="text-sm text-ysfDark/70 font-sans">Keynote speeches by diplomats, interactive sessions on strategy and statecraft, networking reception.</p>
+                    </div>
+                </div>
+
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-ysfRed bg-ysfBeige text-ysfRed font-roman font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10">2</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 bg-ysfBeige border border-ysfDark/10 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-ysfRed font-sans text-sm uppercase tracking-wider">August 21, 2026</span>
+                        </div>
+                        <h3 class="font-roman text-xl font-bold mb-2">Peace, Power & Policy</h3>
+                        <p class="text-sm text-ysfDark/70 font-sans">Workshops on soft power, simulations on diplomacy and conflict resolution, panel discussions.</p>
+                    </div>
+                </div>
+
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-ysfRed bg-ysfBeige text-ysfRed font-roman font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10">3</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 bg-ysfBeige border border-ysfDark/10 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-ysfRed font-sans text-sm uppercase tracking-wider">August 22, 2026</span>
+                        </div>
+                        <h3 class="font-roman text-xl font-bold mb-2">Youth Innovation & Policy Labs</h3>
+                        <p class="text-sm text-ysfDark/70 font-sans">Meeting with Institutions, Thinktanks, Cultural diplomacy labs, policy design workshops.</p>
+                    </div>
+                </div>
+
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-ysfRed bg-ysfBeige text-ysfRed font-roman font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10">4</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 bg-ysfBeige border border-ysfDark/10 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-ysfRed font-sans text-sm uppercase tracking-wider">August 23, 2026</span>
+                        </div>
+                        <h3 class="font-roman text-xl font-bold mb-2">Closing & Declarations</h3>
+                        <p class="text-sm text-ysfDark/70 font-sans">Closing ceremony, presentation of youth policy recommendations, networking and farewells.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing / Registration (MOVED UP) -->
+    <section id="pricing" class="py-32 md:py-48 bg-[#F9F6F0]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="font-roman text-4xl text-ysfDark mb-4">Secure Your Seat</h2>
+                <p class="font-vintage text-xl italic text-ysfDark/70">Join us in Jakarta. Select your participation tier.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+                
+                <!-- Table 1: Scholarships -->
+                <div class="bg-white p-8 border border-ysfDark/10 hover:border-ysfRed transition-all shadow-sm hover:shadow-xl flex flex-col relative">
+                    <h3 class="font-roman text-xl font-bold text-ysfDark mb-2">Scholarships</h3>
+                    <p class="text-ysfDark/60 text-sm mb-6 h-10">Scholarship access application.</p>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold font-roman text-ysfRed">15.99</span>
+                        <span class="font-sans text-xs text-ysfDark/50 uppercase tracking-widest font-bold">USD</span>
+                    </div>
+                    <ul class="space-y-3 mb-8 text-sm font-sans flex-grow">
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> CSCD Invitation Letter</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> Meals During Forum</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> Air Ticket & Travel Support</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> Accommodation (3 Nights)</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> All Workshops</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> Field Visits & Mentorship</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> Certificate of Participation</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> Virtual Course Qualification</li>
+                    </ul>
+                    <a href="https://thecscd.org/jakarta-funded-registeration/" target="_blank" class="block mt-auto text-center border border-ysfRed text-ysfRed py-3 font-sans text-sm uppercase tracking-wider font-bold hover:bg-ysfRed hover:text-white transition-colors">Select Ticket</a>
+                </div>
+
+                <!-- Table 2: Summit Fee (Highlighted) -->
+                <div class="bg-ysfDark p-8 border border-ysfDark transform md:-translate-y-4 shadow-[8px_8px_0px_#E6EB1C] flex flex-col relative z-10">
+                    <!-- FIXED BADGE: Removed translate-x-1/2 to fix mobile horizontal overflow -->
+                    <div class="absolute top-0 right-4 md:right-6 bg-ysfRed text-white text-xs font-bold uppercase tracking-wider py-1 px-4 rounded-sm shadow-md -translate-y-1/2 z-20">Self Finance</div>
+                    
+                    <h3 class="font-roman text-xl font-bold text-ysfBeige mb-2">Summit Fee</h3>
+                    <p class="text-ysfBeige/60 text-sm mb-6 h-10">Standard access for the summit.</p>
+                    
+                    <!-- Pricing with "NOW" badge and subtext -->
+                    <div class="flex flex-col mb-6">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-4xl font-bold font-roman text-ysfYellow">599</span>
+                            <span class="font-sans text-xs text-ysfBeige/50 uppercase tracking-widest font-bold">USD</span>
+                            <span class="bg-ysfRed text-white text-[10px] font-bold px-2 py-0.5 rounded-sm animate-pulse ml-1 tracking-widest uppercase">Now</span>
+                        </div>
+                        <span class="font-vintage text-sm italic text-ysfBeige/50 mt-1">(Later will be 699 USD)</span>
+                    </div>
+
+                    <ul class="space-y-3 mb-8 text-sm font-sans flex-grow text-ysfBeige">
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfYellow shrink-0 mt-0.5"></i> CSCD Invitation Letter</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfYellow shrink-0 mt-0.5"></i> Meals During Forum</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfYellow shrink-0 mt-0.5"></i> Accommodation (3 Nights)</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfYellow shrink-0 mt-0.5"></i> All Workshops</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfYellow shrink-0 mt-0.5"></i> Field Visits & Mentorship</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfYellow shrink-0 mt-0.5"></i> Certificate of Participation</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfYellow shrink-0 mt-0.5"></i> Virtual Course Qualification</li>
+                        <li class="flex items-start gap-3 opacity-40"><i data-lucide="x" class="w-4 h-4 shrink-0 mt-0.5"></i> Air Ticket Support</li>
+                    </ul>
+                    <a href="https://thecscd.org/jakarta-self-financed-registeration/" target="_blank" class="block mt-auto text-center bg-ysfRed text-white py-3 font-sans text-sm uppercase tracking-wider font-bold hover:bg-white hover:text-ysfRed transition-colors">Select Ticket</a>
+                </div>
+
+                <!-- Table 3: Summit Pass -->
+                <div class="bg-white p-8 border border-ysfDark/10 hover:border-ysfRed transition-all shadow-sm hover:shadow-xl flex flex-col relative">
+                    <h3 class="font-roman text-xl font-bold text-ysfDark mb-2">Summit Pass</h3>
+                    <p class="text-ysfDark/60 text-sm mb-6 h-10">Entry only (accommodation excluded).</p>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold font-roman text-ysfRed">200</span>
+                        <span class="font-sans text-xs text-ysfDark/50 uppercase tracking-widest font-bold">USD</span>
+                    </div>
+                    <ul class="space-y-3 mb-8 text-sm font-sans flex-grow">
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> CSCD Invitation Letter</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> Meals During Forum</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> All Workshops</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> Field Visits & Mentorship</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> Certificate of Participation</li>
+                        <li class="flex items-start gap-3"><i data-lucide="check" class="w-4 h-4 text-ysfRed shrink-0 mt-0.5"></i> Virtual Course Qualification</li>
+                        <li class="flex items-start gap-3 opacity-40"><i data-lucide="x" class="w-4 h-4 shrink-0 mt-0.5"></i> Accommodation (3 Nights)</li>
+                        <li class="flex items-start gap-3 opacity-40"><i data-lucide="x" class="w-4 h-4 shrink-0 mt-0.5"></i> Air Ticket Support</li>
+                    </ul>
+                    <a href="https://thecscd.org/jakarta-summit-pass-registeration/" target="_blank" class="block mt-auto text-center border border-ysfRed text-ysfRed py-3 font-sans text-sm uppercase tracking-wider font-bold hover:bg-ysfRed hover:text-white transition-colors">Select Ticket</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW UNIQUE 3D: Interactive Visual Archives Gallery (Now Yellow Theme) -->
+    <section id="gallery" class="py-24 md:py-32 bg-ysfYellow text-ysfDark relative overflow-hidden border-t border-ysfDark/10">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-ysfRed/10 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-20 reveal-up">
+                <span class="text-ysfRed font-sans tracking-[0.2em] text-sm uppercase font-bold">Moments in Time</span>
+                <h2 class="font-roman text-5xl md:text-6xl font-bold text-ysfDark mt-4 drop-shadow-lg">Visual Archives</h2>
+                
+                <!-- Sleek Minimal Universal Guide -->
+                <div class="flex items-center justify-center gap-2 mt-6 text-ysfDark/60">
+                    <i data-lucide="hand" class="w-4 h-4 animate-pulse"></i>
+                    <span class="font-sans text-xs tracking-widest uppercase">Tap or Click stacks to explore</span>
+                </div>
+                
+                <div class="w-24 h-1 bg-ysfRed mx-auto mt-6"></div>
+            </div>
+
+            <!-- Adjusted gap-y for mobile to prevent overlap with floating badges -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-y-32 gap-x-16 lg:gap-24 pt-10 pb-16">
+                
+                <!-- Gallery 1: Baku -->
+                <div class="gallery-container w-full aspect-[3/4] md:aspect-[4/5] mx-auto reveal-up" style="transition-delay: 100ms;">
+                    <div class="gallery-stack w-full h-full relative" onclick="rotateGallery(this)">
+                        <div class="gallery-card card-hidden"><img src="https://thecscd.org/wp-content/uploads/2026/04/IMG_3661-scaled.webp" alt="Baku Event 4" class="card-image pointer-events-none"></div>
+                        <div class="gallery-card card-back"><img src="https://thecscd.org/wp-content/uploads/2026/04/IMG_3624-scaled.webp" alt="Baku Event 3" class="card-image pointer-events-none"></div>
+                        <div class="gallery-card card-middle"><img src="https://thecscd.org/wp-content/uploads/2026/04/IMG_3790-scaled.webp" alt="Baku Event 2" class="card-image pointer-events-none"></div>
+                        <div class="gallery-card card-front"><img src="https://thecscd.org/wp-content/uploads/2026/04/IMG_3796-scaled.webp" alt="Baku Event 1" class="card-image pointer-events-none"></div>
+                        
+                        <div class="absolute -bottom-10 left-0 w-full flex flex-col items-center justify-center z-40 pointer-events-none transition-transform duration-500">
+                            <div class="bg-ysfDark/95 backdrop-blur-md border border-white/10 px-8 py-3 rounded-2xl text-center shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
+                                <h3 class="font-roman text-2xl font-bold text-white leading-none tracking-wide">Baku</h3>
+                                <span class="font-sans text-[10px] tracking-widest uppercase text-ysfYellow block mt-1.5">2024 Summit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery 2: Istanbul -->
+                <div class="gallery-container w-full aspect-[3/4] md:aspect-[4/5] mx-auto reveal-up" style="transition-delay: 200ms;">
+                    <div class="gallery-stack w-full h-full relative" onclick="rotateGallery(this)">
+                        <div class="gallery-card card-hidden"><img src="https://thecscd.org/wp-content/uploads/2026/04/IMG_0108-scaled.webp" alt="Istanbul Event 5" class="card-image pointer-events-none"></div>
+                        <div class="gallery-card card-hidden"><img src="https://thecscd.org/wp-content/uploads/2026/04/01-scaled.webp" alt="Istanbul Event 4" class="card-image pointer-events-none"></div>
+                        <div class="gallery-card card-back"><img src="https://thecscd.org/wp-content/uploads/2026/04/S2-scaled.webp" alt="Istanbul Event 3" class="card-image pointer-events-none"></div>
+                        <div class="gallery-card card-middle"><img src="https://thecscd.org/wp-content/uploads/2026/04/M4-scaled.webp" alt="Istanbul Event 2" class="card-image pointer-events-none"></div>
+                        <div class="gallery-card card-front"><img src="https://thecscd.org/wp-content/uploads/2026/04/IMG_0611-scaled.webp" alt="Istanbul Event 1" class="card-image pointer-events-none"></div>
+                        
+                        <div class="absolute -bottom-10 left-0 w-full flex flex-col items-center justify-center z-40 pointer-events-none transition-transform duration-500">
+                            <div class="bg-ysfDark/95 backdrop-blur-md border border-white/10 px-8 py-3 rounded-2xl text-center shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
+                                <h3 class="font-roman text-2xl font-bold text-white leading-none tracking-wide">Istanbul</h3>
+                                <span class="font-sans text-[10px] tracking-widest uppercase text-ysfYellow block mt-1.5">2024 Summit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery 3: Tashkent -->
+                <div class="gallery-container w-full aspect-[3/4] md:aspect-[4/5] mx-auto reveal-up" style="transition-delay: 300ms;">
+                    <div class="gallery-stack w-full h-full relative" onclick="rotateGallery(this)">
+                        <div class="gallery-card card-hidden"><img src="https://thecscd.org/wp-content/uploads/2026/04/WhatsApp-Image-2025-04-09-at-12.28.58-PM-1.webp" alt="Tashkent Event 4" class="card-image pointer-events-none"></div>
+                        <div class="gallery-card card-back"><img src="https://thecscd.org/wp-content/uploads/2026/04/WhatsApp-Image-2025-04-09-at-12.29.03-PM-2.webp" alt="Tashkent Event 3" class="card-image pointer-events-none"></div>
+                        <div class="gallery-card card-middle"><img src="https://thecscd.org/wp-content/uploads/2026/04/WhatsApp-Image-2025-04-09-at-12.29.00-PM-2.webp" alt="Tashkent Event 2" class="card-image pointer-events-none"></div>
+                        <div class="gallery-card card-front"><img src="https://thecscd.org/wp-content/uploads/2026/04/WhatsApp-Image-2025-04-20-at-10.29.05-PM-2.webp" alt="Tashkent Event 1" class="card-image pointer-events-none"></div>
+                        
+                        <div class="absolute -bottom-10 left-0 w-full flex flex-col items-center justify-center z-40 pointer-events-none transition-transform duration-500">
+                            <div class="bg-ysfDark/95 backdrop-blur-md border border-white/10 px-8 py-3 rounded-2xl text-center shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
+                                <h3 class="font-roman text-2xl font-bold text-white leading-none tracking-wide">Tashkent</h3>
+                                <span class="font-sans text-[10px] tracking-widest uppercase text-ysfYellow block mt-1.5">2025 Summit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- VISUALLY STRIKING: Event Reports & Archives Section -->
+    <section id="reports" class="py-32 md:py-48 bg-white text-ysfDark relative overflow-hidden border-t border-ysfDark/10">
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-ysfRed/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-ysfYellow/5 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute inset-0 z-0 opacity-10" style="background-image: radial-gradient(#ea0558 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-24 reveal-up">
+                <div class="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-ysfRed/30 bg-ysfRed/5 backdrop-blur-md mb-6">
+                    <i data-lucide="book-open" class="w-4 h-4 text-ysfRed"></i>
+                    <span class="font-sans text-xs tracking-[0.2em] uppercase text-ysfRed font-bold">Official Archives</span>
+                </div>
+                <h2 class="font-roman text-5xl md:text-6xl lg:text-7xl font-bold text-ysfDark mt-4 drop-shadow-sm">Summit Reports</h2>
+                <p class="font-vintage text-xl italic text-ysfDark/80 mt-6 max-w-2xl mx-auto">
+                    Dive deep into the policy briefs, resolutions, and strategic outcomes from our legacy of global summits.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 perspective-1000">
+                <div class="group relative reveal-up preserve-3d" style="transition-delay: 100ms;">
+                    <div class="relative aspect-[3/4] bg-ysfDark rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] transform group-hover:-translate-y-4 group-hover:rotate-x-6 group-hover:-rotate-y-6 transition-all duration-700 ease-out border border-ysfDark/20 group-hover:border-ysfRed/50 overflow-hidden">
+                        <img src="https://thecscd.org/wp-content/uploads/2026/04/IMG_3796-scaled.webp" class="absolute inset-0 w-full h-full object-cover filter sepia-[0.3] brightness-[0.6] group-hover:scale-110 group-hover:brightness-[0.8] transition-all duration-700" alt="Baku Report">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent opacity-100"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-8 flex flex-col items-center text-center transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                            <span class="font-sans text-ysfYellow tracking-[0.2em] text-[10px] uppercase font-bold mb-2 drop-shadow-md">Vol I. 2024</span>
+                            <h3 class="font-roman text-3xl font-bold text-white mb-2 tracking-wide drop-shadow-md">Baku</h3>
+                            <p class="font-vintage text-sm italic text-white/60 mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 h-0 group-hover:h-auto overflow-hidden">Eurasian Strategy & Security</p>
+                            <a href="https://thecscd.org/wp-content/uploads/2026/04/CSCD-Journey-2023-Baku.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-2.5 bg-ysfRed text-white font-sans text-[10px] tracking-widest uppercase font-bold rounded-full opacity-0 group-hover:opacity-100 shadow-[0_0_20px_rgba(234,5,88,0.6)] hover:bg-white hover:text-ysfRed transition-all duration-300">
+                                <i data-lucide="download" class="w-3 h-3"></i> Read PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group relative reveal-up preserve-3d" style="transition-delay: 200ms;">
+                    <div class="relative aspect-[3/4] bg-ysfDark rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] transform group-hover:-translate-y-4 group-hover:rotate-x-6 group-hover:-rotate-y-6 transition-all duration-700 ease-out border border-ysfDark/20 group-hover:border-ysfRed/50 overflow-hidden">
+                        <img src="https://thecscd.org/wp-content/uploads/2026/04/IMG_0611-scaled.webp" class="absolute inset-0 w-full h-full object-cover filter sepia-[0.3] brightness-[0.6] group-hover:scale-110 group-hover:brightness-[0.8] transition-all duration-700" alt="Istanbul Report">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent opacity-100"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-8 flex flex-col items-center text-center transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                            <span class="font-sans text-ysfYellow tracking-[0.2em] text-[10px] uppercase font-bold mb-2 drop-shadow-md">Vol II. 2024</span>
+                            <h3 class="font-roman text-3xl font-bold text-white mb-2 tracking-wide drop-shadow-md">Istanbul</h3>
+                            <p class="font-vintage text-sm italic text-white/60 mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 h-0 group-hover:h-auto overflow-hidden">Crossroads of Diplomacy</p>
+                            <a href="https://thecscd.org/wp-content/uploads/2026/04/CSCD-Journey-2023-2025.pdf-istanbul-.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-2.5 bg-ysfRed text-white font-sans text-[10px] tracking-widest uppercase font-bold rounded-full opacity-0 group-hover:opacity-100 shadow-[0_0_20px_rgba(234,5,88,0.6)] hover:bg-white hover:text-ysfRed transition-all duration-300">
+                                <i data-lucide="download" class="w-3 h-3"></i> Read PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group relative reveal-up preserve-3d" style="transition-delay: 300ms;">
+                    <div class="relative aspect-[3/4] bg-ysfDark rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] transform group-hover:-translate-y-4 group-hover:rotate-x-6 group-hover:-rotate-y-6 transition-all duration-700 ease-out border border-ysfDark/20 group-hover:border-ysfRed/50 overflow-hidden">
+                        <img src="https://thecscd.org/wp-content/uploads/2026/04/WhatsApp-Image-2025-04-20-at-10.29.05-PM-2.webp" class="absolute inset-0 w-full h-full object-cover filter sepia-[0.3] brightness-[0.6] group-hover:scale-110 group-hover:brightness-[0.8] transition-all duration-700" alt="Tashkent Report">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent opacity-100"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-8 flex flex-col items-center text-center transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                            <span class="font-sans text-ysfYellow tracking-[0.2em] text-[10px] uppercase font-bold mb-2 drop-shadow-md">Vol III. 2025</span>
+                            <h3 class="font-roman text-3xl font-bold text-white mb-2 tracking-wide drop-shadow-md">Tashkent</h3>
+                            <p class="font-vintage text-sm italic text-white/60 mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 h-0 group-hover:h-auto overflow-hidden">Silk Road Connectivity</p>
+                            <a href="https://thecscd.org/wp-content/uploads/2026/04/tashkent-report.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-2.5 bg-ysfRed text-white font-sans text-[10px] tracking-widest uppercase font-bold rounded-full opacity-0 group-hover:opacity-100 shadow-[0_0_20px_rgba(234,5,88,0.6)] hover:bg-white hover:text-ysfRed transition-all duration-300">
+                                <i data-lucide="download" class="w-3 h-3"></i> Read PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group relative reveal-up preserve-3d" style="transition-delay: 400ms;">
+                    <div class="relative aspect-[3/4] bg-ysfDark rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] transform group-hover:-translate-y-4 group-hover:rotate-x-6 group-hover:-rotate-y-6 transition-all duration-700 ease-out border border-ysfDark/20 group-hover:border-ysfRed overflow-hidden">
+                        <img src="https://thecscd.org/wp-content/uploads/2026/04/istockphoto-1134645260-612x612-1.jpg" class="absolute inset-0 w-full h-full object-cover filter sepia-[0.3] brightness-[0.6] group-hover:scale-110 group-hover:brightness-[0.8] transition-all duration-700" alt="Jakarta Report">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent opacity-100"></div>
+                        <div class="absolute top-4 right-4 z-20">
+                            <span class="bg-ysfRed text-white text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-full animate-pulse shadow-[0_0_10px_#ea0558]">Upcoming</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-8 flex flex-col items-center text-center transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                            <span class="font-sans text-ysfYellow tracking-[0.2em] text-[10px] uppercase font-bold mb-2 drop-shadow-md">Vol IV. 2026</span>
+                            <h3 class="font-roman text-3xl font-bold text-white mb-2 tracking-wide drop-shadow-md">Jakarta</h3>
+                            <p class="font-vintage text-sm italic text-white/60 mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 h-0 group-hover:h-auto overflow-hidden">Draft Declarations & Agenda</p>
+                            <a href="#agenda" class="inline-flex items-center gap-2 px-6 py-2.5 bg-ysfRed text-white font-sans text-[10px] tracking-widest uppercase font-bold rounded-full opacity-0 group-hover:opacity-100 shadow-[0_0_20px_rgba(234,5,88,0.6)] hover:bg-white hover:text-ysfRed transition-all duration-300">
+                                <i data-lucide="eye" class="w-3 h-3"></i> View Agenda
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expected Outcomes -->
+    <section id="outcomes" class="py-32 md:py-40 bg-ysfRed !text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="font-roman text-3xl md:text-4xl mb-16 !text-white">Expected Outcomes</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="flex flex-col items-center">
+                    <div class="font-roman text-5xl font-bold mb-2 !text-ysfYellow">100+</div>
+                    <div class="font-sans text-sm tracking-wider uppercase !text-white">Global Delegates</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="font-roman text-5xl font-bold mb-2 !text-ysfYellow">15+</div>
+                    <div class="font-sans text-sm tracking-wider uppercase !text-white">Diplomatic Experts</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="font-roman text-5xl font-bold mb-2 !text-ysfYellow">6</div>
+                    <div class="font-sans text-sm tracking-wider uppercase !text-white">Policy Labs</div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="font-roman text-5xl font-bold mb-2 !text-ysfYellow">1</div>
+                    <div class="font-sans text-sm tracking-wider uppercase !text-white">Unified Vision</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partner Logos Carousel -->
+    <section class="marquee-container shadow-inner py-16">
+        <div class="text-center mb-10">
+            <span class="font-roman text-sm tracking-widest text-ysfDark/60 uppercase">In Collaboration With</span>
+        </div>
+        <div class="marquee-content flex gap-12 md:gap-20 items-center px-8 py-4">
+            <!-- Actual Partner Logos -->
+            <img src="https://i0.wp.com/thecscd.org/wp-content/uploads/2024/06/thumb.jpg?resize=150%2C150&ssl=1" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-300" alt="Partner">
+            <img src="https://i0.wp.com/thecscd.org/wp-content/uploads/2025/01/collaborators-1.webp?resize=150%2C150&ssl=1" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-300" alt="Partner">
+            <img src="https://i0.wp.com/thecscd.org/wp-content/uploads/2024/06/290000070_109038781849650_3227116716149828700_n.png?resize=150%2C150&ssl=1" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-300" alt="Partner">
+            <img src="https://i0.wp.com/thecscd.org/wp-content/uploads/2024/06/05555555555555555555555555555-1.jpg?resize=150%2C150&ssl=1" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-300" alt="Partner">
+            <img src="https://i0.wp.com/thecscd.org/wp-content/uploads/2024/06/Picture18888888888888888888888888888888-1.jpg?w=640&ssl=1" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-300" alt="Partner">
+            <img src="https://i0.wp.com/thecscd.org/wp-content/uploads/2024/06/fefddddddddddddddddddddddddddddd.jpg?resize=150%2C150&ssl=1" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-300" alt="Partner">
+            
+            <!-- Duplicates to ensure smooth infinite scroll -->
+            <img src="https://i0.wp.com/thecscd.org/wp-content/uploads/2024/06/thumb.jpg?resize=150%2C150&ssl=1" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-300" alt="Partner">
+            <img src="https://i0.wp.com/thecscd.org/wp-content/uploads/2025/01/collaborators-1.webp?resize=150%2C150&ssl=1" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-300" alt="Partner">
+            <img src="https://i0.wp.com/thecscd.org/wp-content/uploads/2024/06/290000070_109038781849650_3227116716149828700_n.png?resize=150%2C150&ssl=1" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-300" alt="Partner">
+            <img src="https://i0.wp.com/thecscd.org/wp-content/uploads/2024/06/05555555555555555555555555555-1.jpg?resize=150%2C150&ssl=1" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-300" alt="Partner">
+            <img src="https://i0.wp.com/thecscd.org/wp-content/uploads/2024/06/Picture18888888888888888888888888888888-1.jpg?w=640&ssl=1" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-300" alt="Partner">
+            <img src="https://i0.wp.com/thecscd.org/wp-content/uploads/2024/06/fefddddddddddddddddddddddddddddd.jpg?resize=150%2C150&ssl=1" class="h-16 md:h-20 w-auto object-contain mix-blend-multiply grayscale hover:grayscale-0 transition-all duration-300" alt="Partner">
+        </div>
+    </section>
+
+    <!-- NEW: Voices of Tomorrow (Testimonials) -->
+    <section class="hidden py-32 md:py-48 bg-ysfBeige border-t border-ysfDark/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="font-roman text-4xl text-ysfDark">Voices of Tomorrow</h2>
+                <div class="w-24 h-1 bg-ysfRed mx-auto mt-6"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-10 border border-ysfDark/10 relative shadow-sm">
+                    <div class="absolute -top-6 left-10 text-6xl font-roman text-ysfRed leading-none">"</div>
+                    <p class="font-vintage text-lg italic text-ysfDark/80 leading-relaxed pt-4 mb-8">
+                        The strategy simulations were intense and incredibly eye-opening. I connected with diplomats who completely changed my perspective on Mediterranean policy.
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-ysfDark/10 flex items-center justify-center font-roman font-bold text-ysfDark">AM</div>
+                        <div>
+                            <p class="font-roman font-bold text-sm">Amira Mahmoud</p>
+                            <p class="font-sans text-xs uppercase tracking-widest text-ysfRed mt-1">Delegate, Egypt</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-10 border border-ysfDark/10 relative shadow-sm">
+                    <div class="absolute -top-6 left-10 text-6xl font-roman text-ysfRed leading-none">"</div>
+                    <p class="font-vintage text-lg italic text-ysfDark/80 leading-relaxed pt-4 mb-8">
+                        The host city provides the perfect backdrop. Discussing modern cyber diplomacy while walking past historic sites is an experience I will never forget.
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-ysfDark/10 flex items-center justify-center font-roman font-bold text-ysfDark">JS</div>
+                        <div>
+                            <p class="font-roman font-bold text-sm">Julian Smith</p>
+                            <p class="font-sans text-xs uppercase tracking-widest text-ysfRed mt-1">Delegate, UK</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white p-10 border border-ysfDark/10 relative shadow-sm">
+                    <div class="absolute -top-6 left-10 text-6xl font-roman text-ysfRed leading-none">"</div>
+                    <p class="font-vintage text-lg italic text-ysfDark/80 leading-relaxed pt-4 mb-8">
+                        As a young professional, the access to UN agency mentors was unprecedented. It directly helped shape my current masters thesis on global peace.
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-ysfDark/10 flex items-center justify-center font-roman font-bold text-ysfDark">LK</div>
+                        <div>
+                            <p class="font-roman font-bold text-sm">Lin Kang</p>
+                            <p class="font-sans text-xs uppercase tracking-widest text-ysfRed mt-1">Delegate, Singapore</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQs Section -->
+    <section id="faq" class="py-32 md:py-48 bg-white border-t border-ysfDark/10">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="font-roman text-4xl text-center mb-16">Frequently Asked Questions</h2>
+            
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="faq-item border border-ysfDark/20 overflow-hidden rounded-md shadow-sm">
+                    <button class="faq-title-bar w-full text-left px-6 py-4 font-roman text-lg flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        1. What is the Young Public Diplomacy Summit (YPDS)?
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 transition-transform"></i>
+                    </button>
+                    <div class="faq-content bg-white px-6">
+                        <div class="py-4 text-ysfDark/70 text-sm font-sans space-y-3">
+                            <p>The Young Public Diplomacy Summit (YPDS) is an international platform that brings together emerging youth leaders, policymakers, academics, and professionals to engage in meaningful dialogue on diplomacy, global governance, and international cooperation.</p>
+                            <p>Following successful editions in Baku, Istanbul, and Tashkent, the summit continues its global expansion in Jakarta—one of the most significant diplomatic and political hubs in Southeast Asia.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ 2 -->
+                <div class="faq-item border border-ysfDark/20 overflow-hidden rounded-md shadow-sm">
+                    <button class="faq-title-bar w-full text-left px-6 py-4 font-roman text-lg flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        2. Why is Jakarta chosen as the host city?
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 transition-transform"></i>
+                    </button>
+                    <div class="faq-content bg-white px-6">
+                        <div class="py-4 text-ysfDark/70 text-sm font-sans space-y-3">
+                            <p>Jakarta, the capital of Indonesia, is a center of diplomacy, governance, and international collaboration. It hosts numerous embassies, policy institutions, and academic centers, making it an ideal environment for discussions on public diplomacy and global engagement.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="faq-item border border-ysfDark/20 overflow-hidden rounded-md shadow-sm">
+                    <button class="faq-title-bar w-full text-left px-6 py-4 font-roman text-lg flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        3. Who is eligible to apply?
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 transition-transform"></i>
+                    </button>
+                    <div class="faq-content bg-white px-6">
+                        <div class="py-4 text-ysfDark/70 text-sm font-sans space-y-3">
+                            <p>The summit is open to:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Emerging youth leaders</li>
+                                <li>University students</li>
+                                <li>Young professionals</li>
+                            </ul>
+                            <p><strong>Age Requirement:</strong> 16–40 years<br>
+                            <strong>Regions:</strong> Global (All countries eligible to apply)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="faq-item border border-ysfDark/20 overflow-hidden rounded-md shadow-sm">
+                    <button class="faq-title-bar w-full text-left px-6 py-4 font-roman text-lg flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        4. Do I need prior diplomatic experience to apply?
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 transition-transform"></i>
+                    </button>
+                    <div class="faq-content bg-white px-6">
+                        <div class="py-4 text-ysfDark/70 text-sm font-sans space-y-3">
+                            <p>No, prior formal diplomatic experience is not required.</p>
+                            <p>However, applicants are encouraged to have a demonstrated interest in international relations or global affairs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="faq-item border border-ysfDark/20 overflow-hidden rounded-md shadow-sm">
+                    <button class="faq-title-bar w-full text-left px-6 py-4 font-roman text-lg flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        5. Is YPDS an intensive academic program?
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 transition-transform"></i>
+                    </button>
+                    <div class="faq-content bg-white px-6">
+                        <div class="py-4 text-ysfDark/70 text-sm font-sans space-y-3">
+                            <p>Yes, YPDS is designed as a semi-academic and experiential learning program. It includes:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Expert-led panel discussions and lectures</li>
+                                <li>Policy dialogues and simulations</li>
+                                <li>Workshops on diplomacy, communication, and leadership</li>
+                                <li>Networking with academics, diplomats, and practitioners</li>
+                            </ul>
+                            <p>Participants gain both theoretical insights and practical exposure to real-world diplomacy.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="faq-item border border-ysfDark/20 overflow-hidden rounded-md shadow-sm">
+                    <button class="faq-title-bar w-full text-left px-6 py-4 font-roman text-lg flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        6. How competitive are the scholarships?
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 transition-transform"></i>
+                    </button>
+                    <div class="faq-content bg-white px-6">
+                        <div class="py-4 text-ysfDark/70 text-sm font-sans space-y-3">
+                            <p>Scholarships are highly competitive and are awarded based on:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Academic excellence</li>
+                                <li>Leadership experience</li>
+                                <li>Impact in community or professional work</li>
+                                <li>Motivation and alignment with YPDS goals</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 7 -->
+                <div class="faq-item border border-ysfDark/20 overflow-hidden rounded-md shadow-sm">
+                    <button class="faq-title-bar w-full text-left px-6 py-4 font-roman text-lg flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        7. Is there an official certificate provided?
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 transition-transform"></i>
+                    </button>
+                    <div class="faq-content bg-white px-6">
+                        <div class="py-4 text-ysfDark/70 text-sm font-sans space-y-3">
+                            <p>Yes, all participants who successfully attend the summit and sessions will receive an official certificate of participation recognized globally.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 8 -->
+                <div class="faq-item border border-ysfDark/20 overflow-hidden rounded-md shadow-sm">
+                    <button class="faq-title-bar w-full text-left px-6 py-4 font-roman text-lg flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        8. What are the benefits of attending YPDS?
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 transition-transform"></i>
+                    </button>
+                    <div class="faq-content bg-white px-6">
+                        <div class="py-4 text-ysfDark/70 text-sm font-sans space-y-3">
+                            <p>Participants will:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Gain exposure to international diplomacy practices from in-service public diplomats</li>
+                                <li>Build a global professional network</li>
+                                <li>Enhance leadership and communication skills</li>
+                                <li>Engage with policymakers and experts</li>
+                                <li>Receive an official certificate of participation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 9 -->
+                <div class="faq-item border border-ysfDark/20 overflow-hidden rounded-md shadow-sm">
+                    <button class="faq-title-bar w-full text-left px-6 py-4 font-roman text-lg flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        9. Are travel and accommodation covered?
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 transition-transform"></i>
+                    </button>
+                    <div class="faq-content bg-white px-6">
+                        <div class="py-4 text-ysfDark/70 text-sm font-sans space-y-3">
+                            <p>Participants are generally responsible for their own travel, accommodation, and related expenses. To support outstanding applicants and promote accessibility, the Forum offers the following scholarship opportunities:</p>
+
+                            <p class="font-sans font-bold text-ysfDark text-base pt-2 mt-2 border-t border-ysfDark/10">Fully Funded Scholarships (10 Awards)</p>
+                            <p>Recipients will receive:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Accommodation during the Forum</li>
+                                <li>Reception dinner and two international meals per day</li>
+                                <li>Full Forum access and participation</li>
+                                <li>Local transportation</li>
+                                <li>Certificate of participation</li>
+                                <li>Airfare support ranging from USD 300 to USD 1,000, based on the participant's country of residence and actual travel costs</li>
+                                <li>If the cost of an economy-class ticket is below USD 300, the full ticket cost will be covered</li>
+                            </ul>
+                            <p>Outstanding participants may also be invited to volunteer or collaborate with the Center for Strategy and Cultural Diplomacy (CSCD) following the Forum. Additional support may be considered based on the participant's performance during the Forum, commitment to the program, and subsequent contributions to CSCD initiatives.</p>
+
+                            <p class="font-sans font-bold text-ysfDark text-base pt-2 mt-2 border-t border-ysfDark/10">Partially Funded Scholarships (20 Awards)</p>
+                            <p>Recipients will receive:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>A 50% reduction in the self-financed participation fee</li>
+                            </ul>
+
+                            <p class="font-sans font-bold text-ysfDark text-base pt-2 mt-2 border-t border-ysfDark/10">Additional Financial Support</p>
+                            <p>Further scholarships and financial assistance may be available on a case-by-case basis. Awards are determined according to:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Academic and professional merit</li>
+                                <li>Financial need</li>
+                                <li>Leadership potential</li>
+                                <li>Overall application strength</li>
+                                <li>Review and approval by the Scholarship Committee</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="py-32 md:py-48 bg-ysfDark relative overflow-hidden text-center border-t-4 border-ysfRed">
+        <div class="absolute inset-0 opacity-[0.15] bg-[url('https://thecscd.org/wp-content/uploads/2026/05/rafli-raihan-ylgA4NKVyDM-unsplash-scaled.jpg')] bg-cover bg-center"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <h2 class="font-roman text-4xl md:text-5xl text-ysfBeige mb-8 drop-shadow-md">Ready to Shape Global Strategy?</h2>
+            <p class="font-vintage text-xl text-white italic mb-12 max-w-2xl mx-auto drop-shadow-md">
+                Join us in Jakarta and take your place among the next generation of international leaders and diplomats.
+            </p>
+            <a href="#pricing" class="inline-block bg-ysfRed text-white px-10 py-5 font-sans text-sm tracking-widest uppercase font-bold shadow-[6px_6px_0px_#E6EB1C] hover:translate-y-1 hover:shadow-[2px_2px_0px_#E6EB1C] transition-all">
+                Register for YPDS 2026
+            </a>
+        </div>
+    </section>
+
+    </div> <!-- END OF SECURE WRAPPER -->
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // FAQ Toggle Function
+        function toggleFaq(button) {
+            const item = button.parentElement;
+            
+            // Close other items
+            const allItems = document.querySelectorAll('.faq-item');
+            allItems.forEach(i => {
+                if (i !== item && i.classList.contains('active')) {
+                    i.classList.remove('active');
+                }
+            });
+
+            // Toggle current item
+            item.classList.toggle('active');
+        }
+
+        // Intersection Observer for Scroll Reveals
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // Stop observing once animated in
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Track line perfectly based on geometry
+        function alignTimeline() {
+            const nodes = document.querySelectorAll('.node-container .rounded-full');
+            const track = document.getElementById('timelineTrack');
+            const container = document.getElementById('journey-container');
+            
+            if (!nodes.length || !track || !container) return;
+
+            const containerRect = container.getBoundingClientRect();
+            const n1 = nodes[0].getBoundingClientRect();
+            const nLast = nodes[nodes.length - 1].getBoundingClientRect();
+
+            if (window.innerWidth >= 768) {
+                // Horizontal Precise geometric alignment connecting dot centers
+                const startX = (n1.left - containerRect.left) + (n1.width / 2);
+                const endX = (nLast.left - containerRect.left) + (nLast.width / 2);
+                const y = (n1.top - containerRect.top) + (n1.height / 2);
+
+                track.style.left = `${startX}px`;
+                track.style.width = `${endX - startX}px`;
+                track.style.top = `${y - 1}px`; // Shift up by 1 to center the 2px line
+                track.style.height = `2px`;
+            } else {
+                // Vertical precise geometric alignment connecting dot centers
+                const startY = (n1.top - containerRect.top) + (n1.height / 2);
+                const endY = (nLast.top - containerRect.top) + (nLast.height / 2);
+                const x = (n1.left - containerRect.left) + (n1.width / 2);
+
+                track.style.top = `${startY}px`;
+                track.style.height = `${endY - startY}px`;
+                track.style.left = `${x - 1}px`;
+                track.style.width = `2px`;
+            }
+            
+            // Initialize progress logic
+            window.dispatchEvent(new Event('scroll'));
+        }
+        
+        window.addEventListener('resize', alignTimeline);
+        window.addEventListener('load', alignTimeline);
+        setTimeout(alignTimeline, 300); // Safety fallback
+
+        // Fill line logic based on scroll percentage of container
+        const journeyContainer = document.getElementById('journey-container');
+        const timelineFill = document.getElementById('timelineFill');
+        
+        if (journeyContainer && timelineFill) {
+            window.addEventListener('scroll', () => {
+                const nodes = document.querySelectorAll('.node-container .rounded-full');
+                if (nodes.length < 3) return;
+
+                const windowHeight = window.innerHeight;
+                // Physical trigger point where the line begins tracking
+                const triggerLine = windowHeight * 0.65; 
+                
+                const n1 = nodes[0].getBoundingClientRect();
+                const nLast = nodes[nodes.length - 1].getBoundingClientRect();
+                
+                let progress = 0;
+                
+                if (window.innerWidth >= 768) {
+                    const totalScrollNeeded = windowHeight * 0.4; 
+                    const currentScroll = triggerLine - n1.top;
+                    progress = (currentScroll / totalScrollNeeded) * 100;
+                } else {
+                    const totalDist = nLast.top - n1.top;
+                    if (totalDist > 0) {
+                        progress = ((triggerLine - n1.top) / totalDist) * 100;
+                    }
+                }
+                
+                // Clamp progression
+                progress = Math.min(100, Math.max(0, progress));
+                
+                if (window.innerWidth >= 768) {
+                    timelineFill.style.width = `${progress}%`;
+                    timelineFill.style.height = '100%';
+                } else {
+                    timelineFill.style.height = `${progress}%`;
+                    timelineFill.style.width = '100%';
+                }
+
+                // Activate nodes seamlessly
+                nodes.forEach((node, index) => {
+                    const threshold = (index / (nodes.length - 1)) * 100;
+                    if (progress >= threshold) {
+                        node.classList.add('bg-ysfRed', 'border-ysfRed', 'shadow-[0_0_15px_rgba(234,5,88,0.6)]');
+                        node.classList.remove('bg-[#F9F6F0]', 'border-ysfDark/20');
+                        if (index === nodes.length - 1) node.classList.add('animate-pulse');
+                    } else {
+                        node.classList.remove('bg-ysfRed', 'border-ysfRed', 'shadow-[0_0_15px_rgba(234,5,88,0.6)]', 'animate-pulse');
+                        node.classList.add('bg-[#F9F6F0]', 'border-ysfDark/20');
+                    }
+                });
+            });
+        }
+
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset;
+                    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+            });
+        });
+
+        // Global Countdown Timer Logic - Updated to Deadline Date
+        const countDownDate = new Date("July 15, 2026 23:59:59").getTime();
+        
+        const countdownTimer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+
+            if (distance >= 0) {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.querySelectorAll('.cd-days').forEach(el => el.innerText = days.toString().padStart(2, '0'));
+                document.querySelectorAll('.cd-hours').forEach(el => el.innerText = hours.toString().padStart(2, '0'));
+                document.querySelectorAll('.cd-minutes').forEach(el => el.innerText = minutes.toString().padStart(2, '0'));
+                document.querySelectorAll('.cd-seconds').forEach(el => el.innerText = seconds.toString().padStart(2, '0'));
+            } else {
+                clearInterval(countdownTimer);
+                document.querySelectorAll('.cd-days, .cd-hours, .cd-minutes, .cd-seconds').forEach(el => el.innerText = "00");
+            }
+        }, 1000);
+
+        // --- 3D Gallery Interactive Looping Logic ---
+        function rotateGallery(stack) {
+            const cards = Array.from(stack.querySelectorAll('.gallery-card'));
+            if(cards.length === 0) return;
+            
+            // Map current positional classes
+            const classes = cards.map(card => {
+                if(card.classList.contains('card-front')) return 'card-front';
+                if(card.classList.contains('card-middle')) return 'card-middle';
+                if(card.classList.contains('card-back')) return 'card-back';
+                return 'card-hidden';
+            });
+            
+            // Shift classes (front moves to hidden/back, the next one comes to front)
+            const firstClass = classes.shift();
+            classes.push(firstClass);
+            
+            // Reapply shifted classes to cards
+            cards.forEach((card, index) => {
+                card.classList.remove('card-front', 'card-middle', 'card-back', 'card-hidden');
+                card.classList.add(classes[index]);
+            });
+        }
+
+        // Add touch swipe support for mobile galleries
+        document.querySelectorAll('.gallery-stack').forEach(stack => {
+            let touchstartX = 0;
+            let touchstartY = 0;
+            
+            stack.addEventListener('touchstart', e => {
+                touchstartX = e.changedTouches[0].screenX;
+                touchstartY = e.changedTouches[0].screenY;
+            }, {passive: true});
+
+            stack.addEventListener('touchend', e => {
+                let touchendX = e.changedTouches[0].screenX;
+                let touchendY = e.changedTouches[0].screenY;
+                
+                // Detect horizontal swipe (left or right)
+                if (Math.abs(touchendX - touchstartX) > 40 && Math.abs(touchendY - touchstartY) < 100) {
+                    rotateGallery(stack);
+                }
+            }, {passive: true});
+        });
+    </script>
+</body>
+</html>

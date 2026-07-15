@@ -1,0 +1,5 @@
+{
+  "_note": "PLACEHOLDER — no rundown published yet. An empty days[] makes every rundown surface render the Coming Soon state. Replace with the real Jakarta agenda when the client provides it.",
+  "timezone": "Asia/Jakarta",
+  "days": []
+}

@@ -1,0 +1,39 @@
+# Secrets & environment
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Logs & OS
+*.log
+npm-debug.log*
+.DS_Store
+
+# Credential output from seed-delegates.js (delegate passwords)
+*credentials*.csv
+
+# Reference / mockup HTML files (local dev only, not for the server)
+frankfurtLandingPage.html
+newtheme.html
+cscd_delegate_app.html
+
+# Source logo files (processed versions live in public/img/)
+CIPES Logo.png
+CSCD-logo-0155.png
+
+# Delegate list with plaintext passwords — never commit
+delegates.csv
+
+# Pre-Jakarta DB backup: delegate PII (names, emails, passports) + bcrypt hashes
+backup_database/
+
+# Applicant lists (emails / PII) and generated credentials
+candidates.csv
+scripts/jakarta-applicants.csv
+jakarta-credentials.csv
+
+# Python cache
+__pycache__/
+*.pyc

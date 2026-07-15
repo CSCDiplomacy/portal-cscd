@@ -1,0 +1,12 @@
+{
+  "_note": "PLACEHOLDER — check-in flow not defined yet. Empty steps[] renders Coming Soon.",
+  "title": "Check-in",
+  "intro": "",
+  "kiosk_image": null,
+  "steps": [],
+  "bring": [],
+  "check_in_from": null,
+  "check_in_note": null,
+  "check_out": null,
+  "booking_name": null
+}

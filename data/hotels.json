@@ -1,0 +1,4 @@
+{
+  "_note": "PLACEHOLDER — hotel not confirmed yet. An empty hotels{} makes /api/hotel return null, which renders Coming Soon. Key the real entry as 'jakarta-main' to match delegates.hotel_id.",
+  "hotels": {}
+}
