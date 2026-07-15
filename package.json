@@ -10,6 +10,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "node app.js",
+    "build": "cd client && npm run build",
+    "build:client": "cd client && npm run build",
     "seed": "node scripts/seed-delegates.js"
   },
   "overrides": {

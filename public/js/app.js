@@ -636,14 +636,16 @@
 
     if (data.state === 'open') {
       rendered.interview = true;
-      // eager (not lazy) so the form loads in the background before the tab is opened.
+      // Use Aidaform embed widget (removes branding automatically)
+      const formId = data.form_id || 'form202405';
+      const formUrl = data.url || 'https://15158.aidaform.com/interview-copy';
       root.innerHTML =
-        `<div class="interview-frame-wrap">
-           <iframe class="interview-frame" src="${esc(data.url)}" title="CSCD Interview"
-                   allow="camera; microphone; fullscreen" loading="eager"></iframe>
+        `<div class="interview-embed-wrap">
+           <div data-aidaform-app="${esc(formId)}" data-url="${esc(formUrl)}" data-width="100%" data-do-resize></div>
+           <script>(function(){var r,d=document,gt=d.getElementById,cr=d.createElement,tg=d.getElementsByTagName,id="aidaform-app";if(!gt.call(d,id)){r=cr.call(d,"script");r.id=id;r.src="https://widget.aidaform.com/embed.js";(d.head || tg.call(d,"head")[0]).appendChild(r);}})()</script>
          </div>
          <p class="interview-hint">Trouble with the embedded form?
-           <a href="${esc(data.url)}" target="_blank" rel="noopener">Open it in a new tab →</a></p>`;
+           <a href="${esc(formUrl)}" target="_blank" rel="noopener">Open it in a new tab →</a></p>`;
       return;
     }
     if (data.state === 'submitted') {

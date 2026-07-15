@@ -107,8 +107,14 @@ app.use('/api', dataRoutes);
 app.use('/api/interview', interviewRoutes);
 
 // --- Static front-end -------------------------------------------------------
+// Serve React build from client/dist (built by `npm run build`)
+// Fall back to public/ for legacy static assets if dist/ doesn't exist.
+const distPath = path.join(__dirname, 'client', 'dist');
+const distExists = require('fs').existsSync(distPath);
+const staticPath = distExists ? distPath : path.join(__dirname, 'public');
+
 app.use(
-  express.static(path.join(__dirname, 'public'), {
+  express.static(staticPath, {
     maxAge: '7d',
     etag: true,
     lastModified: true,
@@ -128,7 +134,7 @@ app.use(
 // SPA fallback — any non-API GET returns the shell.
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) return next();
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(staticPath, 'index.html'));
 });
 
 app.listen(PORT, () => {
