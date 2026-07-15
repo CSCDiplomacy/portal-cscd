@@ -102,10 +102,18 @@ export const useAuth = (): UseAuthReturn => {
   };
 
   const login = async (email: string, password: string) => {
-    if (!sbInstance) throw new Error('Auth not initialized');
     try {
       setLoading(true);
       setError(null);
+
+      // Ensure Supabase is initialized
+      if (!sbInstance) {
+        const config: Config = await getJson('/api/config');
+        if (!config.supabaseUrl || !config.supabaseAnonKey) {
+          throw new Error('Auth not configured on server');
+        }
+        sbInstance = createClient(config.supabaseUrl, config.supabaseAnonKey);
+      }
 
       const { data, error: err } = await sbInstance.auth.signInWithPassword({
         email,
