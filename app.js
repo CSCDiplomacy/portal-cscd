@@ -67,15 +67,34 @@ app.get('/api/config', (req, res) => {
 });
 
 // --- ICS calendar event (opens native Calendar on iOS/macOS/desktop) --------
+// All values are attacker-controllable query params, so they are strictly
+// validated/escaped before being written into the calendar: dates and times are
+// matched against fixed shapes, and free-text fields are RFC-5545 escaped with
+// CR/LF stripped so a crafted title/venue can't inject extra calendar lines.
 app.get('/api/ics', (req, res) => {
-  const { title = 'Event', date = '', time = '09:00', venue = '', duration = '60' } = req.query;
+  const str = (v, fallback) => (typeof v === 'string' ? v : Array.isArray(v) ? '' : fallback);
+  // RFC 5545 text escaping + hard CRLF/control-char removal (prevents injection).
+  const icsText = (v) =>
+    str(v, '')
+      // eslint-disable-next-line no-control-regex
+      .replace(/[\x00-\x1f\x7f]+/g, ' ') // strip CR/LF & control chars (anti-injection)
+      .replace(/([\\;,])/g, '\\$1') // escape RFC-5545 special chars (backslash, ; ,)
+      .slice(0, 200);
+
+  const rawDate = str(req.query.date, '');
+  const rawTime = str(req.query.time, '09:00');
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(rawDate) ? rawDate : '';
+  const time = /^\d{2}:\d{2}$/.test(rawTime) ? rawTime : '09:00';
+  const durMin = Math.min(Math.max(parseInt(str(req.query.duration, '60'), 10) || 60, 1), 1440);
+  const title = icsText(req.query.title) || 'Event';
+  const venue = icsText(req.query.venue);
+
   const dt = date.replace(/-/g, '');
   const [h, m] = time.split(':');
-  const durMin = parseInt(duration, 10) || 60;
   const endTotalMin = parseInt(h, 10) * 60 + parseInt(m, 10) + durMin;
   const eh = String(Math.floor(endTotalMin / 60) % 24).padStart(2, '0');
   const em = String(endTotalMin % 60).padStart(2, '0');
-  const uid = `${dt}-${h}${m}-cscd@thecscd.org`;
+  const uid = `${dt || 'event'}-${h}${m}-cscd@thecscd.org`;
   const ics = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -90,7 +109,7 @@ app.get('/api/ics', (req, res) => {
     'END:VEVENT',
     'END:VCALENDAR',
   ].join('\r\n');
-  const filename = title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.ics';
+  const filename = title.replace(/[^a-z0-9]/gi, '_').toLowerCase().slice(0, 60) + '.ics';
   res.setHeader('Content-Type', 'text/calendar; charset=utf-8; method=PUBLISH');
   res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
   res.send(ics);

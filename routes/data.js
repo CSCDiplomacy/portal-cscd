@@ -66,9 +66,11 @@ router.delete('/favourites/:sessionId', requireAuth, async (req, res) => {
 });
 
 // --- Usage tracking — fire-and-forget event log ----------------------------
-// Records logins, PDF downloads and screen views. Scoped to the caller; the
-// browser never reads this back. Best-effort: never blocks the UI.
-const TRACK_TYPES = new Set(['login', 'pdf_download', 'screen_view']);
+// Records logins, screen views and the interview funnel (interview_open here;
+// interview_submitted is written server-side by the AidaForm webhook). Scoped
+// to the caller; the browser never reads this back. Best-effort: never blocks
+// the UI.
+const TRACK_TYPES = new Set(['login', 'pdf_download', 'screen_view', 'interview_open']);
 router.post('/track', requireAuth, async (req, res) => {
   if (!ensureDb(res)) return;
   const body = req.body || {};

@@ -37,3 +37,6 @@ jakarta-credentials.csv
 # Python cache
 __pycache__/
 *.pyc
+
+# Applicant PII export (names/emails/phones) — never commit
+candidatedata.csv

@@ -43,7 +43,7 @@ export const Interview = () => {
 
   useEffect(() => {
     let cancelled = false;
-    track('screen_view', 'interview');
+    track('interview_open');
     api<InterviewInfo>('/me/interview')
       .then((data) => {
         if (!cancelled) setInfo(data);
@@ -126,12 +126,6 @@ export const Interview = () => {
             data-do-resize=""
           />
         </div>
-        <p className="interview-hint">
-          Trouble with the embedded form?{' '}
-          <a href={formUrl} target="_blank" rel="noopener noreferrer">
-            Open it in a new tab →
-          </a>
-        </p>
       </div>
     </div>
   );

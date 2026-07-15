@@ -28,9 +28,10 @@ export async function api<T = unknown>(
 }
 
 /** Fire-and-forget usage analytics. Never blocks or surfaces errors to the UI.
- *  The backend only accepts: login | pdf_download | screen_view. */
+ *  Backend allowlist: login | pdf_download | screen_view | interview_open
+ *  (interview_submitted is recorded server-side by the AidaForm webhook). */
 export function track(
-  eventType: 'login' | 'pdf_download' | 'screen_view',
+  eventType: 'login' | 'pdf_download' | 'screen_view' | 'interview_open',
   detail?: string
 ): void {
   api('/track', {

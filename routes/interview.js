@@ -8,11 +8,22 @@
 // The endpoint is protected by a secret path segment (AIDAFORM_WEBHOOK_SECRET)
 // because AidaForm cannot send custom auth headers. A matching
 // `X-Webhook-Secret` header is also accepted if the sender can set one.
+const crypto = require('crypto');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const { serviceClient } = require('../lib/supabase');
 
 const router = express.Router();
+
+// Constant-time secret comparison — avoids leaking the webhook secret via
+// response-timing differences on a byte-by-byte `!==` compare.
+function safeEqual(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const ba = Buffer.from(a);
+  const bb = Buffer.from(b);
+  if (ba.length !== bb.length) return false;
+  return crypto.timingSafeEqual(ba, bb);
+}
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -45,8 +56,8 @@ router.post('/webhook/:secret?', webhookLimiter, async (req, res) => {
     console.error('[interview] AIDAFORM_WEBHOOK_SECRET not set — rejecting webhook');
     return res.status(503).json({ error: 'Webhook not configured' });
   }
-  const provided = req.params.secret || req.get('X-Webhook-Secret');
-  if (provided !== expected) {
+  const provided = req.params.secret || req.get('X-Webhook-Secret') || '';
+  if (!safeEqual(provided, expected)) {
     console.warn('[interview] webhook rejected: bad secret');
     return res.status(401).json({ error: 'Unauthorized' });
   }
