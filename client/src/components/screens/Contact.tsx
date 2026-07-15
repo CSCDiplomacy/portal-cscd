@@ -1,194 +1,122 @@
-import { useState, useEffect } from 'react';
+// Contact & feedback. Contact data comes from /api/contact (static JSON:
+// { org, venue, contacts: [{label,value,type}], socials }); feedback posts to
+// /api/feedback. Sign-out goes through the real auth store.
+import { useState } from 'react';
 import { useAuthStore } from '../../stores/authStore';
-import { api } from '../../services/api';
+import { useDelegateStore } from '../../stores/delegateStore';
+import { submitFeedback } from '../../services/data';
+import { mapsLink } from '../../lib/utils';
+import { Icon } from '../Icon';
+import type { IconName } from '../Icon';
+import type { ContactEntry } from '../../types';
 
-interface ContactInfo {
-  email?: string;
-  phone?: string;
-  address?: string;
-  hours?: string;
+function entryHref(entry: ContactEntry): string {
+  if (entry.type === 'email') return `mailto:${entry.value}`;
+  if (entry.type === 'phone' || entry.type === 'whatsapp') return `tel:${entry.value}`;
+  return entry.value;
+}
+
+function entryIcon(entry: ContactEntry): IconName {
+  if (entry.type === 'email') return 'mail';
+  if (entry.type === 'phone' || entry.type === 'whatsapp') return 'phone';
+  return 'globe';
 }
 
 export const Contact = () => {
-  const { session } = useAuthStore();
-  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
-  const [feedback, setFeedback] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { logout } = useAuthStore();
+  const { contact } = useDelegateStore();
+  const [comment, setComment] = useState('');
+  const [sending, setSending] = useState(false);
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
-  useEffect(() => {
-    loadContactInfo();
-  }, []);
-
-  const loadContactInfo = async () => {
-    try {
-      const data = await api<ContactInfo>('/data/contact');
-      setContactInfo(data);
-    } catch (err) {
-      console.error('Failed to load contact info:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSubmitFeedback = async (e: React.FormEvent) => {
+  const handleFeedback = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!feedback.trim()) {
-      setMessage({ type: 'error', text: 'Please enter your feedback.' });
+    if (!comment.trim()) {
+      setMsg({ ok: false, text: 'Write a few words first.' });
       return;
     }
-
+    setSending(true);
+    setMsg(null);
     try {
-      setSubmitting(true);
-      setMessage(null);
-
-      await api('/feedback', {
-        method: 'POST',
-        body: JSON.stringify({ comment: feedback }),
-      });
-
-      setMessage({ type: 'success', text: 'Thank you for your feedback!' });
-      setFeedback('');
-
-      setTimeout(() => setMessage(null), 3000);
+      await submitFeedback(comment.trim());
+      setComment('');
+      setMsg({ ok: true, text: 'Thank you — the team has your feedback.' });
     } catch (err) {
-      const errorText =
-        err instanceof Error ? err.message : 'Failed to submit feedback';
-      setMessage({ type: 'error', text: errorText });
+      setMsg({
+        ok: false,
+        text: err instanceof Error ? err.message : 'Could not send feedback. Try again.',
+      });
     } finally {
-      setSubmitting(false);
+      setSending(false);
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${localStorage.getItem('cscd_token')}` },
-      });
-      localStorage.removeItem('cscd_token');
-      window.location.reload();
-    } catch (err) {
-      console.error('Logout failed:', err);
-    }
-  };
-
-  if (!session) {
-    return (
-      <div className="p-4 md:p-6 pb-20 md:pb-6">
-        <div className="max-w-4xl mx-auto text-center py-12">
-          <p className="text-on-surface-2">Please log in to view contact information.</p>
-        </div>
-      </div>
-    );
-  }
+  const venueMap = contact?.venue ? mapsLink(contact.venue.map || contact.venue.address) : null;
 
   return (
-    <div className="p-4 md:p-6 pb-20 md:pb-6">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-display font-bold mb-6">
-          Contact Us
-        </h1>
-
-        {/* Contact Information */}
-        {!loading && contactInfo && (
-          <div className="card mb-8">
-            <h2 className="text-xl font-display font-bold mb-4">CSCD Contact</h2>
-
-            <div className="space-y-4">
-              {contactInfo.email && (
-                <div>
-                  <div className="text-sm font-medium text-on-surface-2 mb-1">
-                    Email
-                  </div>
-                  <a
-                    href={`mailto:${contactInfo.email}`}
-                    className="text-signal hover:underline break-all"
-                  >
-                    {contactInfo.email}
-                  </a>
-                </div>
-              )}
-
-              {contactInfo.phone && (
-                <div>
-                  <div className="text-sm font-medium text-on-surface-2 mb-1">
-                    Phone
-                  </div>
-                  <a
-                    href={`tel:${contactInfo.phone}`}
-                    className="text-signal hover:underline"
-                  >
-                    {contactInfo.phone}
-                  </a>
-                </div>
-              )}
-
-              {contactInfo.address && (
-                <div>
-                  <div className="text-sm font-medium text-on-surface-2 mb-1">
-                    Address
-                  </div>
-                  <p>{contactInfo.address}</p>
-                </div>
-              )}
-
-              {contactInfo.hours && (
-                <div>
-                  <div className="text-sm font-medium text-on-surface-2 mb-1">
-                    Hours
-                  </div>
-                  <p>{contactInfo.hours}</p>
-                </div>
-              )}
-            </div>
-          </div>
+    <div className="stack">
+      <div className="card">
+        <div className="card-eyebrow">Contact</div>
+        <h2 className="card-title">{contact?.org || 'Center for Strategic and Cultural Diplomacy'}</h2>
+        {contact?.venue?.name && (
+          <p className="card-body-text">
+            {contact.venue.name}
+            {contact.venue.address ? ` · ${contact.venue.address}` : ''}
+          </p>
         )}
-
-        {/* Feedback Form */}
-        <div className="card mb-8">
-          <h2 className="text-xl font-display font-bold mb-4">Feedback</h2>
-          <form onSubmit={handleSubmitFeedback} className="space-y-4">
-            <div className="field">
-              <label htmlFor="feedback">Tell the team how it's going…</label>
-              <textarea
-                id="feedback"
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
-                rows={4}
-                placeholder="Your feedback helps us improve"
-                disabled={submitting}
-              />
-            </div>
-
-            {message && (
-              <div
-                className={`form-msg ${message.type === 'success' ? 'ok' : 'error'}`}
-              >
-                {message.text}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              className="btn brass small"
-              disabled={submitting}
+        {venueMap && (
+          <a className="chip chip-link" href={venueMap} target="_blank" rel="noopener noreferrer">
+            Open in Maps
+          </a>
+        )}
+        <div className="contact-list">
+          {(contact?.contacts || []).map((c) => (
+            <a key={c.value} className="contact-row" href={entryHref(c)}>
+              <Icon name={entryIcon(c)} size={16} />
+              <span>
+                <span className="contact-label">{c.label}</span>
+                <span className="contact-value">{c.value}</span>
+              </span>
+            </a>
+          ))}
+          {(contact?.socials || []).map((s) => (
+            <a
+              key={s.value}
+              className="contact-row"
+              href={s.value}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              {submitting ? 'Sending…' : 'Send feedback'}
-            </button>
-          </form>
+              <Icon name="globe" size={16} />
+              <span>
+                <span className="contact-label">{s.label}</span>
+                <span className="contact-value">{s.value.replace(/^https?:\/\//, '')}</span>
+              </span>
+            </a>
+          ))}
         </div>
-
-        {/* Logout Button */}
-        <button
-          onClick={handleLogout}
-          className="btn ghost w-full"
-        >
-          Sign out
-        </button>
       </div>
+
+      <form className="card" onSubmit={handleFeedback}>
+        <div className="card-eyebrow">Feedback</div>
+        <div className="field">
+          <textarea
+            rows={3}
+            placeholder="Tell the team how it's going…"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            disabled={sending}
+          />
+        </div>
+        {msg && <div className={`form-msg ${msg.ok ? 'ok' : 'error'}`}>{msg.text}</div>}
+        <button type="submit" className="btn brass small" disabled={sending}>
+          {sending ? 'Sending…' : 'Send feedback'}
+        </button>
+      </form>
+
+      <button className="btn ghost" onClick={() => logout()}>
+        <Icon name="logOut" size={16} /> Sign out
+      </button>
     </div>
   );
 };

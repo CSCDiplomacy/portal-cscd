@@ -1,84 +1,70 @@
 import { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuthStore } from '../../stores/authStore';
+import { Icon } from '../Icon';
 
-interface NewPasswordFormProps {
-  onSuccess: () => void;
-}
-
-export const NewPasswordForm = ({ onSuccess }: NewPasswordFormProps) => {
-  const { setPassword, loading, error, clearError } = useAuth();
-  const [password, setPasswordValue] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+export const NewPasswordForm = () => {
+  const { updatePassword, busy, error, clearError } = useAuthStore();
+  const [password, setPassword] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
     clearError();
-
     if (password.length < 8) {
+      setLocalError('Use at least 8 characters.');
       return;
     }
-
     try {
-      await setPassword(password);
-      setTimeout(() => {
-        onSuccess();
-      }, 800);
+      await updatePassword(password);
+      setDone(true);
     } catch {
-      // Error is already set in the store
+      // Error text shown from the store.
     }
   };
 
+  const message = localError || error;
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-display font-bold mb-2">New password</h1>
-        <p className="tag">Choose a new password.</p>
-      </div>
+    <form onSubmit={handleSubmit}>
+      <h1>New password</h1>
+      <p className="tag">Choose a new password.</p>
 
-      <div className="field">
-        <label htmlFor="new-password">New password</label>
-        <div className="relative">
-          <input
-            id="new-password"
-            type={showPassword ? 'text' : 'password'}
-            autoComplete="new-password"
-            value={password}
-            onChange={(e) => {
-              setPasswordValue(e.target.value);
-              clearError();
-            }}
-            disabled={loading}
-            required
-            minLength={8}
-          />
-          <button
-            type="button"
-            className="icon-btn absolute right-2 top-1/2 transform -translate-y-1/2"
-            onClick={() => setShowPassword(!showPassword)}
-            aria-label="Show password"
-            disabled={loading}
-          >
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
+      {done ? (
+        <div className="form-msg ok">Password updated. Taking you in…</div>
+      ) : (
+        <>
+          <div className="field">
+            <label htmlFor="new-password">New password</label>
+            <div className="pw-wrap">
+              <input
+                id="new-password"
+                type={showPw ? 'text' : 'password'}
+                autoComplete="new-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={busy}
+              />
+              <button
+                type="button"
+                className="pw-eye"
+                onClick={() => setShowPw((v) => !v)}
+                aria-label={showPw ? 'Hide password' : 'Show password'}
+              >
+                <Icon name="eye" size={18} />
+              </button>
+            </div>
+          </div>
+
+          {message && <div className="form-msg error">{message}</div>}
+
+          <button type="submit" className="btn" disabled={busy}>
+            {busy ? 'Updating…' : 'Update password'}
           </button>
-        </div>
-      </div>
-
-      {password && password.length < 8 && (
-        <div className="form-msg error">Use at least 8 characters.</div>
+        </>
       )}
-
-      {error && <div className="form-msg error">{error}</div>}
-
-      <button
-        type="submit"
-        className="btn w-full"
-        disabled={loading || password.length < 8}
-      >
-        {loading ? 'Updating…' : 'Update password'}
-      </button>
     </form>
   );
 };

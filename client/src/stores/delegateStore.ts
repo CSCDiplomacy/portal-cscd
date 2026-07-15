@@ -1,85 +1,66 @@
+// Event data + per-user data (favourites). Favourite toggles are optimistic:
+// the Set updates immediately, the API call runs behind it, and the change is
+// rolled back if the server rejects it.
 import { create } from 'zustand';
-import type { Delegate, Rundown, Speaker, Visit, Hotel, Announcement } from '../types';
-
-interface HotelData {
-  delegate: Partial<Delegate> | null;
-  hotel: Hotel | null;
-}
+import type { Announcement, ContactData, Rundown } from '../types';
+import * as dataService from '../services/data';
 
 interface DelegateState {
-  profile: Partial<Delegate> | null;
-  favourites: Set<string>;
-  hotel: HotelData | null;
   rundown: Rundown | null;
-  speakers: Speaker[];
-  visits: Visit[];
+  contact: ContactData | null;
   announcements: Announcement[];
-  loading: boolean;
-  error: string | null;
+  favourites: Set<string>;
+  loaded: boolean;
 
-  setProfile: (profile: Partial<Delegate> | null) => void;
-  setFavourites: (ids: string[]) => void;
-  addFavourite: (id: string) => void;
-  removeFavourite: (id: string) => void;
-  toggleFavourite: (id: string) => void;
-  setHotel: (hotel: HotelData | null) => void;
-  setRundown: (rundown: Rundown | null) => void;
-  setSpeakers: (speakers: Speaker[]) => void;
-  setVisits: (visits: Visit[]) => void;
-  setAnnouncements: (announcements: Announcement[]) => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
-  reset: () => void;
+  loadAll: () => Promise<void>;
+  toggleFavourite: (sessionId: string) => Promise<void>;
 }
 
-export const useDelegateStore = create<DelegateState>((set) => ({
-  profile: null,
-  favourites: new Set(),
-  hotel: null,
-  rundown: null,
-  speakers: [],
-  visits: [],
-  announcements: [],
-  loading: false,
-  error: null,
+let loadPromise: Promise<void> | null = null;
 
-  setProfile: (profile) => set({ profile }),
-  setFavourites: (ids) => set({ favourites: new Set(ids) }),
-  addFavourite: (id) => set((state) => {
-    const next = new Set(state.favourites);
-    next.add(id);
-    return { favourites: next };
-  }),
-  removeFavourite: (id) => set((state) => {
-    const next = new Set(state.favourites);
-    next.delete(id);
-    return { favourites: next };
-  }),
-  toggleFavourite: (id) => set((state) => {
-    const next = new Set(state.favourites);
-    if (next.has(id)) {
-      next.delete(id);
-    } else {
-      next.add(id);
+export const useDelegateStore = create<DelegateState>((set, get) => ({
+  rundown: null,
+  contact: null,
+  announcements: [],
+  favourites: new Set<string>(),
+  loaded: false,
+
+  loadAll: () => {
+    if (loadPromise) return loadPromise;
+    loadPromise = (async () => {
+      const [rundown, contact, announcements, favourites] = await Promise.all([
+        dataService.loadRundown(),
+        dataService.loadContact(),
+        dataService.loadAnnouncements(),
+        dataService.loadFavourites(),
+      ]);
+      set({
+        rundown,
+        contact,
+        announcements,
+        favourites: new Set(favourites),
+        loaded: true,
+      });
+    })();
+    return loadPromise;
+  },
+
+  toggleFavourite: async (sessionId) => {
+    const had = get().favourites.has(sessionId);
+    const apply = (on: boolean) =>
+      set((state) => {
+        const next = new Set(state.favourites);
+        if (on) next.add(sessionId);
+        else next.delete(sessionId);
+        return { favourites: next };
+      });
+
+    apply(!had); // optimistic
+    try {
+      if (had) await dataService.removeFavourite(sessionId);
+      else await dataService.addFavourite(sessionId);
+    } catch {
+      apply(had); // roll back
     }
-    return { favourites: next };
-  }),
-  setHotel: (hotel) => set({ hotel }),
-  setRundown: (rundown) => set({ rundown }),
-  setSpeakers: (speakers) => set({ speakers }),
-  setVisits: (visits) => set({ visits }),
-  setAnnouncements: (announcements) => set({ announcements }),
-  setLoading: (loading) => set({ loading }),
-  setError: (error) => set({ error }),
-  reset: () => set({
-    profile: null,
-    favourites: new Set(),
-    hotel: null,
-    rundown: null,
-    speakers: [],
-    visits: [],
-    announcements: [],
-    loading: false,
-    error: null,
-  }),
+  },
 }));

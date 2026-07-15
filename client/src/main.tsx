@@ -6,5 +6,13 @@ import App from './App';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
-  </StrictMode>,
+  </StrictMode>
 );
+
+// Service worker: production only. The SW itself (public/sw.js) is
+// network-first for navigations so deploys roll out immediately.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}

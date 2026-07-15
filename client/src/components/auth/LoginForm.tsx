@@ -1,38 +1,35 @@
 import { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuthStore } from '../../stores/authStore';
+import { Icon } from '../Icon';
 
-interface LoginFormProps {
-  onForgotPassword: () => void;
-}
-
-export const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
-  const { login, loading, error, clearError } = useAuth();
+export const LoginForm = ({ onForgot }: { onForgot: () => void }) => {
+  const { login, busy, error, clearError } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPw, setShowPw] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
     clearError();
-
     if (!email.trim() || !password) {
-      // Error will be set by the form validation
+      setLocalError('Enter email and password.');
       return;
     }
-
     try {
-      await login(email, password);
+      await login(email.trim(), password);
     } catch {
-      // Error is already set in the store
+      // Error text is shown from the store.
     }
   };
 
+  const message = localError || error;
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-display font-bold mb-2">Delegate sign in</h1>
-        <p className="tag">Your event, all in one place.</p>
-      </div>
+    <form onSubmit={handleSubmit}>
+      <h1>Delegate sign in</h1>
+      <p className="tag">Your event, all in one place.</p>
 
       <div className="field">
         <label htmlFor="email">Email</label>
@@ -42,71 +39,39 @@ export const LoginForm = ({ onForgotPassword }: LoginFormProps) => {
           autoComplete="username"
           inputMode="email"
           value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            clearError();
-          }}
-          disabled={loading}
-          required
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={busy}
         />
       </div>
 
       <div className="field">
         <label htmlFor="password">Password</label>
-        <div className="relative">
+        <div className="pw-wrap">
           <input
             id="password"
-            type={showPassword ? 'text' : 'password'}
+            type={showPw ? 'text' : 'password'}
             autoComplete="current-password"
             value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              clearError();
-            }}
-            disabled={loading}
-            required
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={busy}
           />
           <button
             type="button"
-            className="icon-btn absolute right-2 top-1/2 transform -translate-y-1/2"
-            onClick={() => setShowPassword(!showPassword)}
-            aria-label="Show password"
-            disabled={loading}
+            className="pw-eye"
+            onClick={() => setShowPw((v) => !v)}
+            aria-label={showPw ? 'Hide password' : 'Show password'}
           >
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
+            <Icon name="eye" size={18} />
           </button>
         </div>
       </div>
 
-      {error && <div className="form-msg error">{error}</div>}
+      {message && <div className="form-msg error">{message}</div>}
 
-      <button
-        type="submit"
-        className="btn w-full"
-        disabled={loading}
-      >
-        {loading ? (
-          <>
-            <svg className="inline-block w-4 h-4 mr-2 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <circle cx="12" cy="12" r="9" opacity="0.25" />
-              <path d="M12 3a9 9 0 0 1 9 9" />
-            </svg>
-            Signing in…
-          </>
-        ) : (
-          'Sign in'
-        )}
+      <button type="submit" className="btn" disabled={busy}>
+        {busy ? 'Signing in…' : 'Sign in'}
       </button>
-
-      <button
-        type="button"
-        className="link-btn w-full text-center"
-        onClick={onForgotPassword}
-        disabled={loading}
-      >
+      <button type="button" className="link-btn" onClick={onForgot} disabled={busy}>
         Forgot password?
       </button>
     </form>

@@ -5,10 +5,16 @@ Guidance for Claude Code when working in this repository.
 ## What this is
 
 A mobile-first **web app / PWA** for **CSCD** (Center for Strategic and Cultural
-Diplomacy) — **YPDS Jakarta 2026**. Node/Express backend + a plain
-HTML/CSS/vanilla-JS frontend (single page, client-side tab switching, **no
-framework, no build step**). Deploys to **Hostinger Node hosting (Passenger)**;
-`app.js` is the startup file.
+Diplomacy) — **YPDS Jakarta 2026**. Node/Express backend + a **React 19 +
+TypeScript + Vite** frontend in [client/](client/) (Zustand stores, Tailwind v4
+CSS-first config, no router — screen switching via `uiStore`). Build with
+`npm run build` (outputs `client/dist/`, which Express serves; `public/` is
+still served as a fallback layer for `/img/*`, `/manifest.json`, `/sw.js`).
+Deploys to **Hostinger Node hosting (Passenger)**; `app.js` is the startup file.
+The old vanilla frontend ([public/js/app.js](public/js/app.js),
+[public/css/app.css](public/css/app.css)) is retired reference code — the
+behavior it encodes (gating, favourites ids, interview states) is the spec the
+React app mirrors.
 
 It was forked from the CIPES YEF Frankfurt "delegate app" and re-skinned. The
 codebase still uses `delegate`/`delegates` throughout as the noun for a portal
@@ -27,9 +33,13 @@ The portal runs **before and during** the event and serves one table,
 - **`enrolled` = confirmed delegate.** Interview tab drops away; the full event
   app opens up as data is published.
 
-Client gating lives in [public/js/app.js](public/js/app.js): `isApplicant()`,
-`EVENT_SCREENS`, `applyStageNav()`, `renderComingSoon()`, `renderInterview()`.
+Client gating lives in
+[client/src/stores/authStore.ts](client/src/stores/authStore.ts)
+(`isApplicant()`, `showInterviewTab()`) and the screens gate themselves with
+[client/src/components/ComingSoon.tsx](client/src/components/ComingSoon.tsx).
 It is driven by `status` + `interview_status` from `GET /api/me/profile`.
+Favourite/session ids are `` `${day.date}T${item.time}` `` (must match the
+`favourites.session_id` rows in Supabase).
 **Gating is UX, not security** — the security boundary is the server (below).
 
 ## The interview (security-critical)
@@ -73,7 +83,9 @@ adequate for hiring, not cryptographically airtight.
 
 ```bash
 npm install
+npm run build             # builds the React client → client/dist (runs client npm install too)
 npm start                 # Express on PORT (default 3000); app.js = Passenger startup
+# Dev with hot reload: npm start (API) + `cd client && npm run dev` (Vite on :5173, /api proxied)
 node scripts/seed-delegates.js scripts/delegates.sample.csv creds-out.csv   # provision (needs service-role key)
 python3 scripts/send_credentials.py creds-out.csv                           # email logins (needs RESEND_API_KEY)
 ```

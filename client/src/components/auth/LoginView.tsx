@@ -1,63 +1,38 @@
-import { useState, useEffect } from 'react';
+// Login shell: brand header + one of three forms (sign in / reset / new
+// password). Recovery links land here with recoveryMode set by the auth store.
+import { useEffect, useState } from 'react';
+import { useAuthStore } from '../../stores/authStore';
 import { LoginForm } from './LoginForm';
 import { ResetForm } from './ResetForm';
 import { NewPasswordForm } from './NewPasswordForm';
 
-type FormType = 'login' | 'reset' | 'newpw';
+type FormKind = 'login' | 'reset' | 'newpw';
 
-interface LoginViewProps {
-  eventName: string;
-}
-
-export const LoginView = ({ eventName }: LoginViewProps) => {
-  const [currentForm, setCurrentForm] = useState<FormType>('login');
+export const LoginView = () => {
+  const { eventName, recoveryMode, clearError } = useAuthStore();
+  const [form, setForm] = useState<FormKind>(recoveryMode ? 'newpw' : 'login');
 
   useEffect(() => {
-    // Check if we're in password recovery flow
-    if (location.hash.includes('type=recovery')) {
-      setCurrentForm('newpw');
-    }
-  }, []);
+    if (recoveryMode) setForm('newpw');
+  }, [recoveryMode]);
 
-  const handleSuccess = () => {
-    // User will be redirected by App.tsx when session is established
-    setCurrentForm('login');
+  const swap = (kind: FormKind) => {
+    clearError();
+    setForm(kind);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface">
-      {/* Above the card */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
-        <div className="text-center mb-8">
-          <img
-            src="/img/cscd-logo.png"
-            alt="CSCD"
-            className="w-16 h-16 mx-auto mb-4"
-          />
-          <div className="text-sm font-medium text-on-surface-2">{eventName}</div>
-        </div>
-
-        {/* Login card */}
-        <div className="w-full max-w-md">
-          <div className="bg-surface border border-on-surface-2 border-opacity-10 rounded-lg p-8">
-            {currentForm === 'login' && (
-              <LoginForm onForgotPassword={() => setCurrentForm('reset')} />
-            )}
-
-            {currentForm === 'reset' && (
-              <ResetForm onBackToLogin={() => setCurrentForm('login')} />
-            )}
-
-            {currentForm === 'newpw' && (
-              <NewPasswordForm onSuccess={handleSuccess} />
-            )}
-          </div>
-        </div>
+    <div className="login-wrap">
+      <div className="login-above">
+        <img src="/img/cscd-logo.png" className="brand-logo" alt="CSCD" />
+        <span className="brand-sub">{eventName}</span>
       </div>
-
-      {/* Footer */}
-      <div className="py-4 text-center text-xs text-on-surface-2">
-        <p>&copy; {new Date().getFullYear()} CSCD. All rights reserved.</p>
+      <div className="login-card">
+        <div className="login-body">
+          {form === 'login' && <LoginForm onForgot={() => swap('reset')} />}
+          {form === 'reset' && <ResetForm onBack={() => swap('login')} />}
+          {form === 'newpw' && <NewPasswordForm />}
+        </div>
       </div>
     </div>
   );

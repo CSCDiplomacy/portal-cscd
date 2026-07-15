@@ -1,56 +1,49 @@
-import { useEffect, useState } from 'react';
-import type { Config } from './types';
-import { useAuth } from './hooks/useAuth';
-import { useUIStore } from './stores/uiStore';
+// Root: kicks off auth init once, then routes between the login view and the
+// authenticated shell. A splash shows only for returning users whose session
+// is still being restored (a stored Supabase token exists) — brand-new
+// visitors see the login form immediately.
+import { useEffect } from 'react';
+import { useAuthStore } from './stores/authStore';
 import { LoginView } from './components/auth/LoginView';
 import { AppLayout } from './components/layout/AppLayout';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { getJson } from './services/api';
+
+function hasStoredSupabaseSession(): boolean {
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i) || '';
+      if (key.startsWith('sb-') && key.includes('auth-token')) return true;
+    }
+  } catch {
+    // localStorage unavailable — treat as signed out.
+  }
+  return false;
+}
+
+const Splash = () => (
+  <div className="splash">
+    <img src="/img/cscd-logo.png" alt="CSCD" className="brand-logo" />
+    <div className="splash-spinner" />
+  </div>
+);
 
 const App = () => {
-  const { session, loading: authLoading } = useAuth();
-  const { setTheme } = useUIStore();
-  const [config, setConfig] = useState<Config | null>(null);
+  const { session, initializing, recoveryMode, init } = useAuthStore();
 
-  // Initialize theme and config on mount
   useEffect(() => {
-    const storedTheme = localStorage.getItem('cscd_theme') as 'light' | 'dark' | null;
-    if (storedTheme) {
-      setTheme(storedTheme);
-      document.documentElement.setAttribute('data-theme', storedTheme);
-    }
-
-    loadConfig();
-  }, [setTheme]);
-
-  const loadConfig = async () => {
-    try {
-      const cfg: Config = await getJson('/api/config');
-      setConfig(cfg);
-    } catch (err) {
-      console.error('Failed to load config:', err);
-    }
-  };
+    init();
+  }, [init]);
 
   return (
     <ErrorBoundary>
-      {!session ? (
-        <LoginView eventName={config?.eventName || 'YPDS Jakarta 2026'} />
-      ) : authLoading ? (
-        <div className="min-h-screen flex items-center justify-center bg-surface">
-          <div className="text-center">
-            <div className="inline-block">
-              <svg className="w-12 h-12 animate-spin text-on-surface" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="9" opacity="0.25" />
-                <path d="M12 3a9 9 0 0 1 9 9" />
-              </svg>
-            </div>
-            <h1 className="text-2xl font-display font-bold mt-4">Loading…</h1>
-            <p className="text-on-surface-2 mt-2">Setting up your session</p>
-          </div>
-        </div>
+      {recoveryMode ? (
+        <LoginView />
+      ) : session ? (
+        <AppLayout />
+      ) : initializing && hasStoredSupabaseSession() ? (
+        <Splash />
       ) : (
-        <AppLayout eventName={config?.eventName || 'Jakarta 2026'} />
+        <LoginView />
       )}
     </ErrorBoundary>
   );

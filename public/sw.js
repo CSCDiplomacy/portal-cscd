@@ -1,42 +1,22 @@
-/* CSCD Delegate App - service worker.
-   Strategy:
-   - Page navigations (the HTML document): network-first → always load a fresh
-     index.html when online so markup + JS never drift apart; fall back to cache
-     when offline.
-   - Static assets (CSS/JS/images): cache-first → instant load on repeat visits,
-     background-revalidate so updates still roll out silently.
-   - Static event JSON (/api/rundown etc.): stale-while-revalidate - show cached
-     immediately, refresh in background.
-   - Auth / per-user / dynamic: network-only, never cached. */
+/* CSCD Delegate App — service worker (v2, React shell).
+   v1 (vanilla app) precached /js/app.js, /css/app.css etc. cache-first; those
+   files no longer exist, so v2's first job is to wipe old caches. Strategy:
+   - Navigations: network-first (fresh index.html on every deploy), cache fallback.
+   - /assets/* (Vite content-hashed): cache-first — a hash change is a new URL.
+   - Static event JSON (/api/rundown etc.): stale-while-revalidate.
+   - Everything else (auth, per-user API, cross-origin): network only. */
 
-const CACHE = 'cscd-v1';
-const SHELL = [
-  '/',
-  '/index.html',
-  '/css/app.css',
-  '/js/app.js',
-  '/vendor/supabase.js',
-  '/manifest.json',
-  '/img/icon-192.png',
-  '/img/icon-512.png',
-  '/img/photos-cover.jpg',
-];
+const CACHE = 'cscd-v2';
 const STATIC_API = ['/api/rundown', '/api/visits', '/api/speakers', '/api/checkin', '/api/contact'];
-const NETWORK_ONLY = ['/api/me', '/api/config', '/api/favourites', '/api/announcements', '/api/feedback', '/health'];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())
-  );
-});
-
-self.addEventListener('message', (e) => {
-  if (e.data === 'skip-waiting') self.skipWaiting();
+  e.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', (e) => {
   e.waitUntil(
-    caches.keys()
+    caches
+      .keys()
       .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
@@ -46,60 +26,51 @@ self.addEventListener('fetch', (e) => {
   const { request } = e;
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
-
-  // Cross-origin (Supabase, Google Fonts): let browser handle it.
   if (url.origin !== location.origin) return;
 
-  // Network-only endpoints - never touch cache.
-  if (NETWORK_ONLY.some((p) => url.pathname.startsWith(p))) return;
-
-  // Page navigations (HTML document): network-first.
-  // Always fetch a fresh index.html when online so the markup and the cached
-  // JS can never drift out of sync; fall back to cache when offline.
-  if (request.mode === 'navigate' || (request.destination === 'document')) {
+  // Navigations: network-first so deploys reach users immediately.
+  if (request.mode === 'navigate' || request.destination === 'document') {
     e.respondWith(
       fetch(request)
         .then((res) => {
-          if (res.ok) caches.open(CACHE).then((cache) => cache.put('/index.html', res.clone()));
+          if (res.ok) caches.open(CACHE).then((c) => c.put('/index.html', res.clone()));
           return res;
         })
-        .catch(() => caches.match(request).then((c) => c || caches.match('/index.html')))
+        .catch(() => caches.match('/index.html'))
     );
     return;
   }
 
-  // Static event JSON: stale-while-revalidate.
-  // Returns cached copy instantly, then fetches fresh in the background.
-  if (STATIC_API.some((p) => url.pathname.startsWith(p))) {
+  // Hashed build assets + images: cache-first.
+  if (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/img/')) {
     e.respondWith(
       caches.open(CACHE).then((cache) =>
-        cache.match(request).then((cached) => {
-          const fetchPromise = fetch(request).then((res) => {
-            if (res.ok) cache.put(request, res.clone());
-            return res;
-          });
-          return cached || fetchPromise;
-        })
+        cache.match(request).then(
+          (cached) =>
+            cached ||
+            fetch(request).then((res) => {
+              if (res.ok) cache.put(request, res.clone());
+              return res;
+            })
+        )
       )
     );
     return;
   }
 
-  // Static assets (CSS, JS, images): cache-first, revalidate in background.
-  // On first visit: network. On repeat visits: instant from cache, update silently.
-  e.respondWith(
-    caches.open(CACHE).then((cache) =>
-      cache.match(request).then((cached) => {
-        const fetchPromise = fetch(request)
-          .then((res) => {
+  // Static event JSON: stale-while-revalidate.
+  if (STATIC_API.some((p) => url.pathname.startsWith(p))) {
+    e.respondWith(
+      caches.open(CACHE).then((cache) =>
+        cache.match(request).then((cached) => {
+          const fresh = fetch(request).then((res) => {
             if (res.ok) cache.put(request, res.clone());
             return res;
-          })
-          .catch(() => cached); // offline fallback
-
-        // Return cached immediately if available; otherwise wait for network.
-        return cached || fetchPromise;
-      })
-    )
-  );
+          });
+          return cached || fresh;
+        })
+      )
+    );
+  }
+  // Everything else falls through to the network.
 });

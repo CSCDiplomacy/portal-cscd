@@ -1,33 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#050505" />
-  <meta name="description" content="YPDS Jakarta 2026 Delegate Portal - Your event, all in one place" />
-  <meta name="og:title" content="YPDS Jakarta 2026 | CSCD" />
-  <meta name="og:description" content="Delegate portal for YPDS Jakarta 2026" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>YPDS Jakarta 2026 | CSCD</title>
-  <link rel="icon" href="/img/icon-192.png" />
-  <link rel="apple-touch-icon" href="/img/icon-192.png" />
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700;900&display=swap" media="print" onload="this.media='all'" />
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700;900&display=swap" /></noscript>
+  <!-- Fallback shell: served only when client/dist is missing (frontend not built).
+       Build it with `npm run build` at the repo root. -->
 </head>
-<body>
-  <div id="root"></div>
-
-  <script>
-    // Register service worker for offline support and caching
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(err => {
-          console.error('Service worker registration failed:', err);
-        });
-      });
-    }
-  </script>
+<body style="font-family: system-ui, sans-serif; display: grid; place-items: center; min-height: 100vh; margin: 0;">
+  <div style="text-align: center; padding: 24px;">
+    <h1 style="margin-bottom: 8px;">Portal is being updated</h1>
+    <p>Please check back in a few minutes.</p>
+  </div>
 </body>
 </html>

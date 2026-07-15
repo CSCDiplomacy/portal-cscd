@@ -24,11 +24,12 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        // AidaForm's embed widget loads from widget.aidaform.com and needs eval.
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://widget.aidaform.com', 'https://*.aidaform.com'],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         imgSrc: ["'self'", 'data:', 'https:'],
-        connectSrc: ["'self'", 'https://*.supabase.co'],
+        connectSrc: ["'self'", 'https://*.supabase.co', 'https://*.aidaform.com'],
         // The interview embeds an AidaForm in an <iframe>, so it must be an
         // allowed frame source. AidaForm serves forms from *.aidaform.com.
         frameSrc: ["'self'", 'https://*.aidaform.com'],
@@ -107,34 +108,34 @@ app.use('/api', dataRoutes);
 app.use('/api/interview', interviewRoutes);
 
 // --- Static front-end -------------------------------------------------------
-// Serve React build from client/dist (built by `npm run build`)
-// Fall back to public/ for legacy static assets if dist/ doesn't exist.
+// The React build (client/dist) is the app shell; public/ still provides the
+// shared static assets (/img/*, /manifest.json, /sw.js). dist wins on conflict.
 const distPath = path.join(__dirname, 'client', 'dist');
 const distExists = require('fs').existsSync(distPath);
-const staticPath = distExists ? distPath : path.join(__dirname, 'public');
+const shellPath = distExists ? distPath : path.join(__dirname, 'public');
 
-app.use(
-  express.static(staticPath, {
-    maxAge: '7d',
-    etag: true,
-    lastModified: true,
-    setHeaders(res, filePath) {
-      // Shell and SW must never be stale — browser must revalidate every time.
-      if (filePath.endsWith('index.html') || filePath.endsWith('sw.js')) {
-        res.setHeader('Cache-Control', 'no-cache');
-      }
-      // Versioned/fingerprinted assets (CSS, JS, images) can cache aggressively.
-      if (filePath.endsWith('.css') || filePath.endsWith('.js') || filePath.endsWith('.png')) {
-        res.setHeader('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
-      }
-    },
-  })
-);
+const staticOpts = {
+  maxAge: '7d',
+  etag: true,
+  lastModified: true,
+  setHeaders(res, filePath) {
+    // Shell and SW must never be stale — browser must revalidate every time.
+    if (filePath.endsWith('index.html') || filePath.endsWith('sw.js')) {
+      res.setHeader('Cache-Control', 'no-cache');
+    } else if (/\.(css|js|png|jpg|webp|svg|woff2?)$/.test(filePath)) {
+      // Fingerprinted/versioned assets can cache aggressively.
+      res.setHeader('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+    }
+  },
+};
+
+if (distExists) app.use(express.static(distPath, staticOpts));
+app.use(express.static(path.join(__dirname, 'public'), staticOpts));
 
 // SPA fallback — any non-API GET returns the shell.
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) return next();
-  res.sendFile(path.join(staticPath, 'index.html'));
+  res.sendFile(path.join(shellPath, 'index.html'));
 });
 
 app.listen(PORT, () => {

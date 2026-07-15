@@ -1,35 +1,167 @@
+// Auth state + actions. A single module-level Supabase client is created on
+// first init(); every auth state change mirrors the access token into
+// localStorage so services/api.ts can attach it as a Bearer header.
 import { create } from 'zustand';
-import type { Delegate, Session } from '../types';
+import { createClient } from '@supabase/supabase-js';
+import type { Session, SupabaseClient } from '@supabase/supabase-js';
+import type { Config, Profile } from '../types';
+import { api, track, TOKEN_KEY } from '../services/api';
+
+let sb: SupabaseClient | null = null;
+let initPromise: Promise<void> | null = null;
 
 interface AuthState {
   session: Session | null;
-  user: Partial<Delegate> | null;
-  loading: boolean;
+  profile: Profile | null;
+  eventName: string;
+  /** True until the first getSession() round-trip completes. */
+  initializing: boolean;
+  /** True while login / reset / update-password is in flight. */
+  busy: boolean;
   error: string | null;
+  /** Arrived via a password-recovery link — show the new-password form. */
+  recoveryMode: boolean;
 
-  setSession: (session: Session | null) => void;
-  setUser: (user: Partial<Delegate> | null) => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
+  init: () => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+  updatePassword: (password: string) => Promise<void>;
+  refreshProfile: () => Promise<void>;
   clearError: () => void;
-  reset: () => void;
+  setRecoveryMode: (on: boolean) => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  session: null,
-  user: null,
-  loading: false,
-  error: null,
+function storeToken(session: Session | null) {
+  if (session?.access_token) localStorage.setItem(TOKEN_KEY, session.access_token);
+  else localStorage.removeItem(TOKEN_KEY);
+}
 
-  setSession: (session) => set({ session }),
-  setUser: (user) => set({ user }),
-  setLoading: (loading) => set({ loading }),
-  setError: (error) => set({ error }),
+export const useAuthStore = create<AuthState>((set, get) => ({
+  session: null,
+  profile: null,
+  eventName: 'YPDS Jakarta 2026',
+  initializing: true,
+  busy: false,
+  error: null,
+  recoveryMode: typeof location !== 'undefined' && location.hash.includes('type=recovery'),
+
+  init: () => {
+    if (initPromise) return initPromise;
+    initPromise = (async () => {
+      try {
+        const config = await api<Config>('/config');
+        if (config.eventName && config.eventName !== 'CSCD Delegate App') {
+          set({ eventName: config.eventName });
+        }
+        if (!config.supabaseUrl || !config.supabaseAnonKey) {
+          set({ error: 'Sign-in is not available right now. Please try again later.' });
+          return;
+        }
+        sb = createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+        const { data } = await sb.auth.getSession();
+        if (data.session) {
+          storeToken(data.session);
+          set({ session: data.session });
+          await get().refreshProfile();
+        }
+
+        sb.auth.onAuthStateChange((event, session) => {
+          storeToken(session);
+          set({ session });
+          if (event === 'PASSWORD_RECOVERY') set({ recoveryMode: true });
+          if (event === 'SIGNED_OUT') set({ profile: null });
+        });
+      } catch {
+        set({ error: 'Could not reach the server. Check your connection and reload.' });
+      } finally {
+        set({ initializing: false });
+      }
+    })();
+    return initPromise;
+  },
+
+  login: async (email, password) => {
+    set({ busy: true, error: null });
+    try {
+      await get().init();
+      if (!sb) throw new Error('Sign-in is not available right now.');
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      storeToken(data.session);
+      set({ session: data.session });
+      await get().refreshProfile();
+      track('login');
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : 'Sign-in failed. Please try again.' });
+      throw err;
+    } finally {
+      set({ busy: false });
+    }
+  },
+
+  logout: async () => {
+    try {
+      if (sb) await sb.auth.signOut();
+    } finally {
+      storeToken(null);
+      // Full reload resets every store and re-runs init cleanly.
+      location.reload();
+    }
+  },
+
+  resetPassword: async (email) => {
+    set({ busy: true, error: null });
+    try {
+      await get().init();
+      if (!sb) throw new Error('Not available right now.');
+      const { error } = await sb.auth.resetPasswordForEmail(email, {
+        redirectTo: location.origin,
+      });
+      if (error) throw error;
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : 'Could not send the reset email.' });
+      throw err;
+    } finally {
+      set({ busy: false });
+    }
+  },
+
+  updatePassword: async (password) => {
+    set({ busy: true, error: null });
+    try {
+      await get().init();
+      if (!sb) throw new Error('Not available right now.');
+      const { error } = await sb.auth.updateUser({ password });
+      if (error) throw error;
+      history.replaceState(null, '', location.pathname);
+      set({ recoveryMode: false });
+      await get().refreshProfile();
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : 'Could not update the password.' });
+      throw err;
+    } finally {
+      set({ busy: false });
+    }
+  },
+
+  refreshProfile: async () => {
+    try {
+      const profile = await api<Profile>('/me/profile');
+      set({ profile });
+    } catch {
+      // Keep the session usable even if the profile fetch hiccups.
+    }
+  },
+
   clearError: () => set({ error: null }),
-  reset: () => set({
-    session: null,
-    user: null,
-    loading: false,
-    error: null,
-  }),
+  setRecoveryMode: (on) => set({ recoveryMode: on }),
 }));
+
+// --- Derived helpers (mirror the vanilla app's gating rules) -----------------
+export const isApplicant = (profile: Profile | null) =>
+  (profile?.status || 'unenrolled') !== 'enrolled';
+
+export const showInterviewTab = (profile: Profile | null) =>
+  isApplicant(profile) && profile?.interview_status !== 'submitted';

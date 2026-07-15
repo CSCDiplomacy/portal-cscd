@@ -1,91 +1,59 @@
 import { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuthStore } from '../../stores/authStore';
 
-interface ResetFormProps {
-  onBackToLogin: () => void;
-}
-
-export const ResetForm = ({ onBackToLogin }: ResetFormProps) => {
-  const { resetPassword, loading, error, clearError } = useAuth();
+export const ResetForm = ({ onBack }: { onBack: () => void }) => {
+  const { resetPassword, busy, error, clearError } = useAuthStore();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
     clearError();
-
     if (!email.trim()) {
+      setLocalError('Enter your email.');
       return;
     }
-
     try {
-      await resetPassword(email);
+      await resetPassword(email.trim());
       setSent(true);
     } catch {
-      // Error is already set in the store
+      // Error text shown from the store.
     }
   };
 
-  if (sent) {
-    return (
-      <div className="space-y-4">
-        <div>
-          <h1 className="text-3xl font-display font-bold mb-2">Reset password</h1>
-          <p className="tag">We'll email you a reset link.</p>
-        </div>
-        <div className="form-msg ok">
-          If that email exists, a reset link is on its way.
-        </div>
-        <button
-          type="button"
-          className="btn w-full"
-          onClick={onBackToLogin}
-        >
-          Back to sign in
-        </button>
-      </div>
-    );
-  }
+  const message = localError || error;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-display font-bold mb-2">Reset password</h1>
-        <p className="tag">We'll email you a reset link.</p>
-      </div>
+    <form onSubmit={handleSubmit}>
+      <h1>Reset password</h1>
+      <p className="tag">We'll email you a reset link.</p>
 
-      <div className="field">
-        <label htmlFor="reset-email">Email</label>
-        <input
-          id="reset-email"
-          type="email"
-          inputMode="email"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            clearError();
-          }}
-          disabled={loading}
-          required
-        />
-      </div>
+      {sent ? (
+        <div className="form-msg ok">If that email exists, a reset link is on its way.</div>
+      ) : (
+        <div className="field">
+          <label htmlFor="reset-email">Email</label>
+          <input
+            id="reset-email"
+            type="email"
+            inputMode="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={busy}
+          />
+        </div>
+      )}
 
-      {error && <div className="form-msg error">{error}</div>}
+      {!sent && message && <div className="form-msg error">{message}</div>}
 
-      <button
-        type="submit"
-        className="btn w-full"
-        disabled={loading}
-      >
-        {loading ? 'Sending…' : 'Send reset link'}
-      </button>
-
-      <button
-        type="button"
-        className="link-btn w-full text-center"
-        onClick={onBackToLogin}
-        disabled={loading}
-      >
+      {!sent && (
+        <button type="submit" className="btn" disabled={busy}>
+          {busy ? 'Sending…' : 'Send reset link'}
+        </button>
+      )}
+      <button type="button" className="link-btn" onClick={onBack} disabled={busy}>
         Back to sign in
       </button>
     </form>

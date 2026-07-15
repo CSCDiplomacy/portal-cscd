@@ -1,114 +1,65 @@
-import { api, getJson } from './api';
-import type {
-  Rundown,
-  Speaker,
-  Visit,
-  Announcement,
-} from '../types';
+// Data loaders for the app's API. Endpoints and response shapes mirror the
+// Express routes exactly:
+//   GET  /api/rundown        → { timezone, days: [...] }        (static JSON)
+//   GET  /api/contact        → { org, venue, contacts, socials } (static JSON)
+//   GET  /api/hotel          → { hotel }                         (static JSON)
+//   GET  /api/announcements  → { announcements: [...] }
+//   GET  /api/favourites     → { favourites: [{ session_id }] }  (auth)
+//   POST /api/favourites       { session_id }                    (auth)
+//   DEL  /api/favourites/:id                                     (auth)
+//   POST /api/feedback         { comment, rating?, session_id? } (auth)
+import { api } from './api';
+import type { Announcement, ContactData, Rundown } from '../types';
 
-/**
- * Load the event rundown (schedule with day tabs and timeline)
- */
 export async function loadRundown(): Promise<Rundown | null> {
   try {
-    return await getJson('/data/rundown.json');
-  } catch (err) {
-    console.error('Failed to load rundown:', err);
+    const data = await api<Rundown>('/rundown');
+    return data && Array.isArray(data.days) ? data : null;
+  } catch {
     return null;
   }
 }
 
-/**
- * Load speakers list
- */
-export async function loadSpeakers(): Promise<Speaker[]> {
+export async function loadContact(): Promise<ContactData | null> {
   try {
-    const data = await getJson<Record<string, unknown>>('/data/speakers.json');
-    return (data?.speakers as Speaker[]) || [];
-  } catch (err) {
-    console.error('Failed to load speakers:', err);
-    return [];
+    return await api<ContactData>('/contact');
+  } catch {
+    return null;
   }
 }
 
-/**
- * Load visits/excursions
- */
-export async function loadVisits(): Promise<Visit[]> {
-  try {
-    const data = await getJson<Record<string, unknown>>('/data/visits.json');
-    return (data?.visits as Visit[]) || [];
-  } catch (err) {
-    console.error('Failed to load visits:', err);
-    return [];
-  }
-}
-
-/**
- * Load announcements/updates from Supabase
- */
 export async function loadAnnouncements(): Promise<Announcement[]> {
   try {
-    return await api<Announcement[]>('/announcements');
-  } catch (err) {
-    console.error('Failed to load announcements:', err);
+    const data = await api<{ announcements: Announcement[] }>('/announcements');
+    return Array.isArray(data?.announcements) ? data.announcements : [];
+  } catch {
     return [];
   }
 }
 
-/**
- * Submit feedback
- */
+export async function loadFavourites(): Promise<string[]> {
+  try {
+    const data = await api<{ favourites: Array<{ session_id: string }> }>('/favourites');
+    return (data?.favourites || []).map((f) => f.session_id);
+  } catch {
+    return [];
+  }
+}
+
+export async function addFavourite(sessionId: string): Promise<void> {
+  await api('/favourites', {
+    method: 'POST',
+    body: JSON.stringify({ session_id: sessionId }),
+  });
+}
+
+export async function removeFavourite(sessionId: string): Promise<void> {
+  await api(`/favourites/${encodeURIComponent(sessionId)}`, { method: 'DELETE' });
+}
+
 export async function submitFeedback(comment: string): Promise<void> {
   await api('/feedback', {
     method: 'POST',
     body: JSON.stringify({ comment }),
   });
-}
-
-/**
- * Add an event to favorites
- */
-export async function addToFavorites(eventId: string): Promise<void> {
-  await api('/favorites', {
-    method: 'POST',
-    body: JSON.stringify({ event_id: eventId }),
-  });
-}
-
-/**
- * Remove an event from favorites
- */
-export async function removeFromFavorites(eventId: string): Promise<void> {
-  await api(`/favorites/${eventId}`, { method: 'DELETE' });
-}
-
-/**
- * Load user's favorite events
- */
-export async function loadFavorites(): Promise<string[]> {
-  try {
-    const data = await api<{ event_id: string }[]>('/favorites');
-    return data.map((f) => f.event_id);
-  } catch (err) {
-    console.error('Failed to load favorites:', err);
-    return [];
-  }
-}
-
-/**
- * Track usage event (analytics)
- */
-export async function trackEvent(
-  eventType: string,
-  detail?: unknown
-): Promise<void> {
-  try {
-    await api('/track', {
-      method: 'POST',
-      body: JSON.stringify({ event_type: eventType, detail: detail || null }),
-    });
-  } catch {
-    // Fire-and-forget; errors don't surface to UI
-  }
 }

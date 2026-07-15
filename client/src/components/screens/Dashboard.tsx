@@ -1,93 +1,118 @@
-import { useAuthStore } from '../../stores/authStore';
+// Dashboard. Applicants lead with the interview CTA; the event tiles stay
+// visible but read "Coming soon" until the delegate is enrolled and data is
+// published (the client's engagement model).
+import { isApplicant, showInterviewTab, useAuthStore } from '../../stores/authStore';
+import { useDelegateStore } from '../../stores/delegateStore';
+import { useUIStore } from '../../stores/uiStore';
+import { Icon } from '../Icon';
+import type { IconName } from '../Icon';
+import type { Screen } from '../../types';
+
+const TILES: Array<{ screen: Screen; icon: IconName; title: string; sub: string }> = [
+  { screen: 'rundown', icon: 'clock', title: 'Rundown', sub: 'The day-by-day programme' },
+  { screen: 'hotel', icon: 'hotel', title: 'Your stay', sub: 'Hotel & check-in details' },
+  { screen: 'schedule', icon: 'star', title: 'My schedule', sub: 'Sessions you starred' },
+  { screen: 'contact', icon: 'phone', title: 'Need help?', sub: 'Reach the CSCD team' },
+];
 
 export const Dashboard = () => {
-  const { user } = useAuthStore();
+  const { profile } = useAuthStore();
+  const { rundown } = useDelegateStore();
+  const { switchScreen } = useUIStore();
+
+  const applicant = isApplicant(profile);
+  const interviewPending = showInterviewTab(profile);
+  const interviewSubmitted = profile?.interview_status === 'submitted';
+  const hasProgramme = !applicant && !!rundown?.days?.length;
 
   return (
-    <div className="p-4 md:p-6 pb-20 md:pb-6">
-      <div className="max-w-4xl mx-auto">
-        {/* Hero Card */}
-        <div className="mb-8 border border-on-surface-2 border-opacity-10 rounded-lg p-6 md:p-8 bg-gradient-to-br from-on-surface-2 from-opacity-5 to-transparent">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="text-xs font-medium text-on-surface-2 uppercase tracking-wide mb-2">
-                Delegate credential
-              </div>
-              <h1 className="text-3xl md:text-4xl font-display font-bold mb-1">
-                Welcome
-              </h1>
-              <p className="text-on-surface-2">{user?.name || 'Delegate'}</p>
+    <div className="stack">
+      {/* Boarding-pass hero */}
+      <div className="pass">
+        <div className="pass-top">
+          <div>
+            <div className="pass-eyebrow">
+              {applicant ? 'Applicant credential' : 'Delegate credential'}
             </div>
-
-            {/* Seal/Badge */}
-            <div className="w-20 h-20 rounded-full border-2 border-on-surface flex items-center justify-center text-center text-xs font-bold leading-tight">
-              <span>
-                YPDS
-                <br />
-                JKT
-                <br />
-                2026
+            <div className="pass-title">{profile?.name || 'Welcome'}</div>
+            <div className="pass-sub">{profile?.email || ''}</div>
+          </div>
+          <div className="seal">
+            <span>
+              YPDS
+              <br />
+              JKT
+              <br />
+              2026
+            </span>
+          </div>
+        </div>
+        <div className="pass-perf" />
+        <div className="pass-bottom">
+          <div className="pass-field">
+            <span className="pass-field-label">Applicant ID</span>
+            <span className="pass-field-value">{profile?.applicant_id || '—'}</span>
+          </div>
+          <div className="pass-field">
+            <span className="pass-field-label">Status</span>
+            <span className="pass-field-value">
+              <span className={`chip ${applicant ? 'chip-pending' : 'chip-ok'}`}>
+                {applicant ? 'Applicant' : 'Confirmed delegate'}
               </span>
-            </div>
+            </span>
+          </div>
+          <div className="pass-field">
+            <span className="pass-field-label">Interview</span>
+            <span className="pass-field-value">
+              {interviewSubmitted ? 'Submitted' : applicant ? 'Awaiting' : '—'}
+            </span>
           </div>
         </div>
+      </div>
 
-        {/* Coming Soon Grid */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="card text-center py-8">
-            <div className="text-4xl mb-2">📋</div>
-            <h2 className="font-display font-bold mb-2">Rundown</h2>
-            <p className="text-on-surface-2 text-sm">Coming soon</p>
+      {/* Applicant: the interview is the next step */}
+      {interviewPending && (
+        <button className="interview-cta" onClick={() => switchScreen('interview')}>
+          <div className="interview-cta-tag">Your next step</div>
+          <div className="interview-cta-title">Complete your interview</div>
+          <div className="interview-cta-sub">
+            One form stands between you and Jakarta. It takes about 15 minutes — find a quiet
+            spot and tell us your story.
           </div>
-
-          <div className="card text-center py-8">
-            <div className="text-4xl mb-2">🏨</div>
-            <h2 className="font-display font-bold mb-2">Hotel & Stay</h2>
-            <p className="text-on-surface-2 text-sm">Coming soon</p>
+          <span className="interview-cta-go">Start now →</span>
+        </button>
+      )}
+      {applicant && interviewSubmitted && (
+        <div className="interview-cta is-done">
+          <div className="interview-cta-tag">
+            <Icon name="check" size={14} /> Interview submitted
           </div>
-
-          <div className="card text-center py-8">
-            <div className="text-4xl mb-2">📅</div>
-            <h2 className="font-display font-bold mb-2">My Schedule</h2>
-            <p className="text-on-surface-2 text-sm">Coming soon</p>
-          </div>
-
-          <div className="card text-center py-8">
-            <div className="text-4xl mb-2">📞</div>
-            <h2 className="font-display font-bold mb-2">Contact</h2>
-            <p className="text-on-surface-2 text-sm">Coming soon</p>
+          <div className="interview-cta-title">Thank you — we have your responses</div>
+          <div className="interview-cta-sub">
+            Our team is reviewing submissions. Watch this portal for the outcome.
           </div>
         </div>
+      )}
 
-        {/* Progress */}
-        <div className="mt-12 p-6 bg-on-surface-2 bg-opacity-5 rounded-lg">
-          <h3 className="font-display font-bold mb-3">Migration Status</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center gap-2">
-              <span className="text-green-500">✓</span>
-              <span>Phase 1: Project Setup</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-green-500">✓</span>
-              <span>Phase 2: Auth System</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-green-500">✓</span>
-              <span>Phase 3: Layout & Navigation</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-on-surface-2">→</span>
-              <span>Phase 4: Event Screens</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-on-surface-2">→</span>
-              <span>Phase 5: State & Data</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-on-surface-2">→</span>
-              <span>Phase 6: Polish & Deploy</span>
-            </div>
-          </div>
+      {/* Featured banner */}
+      <div className="dash-banner">
+        <img src="/img/ypds-jakarta-2026-banner.png" alt="YPDS Jakarta 2026" loading="lazy" />
+      </div>
+
+      {/* Section tiles */}
+      <div>
+        <div className="section-label">Explore</div>
+        <div className="tile-grid">
+          {TILES.map((tile) => {
+            const soon = tile.screen !== 'contact' && (applicant || (tile.screen === 'rundown' && !hasProgramme));
+            return (
+              <button key={tile.screen} className="tile" onClick={() => switchScreen(tile.screen)}>
+                <Icon name={tile.icon} size={20} className="tile-icon" />
+                <div className="tile-title">{tile.title}</div>
+                <div className="tile-sub">{soon ? 'Coming soon' : tile.sub}</div>
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
