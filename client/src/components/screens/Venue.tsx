@@ -53,7 +53,7 @@ export const Venue = () => {
     );
   }
 
-  const map = mapsLink(hotel.address || hotel.name);
+  const map = hotel.map || mapsLink(hotel.address || hotel.name);
   const hasBooking = booking && (booking.room || booking.booking_ref || booking.check_in);
 
   return (

@@ -52,6 +52,7 @@ export interface HotelInfo {
   amenities?: string[];
   image?: string;
   address?: string;
+  map?: string;
   checkin?: string;
   checkout?: string;
 }
