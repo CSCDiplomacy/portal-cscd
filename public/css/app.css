@@ -20,11 +20,17 @@
   --brass-rgb: 230,235,28;
 
   /* primary accent — electric yellow. Buttons, seal, badges, active nav.
-     Always paired with dark text (--on-signal). Pink is intentionally absent. */
+     Always paired with dark text (--on-signal). */
   --signal: #E6EB1C;
   --signal-deep: #A9AD10;
   --signal-soft: rgba(230,235,28,0.18);
   --signal-rgb: 230,235,28;
+
+  /* secondary accent — crimson pink. Status badges & credential seals only.
+     Use VERY sparingly: delegate status, credential markers, minor warnings. */
+  --signal-crimson: #EA0558;
+  --signal-crimson-soft: rgba(234,5,88,0.12);
+  --signal-crimson-rgb: 234,5,88;
 
   --surface: #FFFFFF;
   /* Light theme is fully light: the "credential" cards are white on cream,
@@ -71,6 +77,10 @@
   --signal-deep: #CBD016;
   --signal-soft: rgba(230,235,28,0.20);
   --signal-rgb: 230,235,28;
+
+  --signal-crimson: #FF6B9D;
+  --signal-crimson-soft: rgba(255,107,157,0.15);
+  --signal-crimson-rgb: 255,107,157;
 
   --surface: #161616;
   --surface-2: #050505;
@@ -273,6 +283,12 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; -webkit-t
 .pass-field-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.5; margin-bottom: 4px; }
 .pass-field-value { font-size: 13px; font-weight: 700; }
 .pass-field-value.signal { color: var(--ink); }
+.status-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--signal-crimson); background: var(--signal-crimson-soft);
+  padding: 5px 10px; border-radius: 4px;
+}
 
 /* ============ SCREENS ============ */
 .screen-stack { margin-top: 14px; }
@@ -821,6 +837,11 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; -webkit-t
   font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--ink); margin-bottom: 8px;
 }
+.interview-cta.is-done .interview-cta-tag {
+  color: var(--signal-crimson); background: var(--signal-crimson-soft);
+  padding: 4px 9px; border-radius: 5px;
+}
+.interview-cta.is-done .interview-cta-tag svg { stroke: var(--signal-crimson); }
 .interview-cta-tag svg { stroke: var(--ink); }
 .interview-cta-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; line-height: 1.15; margin-bottom: 6px; }
 .interview-cta-sub { font-size: 13.5px; line-height: 1.5; color: rgba(var(--on-surface-2-rgb), 0.8); }
