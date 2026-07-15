@@ -31,9 +31,9 @@ export const AppLayout = ({ eventName }: AppLayoutProps) => {
   // Check if user is applicant (show interview tab)
   const { showInterview } = useApplicantGate();
 
-  const unreadCount = announcements.filter(
-    (a) => !a.read
-  ).length;
+  const unreadCount = announcements && Array.isArray(announcements)
+    ? announcements.filter((a) => !a.read).length
+    : 0;
 
   const renderScreen = (): JSX.Element => {
     switch (activeScreen) {
