@@ -1,117 +1,136 @@
 {
   "_note": "YPDS Jakarta 2026 Summit Rundown. Updates as agenda is finalized.",
   "timezone": "Asia/Jakarta",
-  "summit_tagline": "Empower. Connect. Lead.",
   "days": [
     {
       "date": "2026-08-20",
-      "day": "Thursday",
-      "theme": "Opening & Strategy Foundations",
-      "sessions": [
+      "label": "Thursday, Aug 20 · Opening",
+      "items": [
         {
-          "time": "09:00 - 09:30",
+          "time": "09:00",
+          "end_time": "09:30",
           "title": "Welcome & Opening Remarks",
           "type": "keynote",
+          "venue": "Main Hall",
           "description": "Opening ceremony with keynote speeches by diplomatic leaders, setting the vision for YPDS Jakarta 2026.",
-          "location": "Main Hall"
+          "duration_min": 30
         },
         {
-          "time": "10:00 - 12:00",
+          "time": "10:00",
+          "end_time": "12:00",
           "title": "Public Diplomacy in the 21st Century",
           "type": "workshop",
+          "venue": "Conference Room A",
           "description": "Interactive session exploring how young leaders can leverage public diplomacy to foster cross-cultural understanding and influence international affairs.",
-          "location": "Conference Room A"
+          "duration_min": 120
         },
         {
-          "time": "13:00 - 14:30",
+          "time": "13:00",
+          "end_time": "14:30",
           "title": "Lunch & Networking",
-          "type": "social",
+          "type": "meal",
+          "venue": "Dining Hall",
           "description": "Authentic Indonesian culinary experience with delegates from diverse regions.",
-          "location": "Dining Hall"
+          "duration_min": 90
         },
         {
-          "time": "15:00 - 17:00",
+          "time": "15:00",
+          "end_time": "17:00",
           "title": "Asia and the Mediterranean: Regional Strategies",
           "type": "panel",
+          "venue": "Conference Room B",
           "description": "Strategic perspectives on regional cooperation, security, and economic opportunities across Asia and the Mediterranean.",
-          "location": "Conference Room B"
+          "duration_min": 120
         }
       ]
     },
     {
       "date": "2026-08-21",
-      "day": "Friday",
-      "theme": "Peace, Power & Policy",
-      "sessions": [
+      "label": "Friday, Aug 21 · Peace & Strategy",
+      "items": [
         {
-          "time": "09:00 - 11:00",
+          "time": "09:00",
+          "end_time": "11:00",
           "title": "Peace by Peaceful Means",
           "type": "workshop",
+          "venue": "Conference Room A",
           "description": "Exploring youth roles in conflict resolution, peace-building, and diplomatic negotiations in a multipolar world.",
-          "location": "Conference Room A"
+          "duration_min": 120
         },
         {
-          "time": "11:30 - 13:00",
+          "time": "11:30",
+          "end_time": "13:00",
           "title": "Strategic Communication",
-          "type": "masterclass",
+          "type": "workshop",
+          "venue": "Conference Room B",
           "description": "Techniques for effective advocacy, media engagement, and narrative-building in modern diplomacy.",
-          "location": "Conference Room B"
+          "duration_min": 90
         },
         {
-          "time": "14:00 - 16:00",
+          "time": "14:00",
+          "end_time": "16:00",
           "title": "Grand Strategy vs Economic Strategy",
-          "type": "debate",
+          "type": "panel",
+          "venue": "Main Hall",
           "description": "Youth-led debate on balancing national interests, regional cooperation, and global economic challenges.",
-          "location": "Main Hall"
+          "duration_min": 120
         }
       ]
     },
     {
       "date": "2026-08-22",
-      "day": "Saturday",
-      "theme": "Youth Innovation Labs",
-      "sessions": [
+      "label": "Saturday, Aug 22 · Innovation & Dinner",
+      "items": [
         {
-          "time": "09:00 - 12:00",
+          "time": "09:00",
+          "end_time": "12:00",
           "title": "Youth Innovation & Policy Labs",
           "type": "workshop",
+          "venue": "Workshop Spaces",
           "description": "Hands-on session where young leaders design actionable policy proposals addressing regional and global challenges.",
-          "location": "Workshop Spaces"
+          "duration_min": 180
         },
         {
-          "time": "13:00 - 14:30",
-          "title": "Dinner Reception",
-          "type": "social",
-          "description": "Evening gathering at Tugu Kunstkring Paleis for networking and cultural immersion.",
-          "location": "Tugu Kunstkring Paleis"
+          "time": "19:00",
+          "end_time": "21:00",
+          "title": "Dinner Reception at Tugu Kunstkring Paleis",
+          "type": "meal",
+          "venue": "Tugu Kunstkring Paleis",
+          "description": "Evening gathering at Jakarta's historic Kunstkring Paleis for networking, authentic cuisine, and cultural immersion.",
+          "duration_min": 120
         }
       ]
     },
     {
       "date": "2026-08-23",
-      "day": "Sunday",
-      "theme": "Closing & Vision Forward",
-      "sessions": [
+      "label": "Sunday, Aug 23 · Closing",
+      "items": [
         {
-          "time": "10:00 - 11:30",
+          "time": "10:00",
+          "end_time": "11:30",
           "title": "Presentation of Policy Recommendations",
-          "type": "presentation",
+          "type": "panel",
+          "venue": "Main Hall",
           "description": "Youth teams present their policy innovations to the YPDS steering committee and diplomatic advisors.",
-          "location": "Main Hall"
+          "duration_min": 90
         },
         {
-          "time": "12:00 - 13:30",
+          "time": "12:00",
+          "end_time": "13:30",
           "title": "Closing Ceremony & Awards",
           "type": "ceremony",
+          "venue": "Main Hall",
           "description": "Celebrating emerging leaders, announcing next steps, and vision for continued engagement.",
-          "location": "Main Hall"
+          "duration_min": 90
         },
         {
-          "time": "14:00 - 15:00",
+          "time": "14:00",
+          "end_time": "15:00",
           "title": "Farewell Networking",
           "type": "social",
+          "venue": "Outdoor Terrace",
           "description": "Final gathering before departure. Connect with peers and mentors.",
-          "location": "Outdoor Terrace"
+          "duration_min": 60
         }
       ]
     }
