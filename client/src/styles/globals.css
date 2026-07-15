@@ -1210,6 +1210,34 @@ textarea {
   object-fit: cover;
 }
 
+/* Venue hero — a mounted photograph. The landing page's "roman-border" motif
+   (thin charcoal frame + offset crimson outline) around the full, uncropped
+   building. Centered and width-capped so the square image isn't overwhelming. */
+.venue-photo-frame {
+  position: relative;
+  margin: 4px auto 22px;
+  max-width: 440px;
+  padding: 7px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+}
+
+.venue-photo-frame::after {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border: 1px solid var(--signal);
+  pointer-events: none;
+}
+
+.venue-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  filter: saturate(1.03) contrast(1.02);
+}
+
 .card-eyebrow {
   font-size: 0.64rem;
   font-weight: 700;

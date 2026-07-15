@@ -60,7 +60,9 @@ export const Venue = () => {
     <div className="stack">
       <div className="card">
         {hotel.image && (
-          <img src={hotel.image} alt={hotel.name} className="card-img" loading="lazy" />
+          <figure className="venue-photo-frame">
+            <img src={hotel.image} alt={hotel.name} className="venue-photo" loading="lazy" />
+          </figure>
         )}
         <div className="card-eyebrow">{hotel.subtitle || 'The venue'}</div>
         <h2 className="card-title">{hotel.name}</h2>
