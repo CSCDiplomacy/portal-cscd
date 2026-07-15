@@ -342,6 +342,8 @@
     document.body.removeChild(ta);
   }
   function renderDashboard() {
+    // Featured YPDS banner
+    if (el('dash-banner')) el('dash-banner').innerHTML = '<img src="/img/ypds-jakarta-2026-banner.png" alt="YPDS Jakarta 2026 Summit" loading="lazy">';
     // Applicant stage: the dashboard leads with the interview, not the (empty)
     // event programme. Hide the event-only grid entirely so no bare labels show.
     if (el('dash-event-only')) el('dash-event-only').classList.toggle('hidden', isApplicant());
