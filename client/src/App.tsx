@@ -11,7 +11,6 @@ const App = () => {
   const { session, loading: authLoading } = useAuth();
   const { setTheme } = useUIStore();
   const [config, setConfig] = useState<Config | null>(null);
-  const [configLoading, setConfigLoading] = useState(true);
 
   // Initialize theme and config on mount
   useEffect(() => {
@@ -30,14 +29,14 @@ const App = () => {
       setConfig(cfg);
     } catch (err) {
       console.error('Failed to load config:', err);
-    } finally {
-      setConfigLoading(false);
     }
   };
 
   return (
     <ErrorBoundary>
-      {configLoading || authLoading ? (
+      {!session ? (
+        <LoginView eventName={config?.eventName || 'YPDS Jakarta 2026'} />
+      ) : authLoading ? (
         <div className="min-h-screen flex items-center justify-center bg-surface">
           <div className="text-center">
             <div className="inline-block">
@@ -47,11 +46,9 @@ const App = () => {
               </svg>
             </div>
             <h1 className="text-2xl font-display font-bold mt-4">Loading…</h1>
-            <p className="text-on-surface-2 mt-2">Initializing application</p>
+            <p className="text-on-surface-2 mt-2">Setting up your session</p>
           </div>
         </div>
-      ) : !session ? (
-        <LoginView eventName={config?.eventName || 'CSCD Delegate App'} />
       ) : (
         <AppLayout eventName={config?.eventName || 'Jakarta 2026'} />
       )}
