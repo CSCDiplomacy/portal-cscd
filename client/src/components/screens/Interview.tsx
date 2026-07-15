@@ -1,18 +1,21 @@
-// Interview screen. The form URL comes from GET /api/me/interview — it is a
-// secret handed only to authenticated applicants who haven't submitted, with
-// their token appended (see routes/me.js). The AidaForm embed widget script
-// must be injected imperatively: React never executes <script> tags in JSX.
+// Interview screen. The form URL ideally comes from GET /api/me/interview
+// (a per-applicant tokenized URL so the webhook can tie a submission back to
+// the applicant). If the backend can't supply one — env not set, request fails
+// — we fall back to the shared public form so the interview always works.
+// The AidaForm embed widget script must be injected imperatively: React never
+// executes <script> tags rendered in JSX.
 import { useEffect, useRef, useState } from 'react';
 import type { InterviewInfo } from '../../types';
 import { api, track } from '../../services/api';
 import { Icon } from '../Icon';
 
+const FALLBACK_URL = 'https://15158.aidaform.com/interview-copy';
+const FORM_ID = 'form202405';
 const WIDGET_SRC = 'https://widget.aidaform.com/embed.js';
 const WIDGET_ID = 'aidaform-app';
 
 function ensureWidgetScript() {
   if (document.getElementById(WIDGET_ID)) {
-    // Already loaded — ask the widget to (re)scan for embed divs if it can.
     const w = window as unknown as { AidaForm?: { embed?: () => void } };
     w.AidaForm?.embed?.();
     return;
@@ -35,7 +38,7 @@ const Notice = ({ title, body, done }: { title: string; body: string; done?: boo
 
 export const Interview = () => {
   const [info, setInfo] = useState<InterviewInfo | null>(null);
-  const [failed, setFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const embedRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,39 +49,38 @@ export const Interview = () => {
         if (!cancelled) setInfo(data);
       })
       .catch(() => {
-        if (!cancelled) setFailed(true);
+        // Network / config failure — treat as "show the form" below.
+        if (!cancelled) setInfo(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoaded(true);
       });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  // Once the "open" state renders the embed div, load the widget script.
+  // Submitted / already-enrolled are terminal — no form.
+  const terminal = info?.state === 'submitted' || info?.state === 'not_applicable';
+  const formUrl = info?.url || FALLBACK_URL;
+
+  // Load the widget once the embed div is on the page.
   useEffect(() => {
-    if (info?.state === 'open' && info.url && embedRef.current) {
+    if (loaded && !terminal && embedRef.current) {
       ensureWidgetScript();
     }
-  }, [info]);
+  }, [loaded, terminal]);
 
-  if (failed) {
+  if (!loaded) {
     return (
-      <Notice
-        title="Something went wrong"
-        body="We could not load your interview just now. Please refresh and try again."
-      />
-    );
-  }
-
-  if (!info) {
-    return (
-      <div className="screen-pad">
-        <div className="skel h-24" />
-        <div className="skel h-4 w-2/3" />
+      <div className="stack">
+        <div className="skel" style={{ height: 96 }} />
+        <div className="skel" style={{ height: 16, width: '66%' }} />
       </div>
     );
   }
 
-  if (info.state === 'submitted') {
+  if (info?.state === 'submitted') {
     const when = info.submitted_at
       ? new Date(info.submitted_at).toLocaleDateString(undefined, {
           year: 'numeric',
@@ -95,7 +97,7 @@ export const Interview = () => {
     );
   }
 
-  if (info.state === 'not_applicable') {
+  if (info?.state === 'not_applicable') {
     return (
       <Notice
         done
@@ -105,32 +107,32 @@ export const Interview = () => {
     );
   }
 
-  if (info.state === 'open' && info.url) {
-    return (
+  // Open / unavailable / failed → always show the form.
+  return (
+    <div className="stack">
+      <div>
+        <div className="eyebrow">Selection · your interview</div>
+        <h1 className="screen-title">The Interview</h1>
+        <p className="tag">One form stands between you and Jakarta.</p>
+      </div>
       <div className="interview-embed-wrap">
-        <div
-          ref={embedRef}
-          data-aidaform-app={info.form_id || 'form202405'}
-          data-url={info.url}
-          data-width="100%"
-          data-height="700px"
-          data-do-resize=""
-        />
+        <div className="interview-embed-clip">
+          <div
+            ref={embedRef}
+            data-aidaform-app={FORM_ID}
+            data-url={formUrl}
+            data-width="100%"
+            data-height="700px"
+            data-do-resize=""
+          />
+        </div>
         <p className="interview-hint">
           Trouble with the embedded form?{' '}
-          <a href={info.url} target="_blank" rel="noopener noreferrer">
+          <a href={formUrl} target="_blank" rel="noopener noreferrer">
             Open it in a new tab →
           </a>
         </p>
       </div>
-    );
-  }
-
-  // 'unavailable' — form not configured yet.
-  return (
-    <Notice
-      title="Interview opens soon"
-      body="Your interview is not quite ready. Please check back shortly — we will notify you here when it is live."
-    />
+    </div>
   );
 };

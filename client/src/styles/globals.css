@@ -1063,6 +1063,23 @@ textarea {
   box-shadow: var(--shadow-sm);
 }
 
+/* The AidaForm embed renders inside its own iframe, and the "Powered by
+   AidaForm" bar sits at the very bottom of that iframe. A cross-origin iframe's
+   contents can't be styled from here, so we clip the footer strip visually:
+   overflow-hidden container + a negative bottom margin on the injected iframe
+   pulls the badge below the clip line. Adjust the offset if AidaForm changes
+   the footer height. */
+.interview-embed-clip {
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+.interview-embed-clip iframe {
+  display: block;
+  width: 100%;
+  margin-bottom: -48px;
+}
+
 .interview-hint {
   margin-top: 12px;
   font-size: 0.82rem;
