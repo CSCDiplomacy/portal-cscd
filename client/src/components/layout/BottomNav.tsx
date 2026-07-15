@@ -9,8 +9,9 @@ type NavItem = { screen: Screen; label: string; icon: IconName };
 
 const BASE: NavItem[] = [
   { screen: 'dashboard', label: 'Home', icon: 'home' },
+  { screen: 'about', label: 'Summit', icon: 'globe' },
   { screen: 'rundown', label: 'Rundown', icon: 'clock' },
-  { screen: 'hotel', label: 'Hotel', icon: 'hotel' },
+  { screen: 'venue', label: 'Venue', icon: 'hotel' },
   { screen: 'schedule', label: 'Schedule', icon: 'star' },
 ];
 
@@ -19,6 +20,7 @@ const WITH_INTERVIEW: NavItem[] = [
   { screen: 'interview', label: 'Interview', icon: 'video' },
   BASE[1],
   BASE[2],
+  BASE[3],
 ];
 
 export const BottomNav = ({ showInterview }: { showInterview: boolean }) => {

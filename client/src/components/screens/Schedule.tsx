@@ -1,17 +1,22 @@
 // My Schedule: the delegate's starred sessions, grouped by day.
-import { isApplicant, useAuthStore } from '../../stores/authStore';
 import { useDelegateStore } from '../../stores/delegateStore';
 import { sessionId } from '../../types';
 import { format12Hour } from '../../lib/utils';
-import { ComingSoon, COMING_SOON_COPY } from '../ComingSoon';
 import { Icon, typeIcon } from '../Icon';
 
 export const Schedule = () => {
-  const { profile } = useAuthStore();
   const { rundown, favourites, toggleFavourite } = useDelegateStore();
 
-  if (isApplicant(profile) || !rundown?.days?.length) {
-    return <ComingSoon {...COMING_SOON_COPY.schedule} />;
+  if (!rundown?.days?.length) {
+    return (
+      <div className="coming-soon">
+        <div className="coming-soon-badge">My schedule</div>
+        <h2 className="coming-soon-title">Your personal agenda</h2>
+        <p className="coming-soon-body">
+          Once the programme is published, star the sessions you want and they will gather here.
+        </p>
+      </div>
+    );
   }
 
   const days = rundown.days
@@ -36,6 +41,10 @@ export const Schedule = () => {
 
   return (
     <div className="stack">
+      <div>
+        <div className="eyebrow">Sessions you starred</div>
+        <h1 className="screen-title">My Schedule</h1>
+      </div>
       {days.map(({ day, items }) => (
         <div key={day.date}>
           <div className="section-label">{day.label || day.date}</div>

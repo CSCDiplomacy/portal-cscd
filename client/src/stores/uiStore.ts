@@ -7,7 +7,15 @@ import type { Screen, Theme } from '../types';
 const THEME_KEY = 'cscd_theme';
 const READ_KEY = 'cscd_read_notifications';
 
-const SCREENS: Screen[] = ['dashboard', 'interview', 'rundown', 'hotel', 'schedule', 'contact'];
+const SCREENS: Screen[] = [
+  'dashboard',
+  'interview',
+  'about',
+  'rundown',
+  'venue',
+  'schedule',
+  'contact',
+];
 
 function applyTheme(theme: Theme) {
   document.documentElement.setAttribute('data-theme', theme);

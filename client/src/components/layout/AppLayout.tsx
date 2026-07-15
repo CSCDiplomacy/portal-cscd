@@ -11,16 +11,18 @@ import { UpdatesRail } from './UpdatesRail';
 import { MenuDrawer } from './MenuDrawer';
 import { Dashboard } from '../screens/Dashboard';
 import { Interview } from '../screens/Interview';
+import { About } from '../screens/About';
 import { Rundown } from '../screens/Rundown';
-import { Hotel } from '../screens/Hotel';
+import { Venue } from '../screens/Venue';
 import { Schedule } from '../screens/Schedule';
 import { Contact } from '../screens/Contact';
 
 const SCREENS = {
   dashboard: Dashboard,
   interview: Interview,
+  about: About,
   rundown: Rundown,
-  hotel: Hotel,
+  venue: Venue,
   schedule: Schedule,
   contact: Contact,
 } as const;

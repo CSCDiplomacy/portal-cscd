@@ -1,26 +1,36 @@
 // Event rundown: day tabs + timeline, with star-to-save favourites.
 // Applicants (and anyone before the programme is published) see Coming Soon.
 import { useState } from 'react';
-import { isApplicant, useAuthStore } from '../../stores/authStore';
 import { useDelegateStore } from '../../stores/delegateStore';
 import { sessionId } from '../../types';
 import { format12Hour } from '../../lib/utils';
-import { ComingSoon, COMING_SOON_COPY } from '../ComingSoon';
 import { Icon, typeIcon } from '../Icon';
 
 export const Rundown = () => {
-  const { profile } = useAuthStore();
   const { rundown, favourites, toggleFavourite } = useDelegateStore();
   const [dayIdx, setDayIdx] = useState(0);
 
-  if (isApplicant(profile) || !rundown?.days?.length) {
-    return <ComingSoon {...COMING_SOON_COPY.rundown} />;
+  if (!rundown?.days?.length) {
+    return (
+      <div className="coming-soon">
+        <div className="coming-soon-badge">Programme</div>
+        <h2 className="coming-soon-title">Agenda being finalised</h2>
+        <p className="coming-soon-body">
+          The hour-by-hour programme for Jakarta is coming together. Check back shortly — it will
+          appear here as sessions are confirmed.
+        </p>
+      </div>
+    );
   }
 
   const day = rundown.days[Math.min(dayIdx, rundown.days.length - 1)];
 
   return (
     <div className="stack">
+      <div>
+        <div className="eyebrow">The programme</div>
+        <h1 className="screen-title">Rundown</h1>
+      </div>
       <div className="day-tabs">
         {rundown.days.map((d, i) => (
           <button

@@ -56,6 +56,12 @@ export interface HotelInfo {
   checkout?: string;
 }
 
+/** GET /api/hotel (public) → the shared venue, no auth required. */
+export interface PublicHotel {
+  hotel: HotelInfo | null;
+}
+
+/** GET /api/me/hotel (auth) → the delegate's booking + shared venue. */
 export interface MyHotel {
   delegate: {
     name?: string;
@@ -98,8 +104,9 @@ export type Theme = 'light' | 'dark';
 export type Screen =
   | 'dashboard'
   | 'interview'
+  | 'about'
   | 'rundown'
-  | 'hotel'
+  | 'venue'
   | 'schedule'
   | 'contact';
 

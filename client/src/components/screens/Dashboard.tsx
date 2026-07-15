@@ -2,28 +2,25 @@
 // visible but read "Coming soon" until the delegate is enrolled and data is
 // published (the client's engagement model).
 import { isApplicant, showInterviewTab, useAuthStore } from '../../stores/authStore';
-import { useDelegateStore } from '../../stores/delegateStore';
 import { useUIStore } from '../../stores/uiStore';
 import { Icon } from '../Icon';
 import type { IconName } from '../Icon';
 import type { Screen } from '../../types';
 
 const TILES: Array<{ screen: Screen; icon: IconName; title: string; sub: string }> = [
+  { screen: 'about', icon: 'globe', title: 'The Summit', sub: 'Themes, story & lineage' },
   { screen: 'rundown', icon: 'clock', title: 'Rundown', sub: 'The day-by-day programme' },
-  { screen: 'hotel', icon: 'hotel', title: 'Your stay', sub: 'Hotel & check-in details' },
-  { screen: 'schedule', icon: 'star', title: 'My schedule', sub: 'Sessions you starred' },
-  { screen: 'contact', icon: 'phone', title: 'Need help?', sub: 'Reach the CSCD team' },
+  { screen: 'venue', icon: 'hotel', title: 'Venue', sub: 'Tugu Kunstkring Paleis' },
+  { screen: 'schedule', icon: 'star', title: 'My Schedule', sub: 'Sessions you starred' },
 ];
 
 export const Dashboard = () => {
   const { profile } = useAuthStore();
-  const { rundown } = useDelegateStore();
   const { switchScreen } = useUIStore();
 
   const applicant = isApplicant(profile);
   const interviewPending = showInterviewTab(profile);
   const interviewSubmitted = profile?.interview_status === 'submitted';
-  const hasProgramme = !applicant && !!rundown?.days?.length;
 
   return (
     <div className="stack">
@@ -103,16 +100,13 @@ export const Dashboard = () => {
       <div>
         <div className="section-label">Explore</div>
         <div className="tile-grid">
-          {TILES.map((tile) => {
-            const soon = tile.screen !== 'contact' && (applicant || (tile.screen === 'rundown' && !hasProgramme));
-            return (
-              <button key={tile.screen} className="tile" onClick={() => switchScreen(tile.screen)}>
-                <Icon name={tile.icon} size={20} className="tile-icon" />
-                <div className="tile-title">{tile.title}</div>
-                <div className="tile-sub">{soon ? 'Coming soon' : tile.sub}</div>
-              </button>
-            );
-          })}
+          {TILES.map((tile) => (
+            <button key={tile.screen} className="tile" onClick={() => switchScreen(tile.screen)}>
+              <Icon name={tile.icon} size={20} className="tile-icon" />
+              <div className="tile-title">{tile.title}</div>
+              <div className="tile-sub">{tile.sub}</div>
+            </button>
+          ))}
         </div>
       </div>
     </div>
