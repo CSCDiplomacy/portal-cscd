@@ -204,14 +204,25 @@
     el('pass').classList.toggle('pass--compact', name !== 'dashboard');
     // Interview gets a wide, focused layout: drop the max-width cap + the rail.
     if (el('view-app')) el('view-app').classList.toggle('focus-interview', name === 'interview');
-    // Applicants (not yet enrolled) see Coming Soon in place of event screens.
     if (name === 'interview') { renderInterview(); track('interview_open'); }
-    else if (isApplicant() && EVENT_SCREENS.includes(name)) renderComingSoon(name);
     else if (name === 'dashboard') renderDashboard();
-    else if (name === 'rundown') renderRundown();
-    else if (name === 'visits' && !rendered.visits) renderVisits();
-    else if (name === 'speakers') renderSpeakers();
-    else if (name === 'hotel') renderHotel();
+    else if (name === 'rundown') {
+      // Show Coming Soon only if no data; otherwise show actual rundown (applicants see it too).
+      if (!rundown || !rundown.days || !rundown.days.length) renderComingSoon(name);
+      else renderRundown();
+    }
+    else if (name === 'visits') {
+      if (!visits || !visits.length) renderComingSoon(name);
+      else if (!rendered.visits) renderVisits();
+    }
+    else if (name === 'speakers') {
+      if (!speakers || !speakers.length) renderComingSoon(name);
+      else renderSpeakers();
+    }
+    else if (name === 'hotel') {
+      if (!hotel || !Object.keys(hotel).length) renderComingSoon(name);
+      else renderHotel();
+    }
     else if (name === 'schedule') renderSchedule();
     else if (name === 'contact' && !rendered.contact) renderContact();
     if (window.innerWidth < 960) window.scrollTo(0, 0);
