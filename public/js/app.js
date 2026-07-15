@@ -5,7 +5,7 @@
   'use strict';
 
   let sb = null, session = null, config = {};
-  let rundown = null, speakers = [], profile = {}, hotelData = null;
+  let rundown = null, speakers = [], visits = [], profile = {}, hotelData = null;
   let favourites = new Set();
   const READ_KEY = 'cscd_read_notifications';
   const THEME_KEY = 'cscd_theme';
@@ -207,23 +207,29 @@
     if (name === 'interview') { renderInterview(); track('interview_open'); }
     else if (name === 'dashboard') renderDashboard();
     else if (name === 'rundown') {
-      // Show Coming Soon only if no data; otherwise show actual rundown (applicants see it too).
-      if (!rundown || !rundown.days || !rundown.days.length) renderComingSoon(name);
+      if (isApplicant()) renderComingSoon(name);
+      else if (!rundown || !rundown.days || !rundown.days.length) renderComingSoon(name);
       else renderRundown();
     }
     else if (name === 'visits') {
-      if (!visits || !visits.length) renderComingSoon(name);
+      if (isApplicant()) renderComingSoon(name);
+      else if (!visits || !visits.length) renderComingSoon(name);
       else if (!rendered.visits) renderVisits();
     }
     else if (name === 'speakers') {
-      if (!speakers || !speakers.length) renderComingSoon(name);
+      if (isApplicant()) renderComingSoon(name);
+      else if (!speakers || !speakers.length) renderComingSoon(name);
       else renderSpeakers();
     }
     else if (name === 'hotel') {
-      if (!hotel || !Object.keys(hotel).length) renderComingSoon(name);
+      if (isApplicant()) renderComingSoon(name);
+      else if (!hotelData || !hotelData.hotel) renderComingSoon(name);
       else renderHotel();
     }
-    else if (name === 'schedule') renderSchedule();
+    else if (name === 'schedule') {
+      if (isApplicant()) renderComingSoon(name);
+      else renderSchedule();
+    }
     else if (name === 'contact' && !rendered.contact) renderContact();
     if (window.innerWidth < 960) window.scrollTo(0, 0);
     if (pushHistory) history.pushState({ tab: name }, '', '#' + name);
@@ -546,7 +552,8 @@
     rendered.visits = true; const root = el('visits-list');
     root.innerHTML = skeletonCard() + skeletonCard() + skeletonCard();
     try {
-      const { visits } = await getJson('/api/visits');
+      const data = await getJson('/api/visits');
+      visits = data.visits || [];
       if (!visits || !visits.length) { root.innerHTML = phVisits(); return; }
       root.innerHTML = visits.map((v) => { const map = mapsLink(v.map || v.address); return `<div class="tile">
         <div class="tile-title">${esc(v.place)}</div><div class="tile-meta">${esc(v.time || '')}</div>
