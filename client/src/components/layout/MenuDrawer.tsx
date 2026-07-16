@@ -26,7 +26,7 @@ export const MenuDrawer = ({ open, onClose }: { open: boolean; onClose: () => vo
           <Icon name="globe" size={16} /> The Summit
         </button>
         <button className="menu-link" onClick={() => switchScreen('venue')}>
-          <Icon name="hotel" size={16} /> Venue
+          <Icon name="hotel" size={16} /> Institutional Visit &amp; Dinner
         </button>
         <button className="menu-link" onClick={() => switchScreen('contact')}>
           <Icon name="phone" size={16} /> Contact us

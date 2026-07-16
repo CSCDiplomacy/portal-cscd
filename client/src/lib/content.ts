@@ -53,9 +53,30 @@ export const EXPERIENCE: string[] = [
   'Authentic Indonesian culinary experiences and networking dinners.',
 ];
 
-export const EDITIONS: Array<{ city: string; year: string; note: string; current?: boolean }> = [
-  { city: 'Baku', year: '2024', note: 'The Genesis of Dialogue' },
-  { city: 'Istanbul', year: '2024', note: 'Crossroads of Diplomacy' },
-  { city: 'Tashkent', year: '2025', note: 'Expanding Horizons' },
+export const EDITIONS: Array<{
+  city: string;
+  year: string;
+  note: string;
+  report?: string;
+  current?: boolean;
+}> = [
+  {
+    city: 'Baku',
+    year: '2024',
+    note: 'The Genesis of Dialogue',
+    report: 'https://thecscd.org/wp-content/uploads/2026/04/CSCD-Journey-2023-Baku.pdf',
+  },
+  {
+    city: 'Istanbul',
+    year: '2024',
+    note: 'Crossroads of Diplomacy',
+    report: 'https://thecscd.org/wp-content/uploads/2026/04/CSCD-Journey-2023-2025.pdf-istanbul-.pdf',
+  },
+  {
+    city: 'Tashkent',
+    year: '2025',
+    note: 'Expanding Horizons',
+    report: 'https://thecscd.org/wp-content/uploads/2026/04/tashkent-report.pdf',
+  },
   { city: 'Jakarta', year: '2026', note: 'Convergence of Power', current: true },
 ];

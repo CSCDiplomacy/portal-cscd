@@ -46,9 +46,11 @@ export const Venue = () => {
   if (!hotel) {
     return (
       <div className="coming-soon">
-        <div className="coming-soon-badge">Venue</div>
+        <div className="coming-soon-badge">Visit &amp; Dinner</div>
         <h2 className="coming-soon-title">Details on the way</h2>
-        <p className="coming-soon-body">Venue and stay information will appear here soon.</p>
+        <p className="coming-soon-body">
+          Institutional visit and dinner details will appear here soon.
+        </p>
       </div>
     );
   }
@@ -64,7 +66,7 @@ export const Venue = () => {
             <img src={hotel.image} alt={hotel.name} className="venue-photo" loading="lazy" />
           </figure>
         )}
-        <div className="card-eyebrow">{hotel.subtitle || 'The venue'}</div>
+        <div className="card-eyebrow">{hotel.subtitle || 'Institutional visit & dinner'}</div>
         <h2 className="card-title">{hotel.name}</h2>
         {hotel.location && (
           <div className="t-venue">
@@ -85,17 +87,6 @@ export const Venue = () => {
           </a>
         )}
       </div>
-
-      {!!hotel.amenities?.length && (
-        <div className="card">
-          <div className="card-eyebrow">On site</div>
-          <ul className="dot-list">
-            {hotel.amenities.map((a) => (
-              <li key={a}>{a}</li>
-            ))}
-          </ul>
-        </div>
-      )}
 
       {hasBooking && (
         <div className="card">

@@ -29,21 +29,27 @@
 }
 
 [data-theme='dark'] {
-  --surface: #1b1815;
-  --surface-2: #242019;
-  --ink: #ece5d8;
-  --ink-strong: #f6f1e6;
-  --ink-soft: rgba(236, 229, 216, 0.62);
-  --ink-faint: rgba(236, 229, 216, 0.42);
-  --line: rgba(236, 229, 216, 0.16);
-  --line-strong: rgba(236, 229, 216, 0.26);
-  --signal: #ff4a86;
-  --signal-ink: #1b1815;
+  --surface: #14110c;      /* deep warm near-black page ground */
+  --surface-2: #211d16;    /* cards — clearly lifted off the page */
+  --ink: #ece4d5;
+  --ink-strong: #faf5eb;
+  --ink-soft: rgba(236, 228, 213, 0.66);
+  --ink-faint: rgba(236, 228, 213, 0.44);
+  --line: rgba(236, 228, 213, 0.12);
+  --line-strong: rgba(236, 228, 213, 0.22);
+  --signal: #ff4d80;       /* crimson lifted for contrast on dark */
+  --signal-ink: #17130d;
   --brass: #e6eb1c;
-  --brass-ink: #1b1815;
-  --ok: #57c288;
-  --shadow-sm: 0 6px 16px -10px rgba(0, 0, 0, 0.7);
-  --shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.7);
+  --brass-ink: #17130d;
+  --ok: #5ac98d;
+  --shadow-sm: 0 8px 22px -12px rgba(0, 0, 0, 0.85);
+  --shadow: 0 26px 52px -24px rgba(0, 0, 0, 0.9);
+}
+
+/* The logo art is green letters + a black tagline; the black vanishes on dark.
+   Render it monochrome-light in dark mode so the whole wordmark stays legible. */
+[data-theme='dark'] .brand-logo {
+  filter: brightness(0) invert(0.92);
 }
 
 @theme inline {
@@ -817,7 +823,7 @@ textarea {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--brass-ink);
   background: var(--brass);
   padding: 10px 18px;
   border-radius: 999px;
@@ -828,6 +834,41 @@ textarea {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
+}
+
+/* Animated montage — the landing page's "roman-border" frame (thin charcoal
+   frame + offset crimson outline) around the square looping GIF. */
+.dash-gif-frame {
+  position: relative;
+  margin: 4px auto;
+  max-width: 380px;
+  padding: 7px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+}
+
+.dash-gif-frame::after {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border: 1px solid var(--signal);
+  pointer-events: none;
+}
+
+.dash-gif-frame img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.dash-gif-frame figcaption {
+  margin-top: 9px;
+  text-align: center;
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
 }
 
 .tile-grid {
@@ -1082,6 +1123,122 @@ textarea {
   margin-bottom: -48px;
 }
 
+.interview-self-report {
+  margin-top: 14px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.interview-self-report.is-busy {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.interview-self-report input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--signal);
+  flex: 0 0 auto;
+}
+
+.interview-self-report strong {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ink-strong);
+}
+
+.interview-self-report span span {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.interview-support {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.interview-support a {
+  color: var(--signal);
+  font-weight: 700;
+}
+
+/* Confirmation dialog (interview self-report). */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: color-mix(in srgb, var(--ink-strong) 55%, transparent);
+  backdrop-filter: blur(2px);
+  animation: modal-fade 0.15s ease;
+}
+
+.modal {
+  width: min(440px, 100%);
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 26px 24px 22px;
+  animation: modal-pop 0.18s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--ink-strong);
+  margin-bottom: 10px;
+}
+
+.modal-body {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.modal-error {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--signal);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
 .interview-hint {
   margin-top: 12px;
   font-size: 0.82rem;
@@ -1208,6 +1365,29 @@ textarea {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--signal);
+}
+
+/* Download link for a past edition's report PDF. */
+.edition-report {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  padding: 7px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.edition-report:hover {
+  color: var(--signal-ink);
+  background: var(--signal);
+  border-color: var(--signal);
 }
 
 /* ============================ CARDS / MISC ============================== */

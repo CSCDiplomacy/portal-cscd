@@ -91,4 +91,40 @@ router.get('/interview', requireAuth, async (req, res) => {
   res.json({ state: 'open', url: url.toString() });
 });
 
+// Manual override for applicants who need to mark the interview as taken from
+// inside the portal. This follows the same terminal state as the webhook path.
+router.post('/interview/mark-taken', requireAuth, async (req, res) => {
+  const delegate = await getDelegate(req.user.id);
+  if (!delegate) return res.status(404).json({ error: 'No applicant profile found' });
+
+  if (delegate.interview_status === 'submitted') {
+    return res.json({ state: 'submitted', submitted_at: delegate.interview_submitted_at });
+  }
+  if (delegate.status === 'enrolled') {
+    return res.json({ state: 'not_applicable' });
+  }
+  if (!serviceClient) return res.status(503).json({ error: 'Database not configured' });
+
+  const submittedAt = new Date().toISOString();
+  const { error } = await serviceClient
+    .from('delegates')
+    .update({ interview_status: 'submitted', interview_submitted_at: submittedAt })
+    .eq('id', delegate.id)
+    .eq('interview_status', 'not_started');
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  serviceClient
+    .from('usage_events')
+    .insert({
+      user_id: delegate.id,
+      email: req.user.email,
+      event_type: 'interview_submitted',
+      detail: 'marked_taken',
+    })
+    .then(() => {}, () => {});
+
+  return res.json({ state: 'submitted', submitted_at: submittedAt });
+});
+
 module.exports = router;

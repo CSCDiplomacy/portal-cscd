@@ -1,6 +1,7 @@
 // About the summit — the story, themes, experience and lineage carried over
 // from the YPDS Jakarta 2026 landing page. Explorable by everyone.
 import { SUMMIT, THEMES, EXPERIENCE, EDITIONS } from '../../lib/content';
+import { Icon } from '../Icon';
 
 export const About = () => (
   <div className="stack">
@@ -62,7 +63,20 @@ export const About = () => (
               <span className="edition-year">{ed.year}</span>
             </div>
             <div className="edition-note">{ed.note}</div>
-            {ed.current && <span className="edition-badge">You are here</span>}
+            {ed.current ? (
+              <span className="edition-badge">You are here</span>
+            ) : (
+              ed.report && (
+                <a
+                  className="edition-report"
+                  href={ed.report}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon name="download" size={13} /> Report
+                </a>
+              )
+            )}
           </div>
         ))}
       </div>

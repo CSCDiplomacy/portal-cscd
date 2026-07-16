@@ -1,12 +1,44 @@
 // Event rundown: timeline with star-to-save favourites.
 // Applicants (and anyone before the programme is published) see Coming Soon.
+import { useEffect, useState } from 'react';
 import { useDelegateStore } from '../../stores/delegateStore';
 import { sessionId } from '../../types';
 import { format12Hour } from '../../lib/utils';
 import { Icon, typeIcon } from '../Icon';
 
+const RUNDOWN_DAY_KEY = 'cscd_rundown_day';
+
 export const Rundown = () => {
   const { rundown, favourites, toggleFavourite } = useDelegateStore();
+  const [activeDay, setActiveDay] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!rundown?.days?.length) {
+      setActiveDay(null);
+      return;
+    }
+
+    let savedDay: string | null = null;
+    try {
+      savedDay = localStorage.getItem(RUNDOWN_DAY_KEY);
+    } catch {
+      savedDay = null;
+    }
+
+    const fallback = rundown.days[0].date;
+    const nextDay =
+      (savedDay && rundown.days.some((entry) => entry.date === savedDay) && savedDay) || fallback;
+    setActiveDay((current) => current || nextDay);
+  }, [rundown]);
+
+  useEffect(() => {
+    if (!activeDay) return;
+    try {
+      localStorage.setItem(RUNDOWN_DAY_KEY, activeDay);
+    } catch {
+      // Ignore storage failures (private mode, blocked storage).
+    }
+  }, [activeDay]);
 
   if (!rundown?.days?.length) {
     return (
@@ -21,7 +53,7 @@ export const Rundown = () => {
     );
   }
 
-  const day = rundown.days[0];
+  const day = rundown.days.find((entry) => entry.date === activeDay) || rundown.days[0];
 
   return (
     <div className="stack">
@@ -29,6 +61,24 @@ export const Rundown = () => {
         <div className="eyebrow">The programme</div>
         <h1 className="screen-title">Rundown</h1>
         <p className="tag">{day.label || day.date}</p>
+      </div>
+
+      <div className="day-tabs" role="tablist" aria-label="Programme days">
+        {rundown.days.map((entry) => {
+          const isActive = entry.date === day.date;
+          return (
+            <button
+              key={entry.date}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              className={`day-tab${isActive ? ' active' : ''}`}
+              onClick={() => setActiveDay(entry.date)}
+            >
+              {entry.label || entry.date}
+            </button>
+          );
+        })}
       </div>
 
       <div className="timeline">

@@ -4,15 +4,23 @@
 // — we fall back to the shared public form so the interview always works.
 // The AidaForm embed widget script must be injected imperatively: React never
 // executes <script> tags rendered in JSX.
+//
+// AidaForm's server-to-server webhook is best-effort, so we also let the
+// applicant self-confirm: a checkbox → confirmation dialog → POST mark-taken.
+// Either path flips interview_status to 'submitted', after which the form is
+// replaced by a terminal notice and the dashboard status is refreshed.
 import { useEffect, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import type { InterviewInfo } from '../../types';
 import { api, track } from '../../services/api';
+import { useAuthStore } from '../../stores/authStore';
 import { Icon } from '../Icon';
 
 const SHARED_FORM_URL = 'https://15158.aidaform.com/interview-copy';
 const FORM_ID = 'form202405';
 const WIDGET_SRC = 'https://widget.aidaform.com/embed.js';
 const WIDGET_ID = 'aidaform-app';
+const SUPPORT_EMAIL = 'contact@thecscd.org';
 
 function ensureWidgetScript() {
   if (document.getElementById(WIDGET_ID)) {
@@ -26,20 +34,42 @@ function ensureWidgetScript() {
   document.head.appendChild(script);
 }
 
-const Notice = ({ title, body, done }: { title: string; body: string; done?: boolean }) => (
+const Notice = ({
+  title,
+  body,
+  done,
+  footer,
+}: {
+  title: string;
+  body: string;
+  done?: boolean;
+  footer?: ReactNode;
+}) => (
   <div className={`interview-notice${done ? ' is-done' : ''}`}>
     <div className="interview-notice-icon">
       <Icon name={done ? 'check' : 'clock'} size={26} />
     </div>
     <h2 className="interview-notice-title">{title}</h2>
     <p className="interview-notice-body">{body}</p>
+    {footer}
   </div>
+);
+
+const SupportLine = () => (
+  <p className="interview-support">
+    Need technical help with the interview portal? Email us at{' '}
+    <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+  </p>
 );
 
 export const Interview = () => {
   const [info, setInfo] = useState<InterviewInfo | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [markingTaken, setMarkingTaken] = useState(false);
+  const [markError, setMarkError] = useState(false);
   const embedRef = useRef<HTMLDivElement>(null);
+  const refreshProfile = useAuthStore((s) => s.refreshProfile);
 
   useEffect(() => {
     let cancelled = false;
@@ -64,17 +94,22 @@ export const Interview = () => {
   const terminal = info?.state === 'submitted' || info?.state === 'not_applicable';
   const formUrl = SHARED_FORM_URL;
 
+  // Poll so a webhook-driven submission (AidaForm → server) is reflected here,
+  // and mirror it into the shared profile so the dashboard status updates too.
   useEffect(() => {
     if (loaded && !terminal) {
       const timer = window.setInterval(() => {
         api<InterviewInfo>('/me/interview')
-          .then((data) => setInfo(data))
+          .then((data) => {
+            setInfo(data);
+            if (data.state === 'submitted') refreshProfile();
+          })
           .catch(() => {});
       }, 10000);
       return () => window.clearInterval(timer);
     }
     return undefined;
-  }, [loaded, terminal]);
+  }, [loaded, terminal, refreshProfile]);
 
   // Load the widget once the embed div is on the page.
   useEffect(() => {
@@ -82,6 +117,25 @@ export const Interview = () => {
       ensureWidgetScript();
     }
   }, [loaded, terminal]);
+
+  const confirmMarkTaken = async () => {
+    if (markingTaken || terminal) return;
+    setMarkingTaken(true);
+    setMarkError(false);
+    try {
+      const data = await api<InterviewInfo>('/me/interview/mark-taken', {
+        method: 'POST',
+      });
+      setInfo(data);
+      // Refresh the shared profile so the dashboard flips to "Completed".
+      refreshProfile();
+      setConfirmOpen(false);
+    } catch {
+      setMarkError(true);
+    } finally {
+      setMarkingTaken(false);
+    }
+  };
 
   if (!loaded) {
     return (
@@ -105,6 +159,7 @@ export const Interview = () => {
         done
         title={`Interview submitted${when ? ` · ${when}` : ''}`}
         body="Thank you. Your responses are in and our team is reviewing them. Watch this portal for the outcome — nothing more is needed from you right now."
+        footer={<SupportLine />}
       />
     );
   }
@@ -139,6 +194,64 @@ export const Interview = () => {
           />
         </div>
       </div>
+
+      <label className="interview-self-report">
+        <input
+          type="checkbox"
+          checked={confirmOpen}
+          disabled={markingTaken || terminal}
+          onChange={(e) => {
+            if (e.target.checked) {
+              setMarkError(false);
+              setConfirmOpen(true);
+            }
+          }}
+        />
+        <span>
+          <strong>I have completed and submitted the interview</strong>
+          <span>
+            Check this once you have submitted the form above. We&apos;ll confirm with you, then
+            close the form — you won&apos;t be able to submit again.
+          </span>
+        </span>
+      </label>
+
+      {confirmOpen && (
+        <div
+          className="modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="confirm-title"
+          onClick={() => !markingTaken && setConfirmOpen(false)}
+        >
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3 className="modal-title" id="confirm-title">
+              Confirm submission
+            </h3>
+            <p className="modal-body">
+              Are you sure you have submitted the interview? Once confirmed, the form will close and
+              you won&apos;t be able to submit any more responses.
+            </p>
+            {markError && (
+              <p className="modal-error">
+                Something went wrong. Please try again, or email {SUPPORT_EMAIL}.
+              </p>
+            )}
+            <div className="modal-actions">
+              <button
+                className="btn ghost"
+                onClick={() => setConfirmOpen(false)}
+                disabled={markingTaken}
+              >
+                Not yet
+              </button>
+              <button className="btn" onClick={confirmMarkTaken} disabled={markingTaken}>
+                {markingTaken ? 'Confirming…' : 'Yes, I have submitted'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

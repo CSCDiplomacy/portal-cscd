@@ -141,7 +141,7 @@ const staticOpts = {
     // Shell and SW must never be stale — browser must revalidate every time.
     if (filePath.endsWith('index.html') || filePath.endsWith('sw.js')) {
       res.setHeader('Cache-Control', 'no-cache');
-    } else if (/\.(css|js|png|jpg|webp|svg|woff2?)$/.test(filePath)) {
+    } else if (/\.(css|js|png|jpg|webp|gif|svg|woff2?)$/.test(filePath)) {
       // Fingerprinted/versioned assets can cache aggressively.
       res.setHeader('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
     }

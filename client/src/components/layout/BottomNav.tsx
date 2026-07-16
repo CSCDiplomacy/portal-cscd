@@ -11,7 +11,7 @@ const BASE: NavItem[] = [
   { screen: 'dashboard', label: 'Home', icon: 'home' },
   { screen: 'about', label: 'Summit', icon: 'globe' },
   { screen: 'rundown', label: 'Rundown', icon: 'clock' },
-  { screen: 'venue', label: 'Venue', icon: 'hotel' },
+  { screen: 'venue', label: 'Visit', icon: 'hotel' },
   { screen: 'schedule', label: 'Schedule', icon: 'star' },
 ];
 
