@@ -1,9 +1,15 @@
-// Deployment entry point.
+// Deployment entry point (Hostinger Node hosting, GitHub-connected deploy).
 //
 // The full Express app — every route, including POST /api/me/interview/mark-taken
-// — lives in app.js, which self-starts via app.listen(). Hostinger's Node
-// hosting is configured to run `server.js` as its entry file, so this thin shim
-// boots app.js. Keeping it in the repo guarantees the deployed server always
-// runs the current code, rather than an untracked server.js left on the host
-// that can drift out of date.
-module.exports = require('./app');
+// — is defined in app.js, which EXPORTS the app and only opens a socket when run
+// directly. Hostinger's Node loader imports this startup file and serves the
+// exported app, so in production requiring app.js is all that's needed. When run
+// directly (`node server.js`) we open the port ourselves so local runs still work.
+const app = require('./app');
+
+if (require.main === module) {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => console.log(`CSCD Delegate App listening on :${port}`));
+}
+
+module.exports = app;
