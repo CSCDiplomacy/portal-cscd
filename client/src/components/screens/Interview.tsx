@@ -9,7 +9,7 @@ import type { InterviewInfo } from '../../types';
 import { api, track } from '../../services/api';
 import { Icon } from '../Icon';
 
-const FALLBACK_URL = 'https://15158.aidaform.com/interview-copy';
+const SHARED_FORM_URL = 'https://15158.aidaform.com/interview-copy';
 const FORM_ID = 'form202405';
 const WIDGET_SRC = 'https://widget.aidaform.com/embed.js';
 const WIDGET_ID = 'aidaform-app';
@@ -62,7 +62,7 @@ export const Interview = () => {
 
   // Submitted / already-enrolled are terminal — no form.
   const terminal = info?.state === 'submitted' || info?.state === 'not_applicable';
-  const formUrl = info?.url || FALLBACK_URL;
+  const formUrl = SHARED_FORM_URL;
 
   // Load the widget once the embed div is on the page.
   useEffect(() => {

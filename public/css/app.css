@@ -852,7 +852,7 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; -webkit-t
 .interview-cta-sub { font-size: 13.5px; line-height: 1.5; color: rgba(var(--on-surface-2-rgb), 0.8); }
 .interview-cta-go {
   display: inline-block; margin-top: 14px; font-weight: 700; font-size: 13px; letter-spacing: 0.04em;
-  color: var(--on-signal); background: var(--signal); padding: 11px 20px; border-radius: var(--radius-sm);
+  color: var(--ink); background: var(--brass); padding: 11px 20px; border-radius: var(--radius-sm);
 }
 
 .interview-embed-wrap {
