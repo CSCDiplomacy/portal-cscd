@@ -636,17 +636,17 @@
 
     if (data.state === 'open') {
       rendered.interview = true;
-      // Use Aidaform embed widget (removes branding automatically)
-      const formId = data.form_id || 'form202405';
-      const formUrl = data.url || 'https://15158.aidaform.com/interview-copy';
-      root.innerHTML =
-        `<div class="interview-embed-wrap">
-           <div data-aidaform-app="${esc(formId)}" data-url="${esc(formUrl)}" data-width="100%" data-do-resize></div>
+// Use Aidaform embed widget (removes branding automatically)
+const formId = data.form_id || 'form202405';
+const formUrl = data.url || 'https://15158.aidaform.com/interview-copy';
+root.innerHTML =
+`<div class="interview-embed-wrap">
+           <div data-aidaform-app="${esc(formId)}" data-url="${esc(formUrl)}" data-width="100%" data-height="500px" data-do-resize></div>
            <script>(function(){var r,d=document,gt=d.getElementById,cr=d.createElement,tg=d.getElementsByTagName,id="aidaform-app";if(!gt.call(d,id)){r=cr.call(d,"script");r.id=id;r.src="https://widget.aidaform.com/embed.js";(d.head || tg.call(d,"head")[0]).appendChild(r);}})()</script>
          </div>
          <p class="interview-hint">Trouble with the embedded form?
            <a href="${esc(formUrl)}" target="_blank" rel="noopener">Open it in a new tab →</a></p>`;
-      return;
+return;
     }
     if (data.state === 'submitted') {
       rendered.interview = true;
