@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuthStore } from '../../stores/authStore';
 import { Icon } from '../Icon';
 
-export const LoginForm = ({ onForgot }: { onForgot: () => void }) => {
+export const LoginForm = () => {
   const { login, busy, error, clearError } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -70,9 +70,6 @@ export const LoginForm = ({ onForgot }: { onForgot: () => void }) => {
 
       <button type="submit" className="btn" disabled={busy}>
         {busy ? 'Signing in…' : 'Sign in'}
-      </button>
-      <button type="button" className="link-btn" onClick={onForgot} disabled={busy}>
-        Forgot password?
       </button>
     </form>
   );
