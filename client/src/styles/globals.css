@@ -836,41 +836,6 @@ textarea {
   border-radius: var(--radius-lg);
 }
 
-/* Animated montage — the landing page's "roman-border" frame (thin charcoal
-   frame + offset crimson outline) around the square looping GIF. */
-.dash-gif-frame {
-  position: relative;
-  margin: 4px auto;
-  max-width: 380px;
-  padding: 7px;
-  background: var(--surface);
-  border: 1px solid var(--line-strong);
-}
-
-.dash-gif-frame::after {
-  content: '';
-  position: absolute;
-  inset: -7px;
-  border: 1px solid var(--signal);
-  pointer-events: none;
-}
-
-.dash-gif-frame img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-}
-
-.dash-gif-frame figcaption {
-  margin-top: 9px;
-  text-align: center;
-  font-family: var(--font-accent);
-  font-style: italic;
-  font-size: 0.95rem;
-  color: var(--ink-soft);
-}
-
 .tile-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

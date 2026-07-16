@@ -96,16 +96,6 @@ export const Dashboard = () => {
         <img src="/img/ypds-jakarta-2026-banner.png" alt="YPDS Jakarta 2026" loading="lazy" />
       </div>
 
-      {/* Living montage — the animated frame from the landing page */}
-      <figure className="dash-gif-frame">
-        <img
-          src="/img/ypds-ankara.gif"
-          alt="Moments from past YPDS editions"
-          loading="lazy"
-        />
-        <figcaption>Moments from the journey — Baku · Istanbul · Tashkent</figcaption>
-      </figure>
-
       {/* Section tiles */}
       <div>
         <div className="section-label">Explore</div>
