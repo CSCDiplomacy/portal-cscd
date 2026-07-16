@@ -17,8 +17,14 @@
     {
       "date": "2026-08-22",
       "label": "August 22, 2026",
-      "title": "Youth Innovation & Policy Labs",
-      "description": "Meeting with Institutions, Thinktanks, Cultural diplomacy labs, policy design workshops."
+      "title": "Event Check-in & Dinner",
+      "description": "Event check-in begins at 3:00 PM, followed by dinner at 7:00 PM."
+    },
+    {
+      "date": "2026-08-23",
+      "label": "August 23, 2026",
+      "title": "Closing & Declarations",
+      "description": "Closing ceremony, presentation of youth policy recommendations, networking and farewells."
     }
   ]
 }
