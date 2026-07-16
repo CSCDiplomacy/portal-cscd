@@ -30,8 +30,10 @@ export interface RundownItem {
 
 export interface RundownDay {
   date: string; // "2026-08-20"
-  label: string; // "Thursday, Aug 20 · Opening"
-  items: RundownItem[];
+  label: string; // "August 20, 2026"
+  title: string;
+  description: string;
+  items?: RundownItem[];
 }
 
 export interface Rundown {

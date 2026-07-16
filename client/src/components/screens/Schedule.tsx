@@ -22,7 +22,7 @@ export const Schedule = () => {
   const days = rundown.days
     .map((day) => ({
       day,
-      items: day.items.filter((item) => favourites.has(sessionId(day, item))),
+      items: (day.items || []).filter((item) => favourites.has(sessionId(day, item))),
     }))
     .filter((d) => d.items.length > 0);
 

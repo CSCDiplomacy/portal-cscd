@@ -1,138 +1,24 @@
 {
-  "_note": "YPDS Jakarta 2026 Summit Rundown. Updates as agenda is finalized.",
+  "_note": "YPDS Jakarta 2026 Program Structure — Days of Strategy.",
   "timezone": "Asia/Jakarta",
   "days": [
     {
       "date": "2026-08-20",
-      "label": "Thursday, Aug 20 · Opening",
-      "items": [
-        {
-          "time": "09:00",
-          "end_time": "09:30",
-          "title": "Welcome & Opening Remarks",
-          "type": "keynote",
-          "venue": "Main Hall",
-          "description": "Opening ceremony with keynote speeches by diplomatic leaders, setting the vision for YPDS Jakarta 2026.",
-          "duration_min": 30
-        },
-        {
-          "time": "10:00",
-          "end_time": "12:00",
-          "title": "Public Diplomacy in the 21st Century",
-          "type": "workshop",
-          "venue": "Conference Room A",
-          "description": "Interactive session exploring how young leaders can leverage public diplomacy to foster cross-cultural understanding and influence international affairs.",
-          "duration_min": 120
-        },
-        {
-          "time": "13:00",
-          "end_time": "14:30",
-          "title": "Lunch & Networking",
-          "type": "meal",
-          "venue": "Dining Hall",
-          "description": "Authentic Indonesian culinary experience with delegates from diverse regions.",
-          "duration_min": 90
-        },
-        {
-          "time": "15:00",
-          "end_time": "17:00",
-          "title": "Asia and the Mediterranean: Regional Strategies",
-          "type": "panel",
-          "venue": "Conference Room B",
-          "description": "Strategic perspectives on regional cooperation, security, and economic opportunities across Asia and the Mediterranean.",
-          "duration_min": 120
-        }
-      ]
+      "label": "August 20, 2026",
+      "title": "Opening & Strategy Modules",
+      "description": "Keynote speeches by diplomats, interactive sessions on strategy and statecraft, networking reception."
     },
     {
       "date": "2026-08-21",
-      "label": "Friday, Aug 21 · Peace & Strategy",
-      "items": [
-        {
-          "time": "09:00",
-          "end_time": "11:00",
-          "title": "Peace by Peaceful Means",
-          "type": "workshop",
-          "venue": "Conference Room A",
-          "description": "Exploring youth roles in conflict resolution, peace-building, and diplomatic negotiations in a multipolar world.",
-          "duration_min": 120
-        },
-        {
-          "time": "11:30",
-          "end_time": "13:00",
-          "title": "Strategic Communication",
-          "type": "workshop",
-          "venue": "Conference Room B",
-          "description": "Techniques for effective advocacy, media engagement, and narrative-building in modern diplomacy.",
-          "duration_min": 90
-        },
-        {
-          "time": "14:00",
-          "end_time": "16:00",
-          "title": "Grand Strategy vs Economic Strategy",
-          "type": "panel",
-          "venue": "Main Hall",
-          "description": "Youth-led debate on balancing national interests, regional cooperation, and global economic challenges.",
-          "duration_min": 120
-        }
-      ]
+      "label": "August 21, 2026",
+      "title": "Peace, Power & Policy",
+      "description": "Workshops on soft power, simulations on diplomacy and conflict resolution, panel discussions."
     },
     {
       "date": "2026-08-22",
-      "label": "Saturday, Aug 22 · Check-in & Dinner",
-      "items": [
-        {
-          "time": "15:00",
-          "end_time": "19:00",
-          "title": "Event Check-in Begins",
-          "type": "logistics",
-          "venue": "TBA",
-          "description": "Event check-in opens for delegates.",
-          "duration_min": 240
-        },
-        {
-          "time": "19:00",
-          "end_time": "21:00",
-          "title": "Dinner Reception at Tugu Kunstkring Paleis",
-          "type": "meal",
-          "venue": "Tugu Kunstkring Paleis",
-          "description": "Evening gathering at Jakarta's historic Kunstkring Paleis for networking, authentic cuisine, and cultural immersion.",
-          "duration_min": 120
-        }
-      ]
-    },
-    {
-      "date": "2026-08-23",
-      "label": "Sunday, Aug 23 · Closing",
-      "items": [
-        {
-          "time": "10:00",
-          "end_time": "11:30",
-          "title": "Presentation of Policy Recommendations",
-          "type": "panel",
-          "venue": "Main Hall",
-          "description": "Youth teams present their policy innovations to the YPDS steering committee and diplomatic advisors.",
-          "duration_min": 90
-        },
-        {
-          "time": "12:00",
-          "end_time": "13:30",
-          "title": "Closing Ceremony & Awards",
-          "type": "ceremony",
-          "venue": "Main Hall",
-          "description": "Celebrating emerging leaders, announcing next steps, and vision for continued engagement.",
-          "duration_min": 90
-        },
-        {
-          "time": "14:00",
-          "end_time": "15:00",
-          "title": "Farewell Networking",
-          "type": "social",
-          "venue": "Outdoor Terrace",
-          "description": "Final gathering before departure. Connect with peers and mentors.",
-          "duration_min": 60
-        }
-      ]
+      "label": "August 22, 2026",
+      "title": "Youth Innovation & Policy Labs",
+      "description": "Meeting with Institutions, Thinktanks, Cultural diplomacy labs, policy design workshops."
     }
   ]
 }
