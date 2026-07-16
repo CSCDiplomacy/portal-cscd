@@ -152,6 +152,7 @@
     if (isApplicant() && profile.interview_status !== 'submitted') renderInterview();
     refreshNotifications();
     setInterval(refreshNotifications, 60000);
+    setInterval(() => { if (current === 'interview') renderInterview(); }, 10000);
     setInterval(() => { if (current === 'rundown') renderRundown(); if (current === 'dashboard') renderDashboard(); }, 60000);
     renderClock();
     setInterval(renderClock, 1000);
@@ -257,7 +258,7 @@
     const tzDisplay = (tz || '').replace('Europe/', '').replace('Asia/', '');
     const sets = {
       dashboard: ['Delegate credential', nm, 'CSCD · YPDS Jakarta 2026', [['Hotel', hotelName], ['Check-in', checkIn], ['Programme', dayIdx >= 0 ? dayLabel : 'Event soon', true]]],
-      interview: ['Selection', 'Your Interview', '"One form stands between you and Jakarta."', [['Applicant', profile.applicant_id || '-'], ['Format', 'Video + text'], ['Status', profile.interview_status === 'submitted' ? 'Submitted' : 'Awaiting', true]]],
+      interview: ['Selection', 'Your Interview', '"One form stands between you and Jakarta."', [['Applicant', profile.applicant_id || '-'], ['Format', 'Video + text'], ['Status', profile.interview_status === 'submitted' ? 'Completed' : 'Awaiting', true]]],
       rundown: ['Programme', `${dayLabel} Rundown`, '"The week, hour by hour."', [['Days', rundown && rundown.days ? String(rundown.days.length) : '-'], ['Timezone', tzDisplay], ['You are', nm.split(' ')[0], true]]],
       visits: ['Institutional visits', 'Visits & Programs', '"Where the delegation calls on the city."', [['Scope', 'All delegates'], ['Maps', 'Tap to open'], ['Status', 'See list', true]]],
       speakers: ['CSCD Speakers', 'Speakers', '"The people behind the sessions."', [['Sessions', 'Linked to rundown'], ['Tap', 'For bios'], ['You are', nm.split(' ')[0], true]]],
@@ -351,10 +352,10 @@
       const submitted = profile.interview_status === 'submitted';
       el('dash-live').innerHTML =
         `<div class="interview-cta${submitted ? ' is-done' : ''}" ${submitted ? '' : 'data-goto="interview"'}>
-           <div class="interview-cta-tag">${submitted ? ic(P.check, 14) + 'Interview submitted' : 'Your next step'}</div>
-           <div class="interview-cta-title">${submitted ? 'Thank you — we have your responses' : 'Complete your interview'}</div>
+           <div class="interview-cta-tag">${submitted ? ic(P.check, 14) + 'Interview complete' : 'Your next step'}</div>
+           <div class="interview-cta-title">${submitted ? 'Thank you — your interview is done' : 'Complete your interview'}</div>
            <div class="interview-cta-sub">${submitted
-             ? 'Our team is reviewing submissions. Keep an eye on this portal for updates.'
+             ? 'Our team is reviewing your submission. Keep an eye on this portal for updates.'
              : 'A short video &amp; text form decides your place at YPDS Jakarta 2026.'}</div>
            ${submitted ? '' : '<span class="interview-cta-go">Start now →</span>'}
          </div>`;
@@ -441,9 +442,7 @@
       el('timeline').innerHTML = '<div class="empty">Agenda coming soon.</div>'; el('day-tabs').innerHTML = ''; return;
     }
     const tz = rundown.timezone || 'Asia/Jakarta'; const { date, minutes } = tzNow(tz);
-    if (!renderRundown._userPicked) { const i = rundown.days.findIndex((d) => d.date === date); activeDay = i >= 0 ? i : 0; }
-    el('day-tabs').innerHTML = rundown.days.map((d, i) => `<button class="day-tab ${i === activeDay ? 'active' : ''}" data-day="${i}">${esc(d.label)}</button>`).join('');
-    const day = rundown.days[activeDay]; const isToday = day.date === date;
+    const day = rundown.days[0]; const isToday = day.date === date;
     let nowIdx = -1;
     if (isToday) for (let i = 0; i < day.items.length; i++) { const st = toMin(day.items[i].time), en = i + 1 < day.items.length ? toMin(day.items[i + 1].time) : st + 90; if (minutes >= st && minutes < en) { nowIdx = i; break; } }
     // optional per-day "About this day" intro + resource download
@@ -625,8 +624,8 @@
   // Rendered once and reused. Called eagerly right after login (while the user
   // is on the dashboard) so the AidaForm iframe is already loaded by the time
   // they open the Interview tab. Guard prevents a reload on every re-click.
+  let lastInterviewState = null;
   async function renderInterview() {
-    if (rendered.interview) return;
     const root = el('interview-content');
     const visible = current === 'interview';           // preload runs while hidden — no skeleton flash
     if (visible) root.innerHTML = '<div class="skel h28 w100"></div><div class="skel h16 w70"></div>';
@@ -634,7 +633,10 @@
     try { data = await api('/me/interview'); }
     catch (e) { if (visible) root.innerHTML = interviewNotice('Something went wrong', 'We could not load your interview just now. Please refresh and try again.'); return; }
 
+    if (data.state === lastInterviewState && data.state === 'open' && rendered.interview && !visible) return;
+
     if (data.state === 'open') {
+      lastInterviewState = 'open';
       rendered.interview = true;
 // Use Aidaform embed widget (removes branding automatically)
 const formId = 'form202405';
@@ -649,6 +651,7 @@ root.innerHTML =
 return;
     }
     if (data.state === 'submitted') {
+      lastInterviewState = 'submitted';
       rendered.interview = true;
       const when = data.submitted_at ? new Date(data.submitted_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : null;
       root.innerHTML = interviewNotice('Interview submitted' + (when ? ` · ${esc(when)}` : ''),
@@ -656,6 +659,7 @@ return;
       return;
     }
     if (data.state === 'not_applicable') {
+      lastInterviewState = 'not_applicable';
       rendered.interview = true;
       root.innerHTML = interviewNotice('You are all set', 'Your place is confirmed — the interview stage is behind you. Explore the event sections as they open up.', true);
       return;

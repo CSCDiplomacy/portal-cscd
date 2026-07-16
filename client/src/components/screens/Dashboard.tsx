@@ -10,7 +10,7 @@ import type { Screen } from '../../types';
 const TILES: Array<{ screen: Screen; icon: IconName; title: string; sub: string }> = [
   { screen: 'about', icon: 'globe', title: 'The Summit', sub: 'Themes, story & lineage' },
   { screen: 'rundown', icon: 'clock', title: 'Rundown', sub: 'The day-by-day programme' },
-  { screen: 'venue', icon: 'hotel', title: 'Venue', sub: 'Tugu Kunstkring Paleis' },
+  { screen: 'venue', icon: 'hotel', title: 'Institutional visit & dinner', sub: 'City visits, dinner logistics' },
   { screen: 'schedule', icon: 'star', title: 'My Schedule', sub: 'Sessions you starred' },
 ];
 
@@ -61,7 +61,7 @@ export const Dashboard = () => {
           <div className="pass-field">
             <span className="pass-field-label">Interview</span>
             <span className="pass-field-value">
-              {interviewSubmitted ? 'Submitted' : applicant ? 'Awaiting' : '—'}
+              {interviewSubmitted ? 'Completed' : applicant ? 'Awaiting' : '—'}
             </span>
           </div>
         </div>
@@ -82,11 +82,11 @@ export const Dashboard = () => {
       {applicant && interviewSubmitted && (
         <div className="interview-cta is-done">
           <div className="interview-cta-tag">
-            <Icon name="check" size={14} /> Interview submitted
+            <Icon name="check" size={14} /> Interview complete
           </div>
-          <div className="interview-cta-title">Thank you — we have your responses</div>
+          <div className="interview-cta-title">Thank you — your interview is done</div>
           <div className="interview-cta-sub">
-            Our team is reviewing submissions. Watch this portal for the outcome.
+            Our team is reviewing your submission. Watch this portal for the outcome.
           </div>
         </div>
       )}

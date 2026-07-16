@@ -64,6 +64,18 @@ export const Interview = () => {
   const terminal = info?.state === 'submitted' || info?.state === 'not_applicable';
   const formUrl = SHARED_FORM_URL;
 
+  useEffect(() => {
+    if (loaded && !terminal) {
+      const timer = window.setInterval(() => {
+        api<InterviewInfo>('/me/interview')
+          .then((data) => setInfo(data))
+          .catch(() => {});
+      }, 10000);
+      return () => window.clearInterval(timer);
+    }
+    return undefined;
+  }, [loaded, terminal]);
+
   // Load the widget once the embed div is on the page.
   useEffect(() => {
     if (loaded && !terminal && embedRef.current) {
@@ -107,7 +119,7 @@ export const Interview = () => {
     );
   }
 
-  // Open / unavailable / failed → always show the form.
+  // Open / unavailable / failed → always show the form until the server marks it submitted.
   return (
     <div className="stack">
       <div>

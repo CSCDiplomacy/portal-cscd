@@ -1,6 +1,5 @@
-// Event rundown: day tabs + timeline, with star-to-save favourites.
+// Event rundown: timeline with star-to-save favourites.
 // Applicants (and anyone before the programme is published) see Coming Soon.
-import { useState } from 'react';
 import { useDelegateStore } from '../../stores/delegateStore';
 import { sessionId } from '../../types';
 import { format12Hour } from '../../lib/utils';
@@ -8,7 +7,6 @@ import { Icon, typeIcon } from '../Icon';
 
 export const Rundown = () => {
   const { rundown, favourites, toggleFavourite } = useDelegateStore();
-  const [dayIdx, setDayIdx] = useState(0);
 
   if (!rundown?.days?.length) {
     return (
@@ -23,24 +21,14 @@ export const Rundown = () => {
     );
   }
 
-  const day = rundown.days[Math.min(dayIdx, rundown.days.length - 1)];
+  const day = rundown.days[0];
 
   return (
     <div className="stack">
       <div>
         <div className="eyebrow">The programme</div>
         <h1 className="screen-title">Rundown</h1>
-      </div>
-      <div className="day-tabs">
-        {rundown.days.map((d, i) => (
-          <button
-            key={d.date}
-            className={`day-tab${i === dayIdx ? ' active' : ''}`}
-            onClick={() => setDayIdx(i)}
-          >
-            {d.label || d.date}
-          </button>
-        ))}
+        <p className="tag">{day.label || day.date}</p>
       </div>
 
       <div className="timeline">
