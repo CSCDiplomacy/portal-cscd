@@ -43,3 +43,6 @@ candidatedata.csv
 
 # Backup snapshots from one-off data migration scripts (contain PII)
 scripts/applicant-id-backup-*.csv
+
+# Local-only deploy notes (SSH host/creds) — never commit
+DEPLOY_NOTES.local.md
