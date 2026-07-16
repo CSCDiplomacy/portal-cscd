@@ -157,21 +157,13 @@ app.get('*', (req, res, next) => {
   res.sendFile(path.join(shellPath, 'index.html'));
 });
 
-// Background jobs run however the process is booted (run directly or imported
-// by the host's startup file), so they don't hang off the listen callback.
-// Email reminder cron (no-op if Resend isn't configured yet).
-startReminderJob();
-// Keep the process warm between requests so cold-start delay doesn't hit the
-// first delegate each time it idles.
-setInterval(() => {}, 30000);
-
-// Only open the socket when this file is executed directly (dev: `node app.js`).
-// In production Hostinger's Node loader IMPORTS the startup file (server.js) and
-// serves the exported app itself — an unconditional app.listen() there tries to
-// bind a socket the host didn't ask for and crashes the boot, which is what
-// broke the deploy whenever app.js (or a server.js that requires it) ran.
-if (require.main === module) {
-  app.listen(PORT, () => console.log(`CSCD Delegate App listening on :${PORT}`));
-}
+app.listen(PORT, () => {
+  console.log(`CSCD Delegate App listening on :${PORT}`);
+  // Email reminder cron (no-op if Resend isn't configured yet).
+  startReminderJob();
+  // Keep the Passenger process alive between requests so cold-start delay
+  // doesn't hit the first delegate each time the process idles.
+  setInterval(() => {}, 30000);
+});
 
 module.exports = app;
