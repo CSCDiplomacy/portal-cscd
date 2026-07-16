@@ -1088,6 +1088,29 @@ textarea {
   margin-bottom: -48px;
 }
 
+/* Warning callout — the form and the self-report checkbox don't sync, so this
+   sits between them to head off an accidental premature lock. */
+.interview-warning {
+  margin-top: 14px;
+  padding: 14px 18px;
+  border: 1px solid var(--brass);
+  border-left: 4px solid var(--brass);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--brass) 12%, var(--surface-2));
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.interview-warning strong {
+  color: var(--ink-strong);
+}
+
+.interview-warning a {
+  color: var(--signal);
+  font-weight: 700;
+}
+
 .interview-self-report {
   margin-top: 14px;
   padding: 16px 18px;

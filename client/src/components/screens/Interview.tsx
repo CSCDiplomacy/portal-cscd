@@ -180,7 +180,7 @@ export const Interview = () => {
       <div>
         <div className="eyebrow">Selection · your interview</div>
         <h1 className="screen-title">The Interview</h1>
-        <p className="tag">One form stands between you and Jakarta.</p>
+        <p className="tag">Step 1 · Fill out and submit the interview below.</p>
       </div>
       <div className="interview-embed-wrap">
         <div className="interview-embed-clip">
@@ -193,6 +193,13 @@ export const Interview = () => {
             data-do-resize=""
           />
         </div>
+      </div>
+
+      <div className="interview-warning">
+        <strong>Before you check the box below:</strong> make sure you have already submitted the
+        form above. Checking this box <strong>locks the form</strong> — you will not be able to
+        open or submit it again. If you check it by mistake before submitting, email us right away
+        at <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
       </div>
 
       <label className="interview-self-report">
@@ -208,10 +215,10 @@ export const Interview = () => {
           }}
         />
         <span>
-          <strong>I have completed and submitted the interview</strong>
+          <strong>Step 2 · I have already submitted the form above</strong>
           <span>
-            Check this once you have submitted the form above. We&apos;ll confirm with you, then
-            close the form — you won&apos;t be able to submit again.
+            This checkbox and the form don&apos;t sync automatically — checking this is what tells
+            us you&apos;re done. Only check this after you&apos;ve submitted, not before.
           </span>
         </span>
       </label>
@@ -229,8 +236,9 @@ export const Interview = () => {
               Confirm submission
             </h3>
             <p className="modal-body">
-              Are you sure you have submitted the interview? Once confirmed, the form will close and
-              you won&apos;t be able to submit any more responses.
+              Are you sure you&apos;ve already submitted the interview form above? This will lock
+              the form — you won&apos;t be able to open or submit it again. If you haven&apos;t
+              submitted yet, click "Not yet" and fill out the form first.
             </p>
             {markError && (
               <p className="modal-error">
