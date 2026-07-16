@@ -829,6 +829,72 @@ textarea {
   border-radius: 999px;
 }
 
+.remind-card {
+  background: var(--surface-2);
+  border: 2px solid var(--brass);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+}
+
+.remind-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brass-ink);
+  background: var(--brass);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+.remind-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+
+.remind-sub {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  max-width: 52ch;
+  margin-bottom: 16px;
+}
+
+.remind-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.remind-controls input[type='datetime-local'] {
+  flex: 1;
+  min-width: 180px;
+  width: auto;
+}
+
+.remind-controls .btn {
+  width: auto;
+}
+
+.remind-ics {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  text-decoration: underline;
+}
+
+.remind-ics:hover {
+  color: var(--signal);
+}
+
 .dash-banner img {
   display: block;
   width: 100%;

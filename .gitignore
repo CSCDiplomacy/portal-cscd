@@ -40,3 +40,6 @@ __pycache__/
 
 # Applicant PII export (names/emails/phones) — never commit
 candidatedata.csv
+
+# Backup snapshots from one-off data migration scripts (contain PII)
+scripts/applicant-id-backup-*.csv

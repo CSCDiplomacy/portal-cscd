@@ -79,16 +79,16 @@
     },
     {
       "date": "2026-08-22",
-      "label": "Saturday, Aug 22 · Innovation & Dinner",
+      "label": "Saturday, Aug 22 · Check-in & Dinner",
       "items": [
         {
-          "time": "09:00",
-          "end_time": "12:00",
-          "title": "Youth Innovation & Policy Labs",
-          "type": "workshop",
-          "venue": "Workshop Spaces",
-          "description": "Hands-on session where young leaders design actionable policy proposals addressing regional and global challenges.",
-          "duration_min": 180
+          "time": "15:00",
+          "end_time": "19:00",
+          "title": "Event Check-in Begins",
+          "type": "logistics",
+          "venue": "TBA",
+          "description": "Event check-in opens for delegates.",
+          "duration_min": 240
         },
         {
           "time": "19:00",
