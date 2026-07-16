@@ -73,7 +73,7 @@ export const Dashboard = () => {
           <div className="interview-cta-tag">Your next step</div>
           <div className="interview-cta-title">Complete your interview</div>
           <div className="interview-cta-sub">
-            One form stands between you and Jakarta. It takes about 15 minutes — find a quiet
+            One form stands between you and Jakarta. It takes just a few minutes — find a quiet
             spot and tell us your story.
           </div>
           <span className="interview-cta-go">Start now →</span>
