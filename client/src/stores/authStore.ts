@@ -163,5 +163,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 export const isApplicant = (profile: Profile | null) =>
   (profile?.status || 'unenrolled') !== 'enrolled';
 
-export const showInterviewTab = (profile: Profile | null) =>
-  isApplicant(profile) && profile?.interview_status !== 'submitted';
+// Interviews are now closed, so the tab only stays for anyone who already has
+// an in-progress submission path — in practice nobody, since applicants either
+// submitted (→ under review) or missed the window (→ self-finance route).
+export const showInterviewTab = (_profile: Profile | null) => false;
+
+// A submitted applicant awaiting the results decision. `result_status` is the
+// authoritative signal once scripts/reconcile-interviews.js has run; the
+// status/interview_status fallback keeps the UI correct for rows it hasn't
+// reached (and for anyone whose profile predates the column).
+export const isUnderReview = (profile: Profile | null) => {
+  if (!isApplicant(profile)) return false;
+  if (profile?.result_status === 'evaluated') return true;
+  if (profile?.result_status === 'not_evaluated') return false;
+  return profile?.status === 'underprocessing' || profile?.interview_status === 'submitted';
+};
+
+// An applicant who never gave an interview before the window closed.
+export const missedInterview = (profile: Profile | null) =>
+  isApplicant(profile) && !isUnderReview(profile);
+
+// The Results tab only appears once an applicant has an outcome to look at.
+export const showResultsTab = (profile: Profile | null) =>
+  isApplicant(profile) && (profile?.result_status || 'pending') !== 'pending';

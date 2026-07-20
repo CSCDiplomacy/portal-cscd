@@ -5,8 +5,9 @@ export interface Profile {
   name: string;
   email: string;
   applicant_id: string | null;
-  status: 'unenrolled' | 'enrolled';
+  status: 'unenrolled' | 'underprocessing' | 'enrolled';
   interview_status: 'not_started' | 'submitted';
+  result_status: 'pending' | 'evaluated' | 'not_evaluated';
 }
 
 // --- Interview (GET /api/me/interview) --------------------------------------
@@ -111,6 +112,7 @@ export type Screen =
   | 'rundown'
   | 'venue'
   | 'schedule'
+  | 'results'
   | 'contact';
 
 export interface Config {

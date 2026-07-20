@@ -46,3 +46,13 @@ scripts/applicant-id-backup-*.csv
 
 # Local-only deploy notes (SSH host/creds) — never commit
 DEPLOY_NOTES.local.md
+
+# Internal analytics dashboard — local dev tool, not part of the shipped app
+public/analytics-dashboard.html
+
+# AidaForm response exports (applicant PII) — never commit
+reponses/
+responses/
+
+# Report output from scripts/check_missing_interviews.py (applicant PII)
+missing-interviews-report.json

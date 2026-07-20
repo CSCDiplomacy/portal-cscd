@@ -11,6 +11,7 @@ const publicRoutes = require('./routes/public');
 const meRoutes = require('./routes/me');
 const dataRoutes = require('./routes/data');
 const interviewRoutes = require('./routes/interview');
+const analyticsRoutes = require('./routes/analytics');
 const { startReminderJob } = require('./lib/reminders');
 
 const app = express();
@@ -125,6 +126,7 @@ app.use('/api', publicRoutes);
 app.use('/api/me', meRoutes);
 app.use('/api', dataRoutes);
 app.use('/api/interview', interviewRoutes);
+app.use('/api/internal', analyticsRoutes);
 
 // --- Static front-end -------------------------------------------------------
 // The React build (client/dist) is the app shell; public/ still provides the

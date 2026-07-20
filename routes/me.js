@@ -60,6 +60,7 @@ router.get('/profile', requireAuth, async (req, res) => {
     applicant_id: delegate ? delegate.applicant_id : null,
     status: (delegate && delegate.status) || 'unenrolled',
     interview_status: (delegate && delegate.interview_status) || 'not_started',
+    result_status: (delegate && delegate.result_status) || 'pending',
   });
 });
 

@@ -14,13 +14,27 @@ const NAV: Array<{ screen: Screen; label: string; icon: IconName }> = [
   { screen: 'contact', label: 'Contact', icon: 'phone' },
 ];
 
-export const Sidebar = ({ showInterview }: { showInterview: boolean }) => {
+export const Sidebar = ({
+  showInterview,
+  showResults,
+}: {
+  showInterview: boolean;
+  showResults: boolean;
+}) => {
   const { profile, eventName, logout } = useAuthStore();
   const { activeScreen, switchScreen, theme, toggleTheme } = useUIStore();
 
-  const items: typeof NAV = showInterview
-    ? [NAV[0], { screen: 'interview', label: 'Interview', icon: 'video' }, ...NAV.slice(1)]
-    : NAV;
+  // Results sits right after the dashboard — it's the thing applicants open for.
+  const items: typeof NAV = [
+    NAV[0],
+    ...(showResults
+      ? ([{ screen: 'results', label: 'Your Result', icon: 'award' }] as typeof NAV)
+      : []),
+    ...(showInterview
+      ? ([{ screen: 'interview', label: 'Interview', icon: 'video' }] as typeof NAV)
+      : []),
+    ...NAV.slice(1),
+  ];
 
   return (
     <aside className="sidebar">

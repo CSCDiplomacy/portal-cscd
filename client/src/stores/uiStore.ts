@@ -14,6 +14,7 @@ const SCREENS: Screen[] = [
   'rundown',
   'venue',
   'schedule',
+  'results',
   'contact',
 ];
 

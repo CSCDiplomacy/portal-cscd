@@ -1,5 +1,5 @@
 // Mobile menu drawer: secondary links + sign out.
-import { useAuthStore } from '../../stores/authStore';
+import { showResultsTab, useAuthStore } from '../../stores/authStore';
 import { useUIStore } from '../../stores/uiStore';
 import { Icon } from '../Icon';
 
@@ -21,6 +21,11 @@ export const MenuDrawer = ({ open, onClose }: { open: boolean; onClose: () => vo
             {profile.name}
             <span>{profile.email}</span>
           </div>
+        )}
+        {showResultsTab(profile) && (
+          <button className="menu-link" onClick={() => switchScreen('results')}>
+            <Icon name="award" size={16} /> Your Result
+          </button>
         )}
         <button className="menu-link" onClick={() => switchScreen('about')}>
           <Icon name="globe" size={16} /> The Summit
