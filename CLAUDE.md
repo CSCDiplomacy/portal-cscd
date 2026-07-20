@@ -42,6 +42,58 @@ Favourite/session ids are `` `${day.date}T${item.time}` `` (must match the
 `favourites.session_id` rows in Supabase).
 **Gating is UX, not security** — the security boundary is the server (below).
 
+## Results & scholarship tiers (current phase — read before touching results)
+
+Interviews are **over** and results are **published**. Outcomes render **inline
+on the Dashboard**; there is no Results screen (it was built, then removed —
+don't re-add one).
+
+**`result_tier` is the single source of truth for what a delegate sees.**
+Whether they interviewed is *irrelevant*: the evaluation workbook is the
+authority, and many tiered applicants never interviewed. Do **not** re-introduce
+`result_status` / `interview_status` into results gating — that was an earlier
+model and caused wrong screens.
+
+| tier | meaning | what they see |
+|---|---|---|
+| `full` | scholarship covers the fee | congratulations, **no form**; team confirms directly |
+| `partial` | pays 50% | congratulations + **Cognito form 79** (registration + payment) |
+| `self` | pays in full | congratulations + **Cognito form 78** (registration + payment) |
+| `alumni` | parked | placeholder card — **final treatment still TBD from the client** |
+| `null` | no outcome on record | **nothing renders** |
+
+**Cognito form ids are counter-intuitive — verify before changing.** Form **78**
+is titled *"Self Financed (With Scholarship)"* and belongs to **`self`**; form
+**79** is *"Partial (50% Scholarship)"*. An earlier spec mapped 78 to `full`,
+which showed a payment form to people who had already won a full scholarship.
+Full-scholarship delegates owe nothing, so they get **no form at all**.
+Ids live in [client/src/components/CognitoForm.tsx](client/src/components/CognitoForm.tsx);
+the embed needs both the iframe and Cognito's `iframe.js` loader (React can't
+render `<script>` from JSX), and `www.cognitoforms.com` must stay in the
+`frameSrc` **and** `scriptSrc` CSP directives in [app.js](app.js).
+
+Gating helper: `showResultsTab()` in
+[authStore.ts](client/src/stores/authStore.ts) → `isApplicant && !!result_tier`.
+Dashboard renders `{tier && <TierResult/> + <SelectedBanner/>}`.
+
+**Data provenance.** `result_tier` was set by
+[scripts/reconcile-tiers.js](scripts/reconcile-tiers.js) from the
+`Self`/`Partial`/`Full`/`Alumni` sheets of
+`YPDS Video submissions - Evaluation_mapped.xlsx` (exported to
+`reponses/tiers.csv`). Use those four sheets, **not** the workbook's
+`Evaluation` sheet — its status column has typos and combined values
+(`Sef`, `Full/Partial`). Matching is email → alternate email → `applicant_id`
+(`YPDS-JKT-F{ID}`, where ID is the workbook's ID column) → exact normalised
+name. Email and applicant_id are **cross-checked**; disagreements are reported
+and skipped, never guessed. Current DB: **full 10, partial 69, self 80,
+alumni 2, 3 untiered.** The 3 untiered are unresolved data issues (one applicant
+has no delegate row; one has an applicant_id belonging to someone else; one is
+absent from the workbook) — they see nothing until resolved.
+
+`result_status` (`pending`/`evaluated`/`not_evaluated`) still exists from the
+interview-reconciliation phase and is still returned by the API, but **no longer
+drives any results UI.**
+
 ## The interview (security-critical)
 
 The AidaForm URL is a **secret**: anyone who has it can submit without logging

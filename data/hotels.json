@@ -1,6 +1,25 @@
 {
   "_note": "Hotel + venue information. Key entries by 'jakarta-main' or similar to match delegates.hotel_id.",
   "hotels": {
+    "jakarta-hotel": {
+      "name": "ARTOTEL Thamrin - Jakarta",
+      "subtitle": "Delegate accommodation",
+      "location": "Menteng, Central Jakarta",
+      "description": "Your accommodation for YPDS Jakarta 2026. An art-led hotel in Menteng, walking distance from Thamrin and the summit venues.",
+      "highlights": [
+        "Art-themed rooms, each by an Indonesian artist",
+        "Rooftop bar and restaurant",
+        "Central Menteng location, close to the summit venues",
+        "Eco-certified, 4.5★ from 6.2k reviews"
+      ],
+      "address": "Jl. Sunda No.3, RT.8/RW.4, Gondangdia, Kec. Menteng, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10350, Indonesia",
+      "map": "https://maps.google.com/?q=ARTOTEL+Thamrin+Jakarta,+Jl.+Sunda+No.3,+Menteng,+Jakarta+Pusat",
+      "policy": [
+        "All bookings are made by CSCD on your behalf — you do not need to book a room yourself.",
+        "If you need to extend your dates, coordinate with us in advance and we will arrange it.",
+        "Room allocation and dates may be adjusted by the management in line with the institutional visit schedule."
+      ]
+    },
     "jakarta-main": {
       "name": "Tugu Kunstkring Paleis",
       "subtitle": "Historic Cultural Venue & Restaurant",

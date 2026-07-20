@@ -8,7 +8,13 @@ export interface Profile {
   status: 'unenrolled' | 'underprocessing' | 'enrolled';
   interview_status: 'not_started' | 'submitted';
   result_status: 'pending' | 'evaluated' | 'not_evaluated';
+  result_tier: ResultTier | null;
 }
+
+// Scholarship outcome from the video-submission evaluation. `full` is the
+// selected cohort named on the results banner; `partial` and `full` both
+// complete registration through a Cognito form.
+export type ResultTier = 'self' | 'partial' | 'full' | 'alumni';
 
 // --- Interview (GET /api/me/interview) --------------------------------------
 export interface InterviewInfo {
@@ -58,6 +64,25 @@ export interface HotelInfo {
   map?: string;
   checkin?: string;
   checkout?: string;
+  /** Booking terms shown under the hotel card (who books, extensions, changes). */
+  policy?: string[];
+}
+
+/** One institutional visit or cultural experience (data/visits.json). */
+export interface Visit {
+  id: number;
+  name: string;
+  type?: string;
+  description?: string;
+  highlights?: string[];
+  date?: string;
+  duration?: string;
+  image?: string;
+}
+
+/** GET /api/visits (public) */
+export interface VisitsResponse {
+  visits: Visit[];
 }
 
 /** GET /api/hotel (public) → the shared venue, no auth required. */
@@ -112,7 +137,6 @@ export type Screen =
   | 'rundown'
   | 'venue'
   | 'schedule'
-  | 'results'
   | 'contact';
 
 export interface Config {

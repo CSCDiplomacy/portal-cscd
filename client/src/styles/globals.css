@@ -22,6 +22,9 @@
   --brass: #e6eb1c;        /* electric yellow — sparing accent */
   --brass-ink: #2c2825;
   --ok: #2f7d54;
+  /* The embedded Cognito form renders on pure white; it gets its own token so
+     the no-literal-hex invariant holds and dark mode can override it. */
+  --form-surface: #ffffff;
   --shadow-sm: 0 6px 16px -10px rgba(44, 40, 37, 0.45);
   --shadow: 0 18px 40px -22px rgba(44, 40, 37, 0.45);
   --radius: 6px;
@@ -42,6 +45,7 @@
   --brass: #e6eb1c;
   --brass-ink: #17130d;
   --ok: #5ac98d;
+  --form-surface: #ffffff;
   --shadow-sm: 0 8px 22px -12px rgba(0, 0, 0, 0.85);
   --shadow: 0 26px 52px -24px rgba(0, 0, 0, 0.9);
 }
@@ -1044,6 +1048,148 @@ textarea {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
+}
+
+/* Selected-delegate announcement on the Results screen. The artwork is very
+   wide (3240x1350), so it lifts off the page and scales to fit. */
+.results-banner-caption {
+  margin-bottom: 12px;
+}
+
+.results-banner-caption .tag {
+  margin-bottom: 4px;
+  color: var(--signal);
+}
+
+.results-banner img {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+/* The scholarship outcome card — the good news, so it leads with the accent. */
+.t-card.is-award {
+  border-color: var(--signal);
+  box-shadow: var(--shadow);
+}
+
+.t-card.is-award .tag {
+  color: var(--signal);
+  font-weight: 700;
+}
+
+/* Cognito's loader resizes the frame to its content; this just keeps it from
+   inheriting a border and lets it fill the column. */
+/* The Cognito iframe renders on its own white ground, so it floats on the cream
+   page with no edge of its own — the frame below is what seats it in the card
+   system. Border sits on the wrapper, not the iframe, so the auto-resize loader
+   is free to rewrite the frame's height without touching the chrome. */
+.cognito-embed {
+  width: 100%;
+  overflow: hidden;
+  /* Softer, lighter edge than the card default — the form is a long panel, so
+     a hard dark outline reads as a harsh box against the page. */
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  /* The form renders on pure white, so the wrapper matches it and the border
+     is what separates the panel from the cream page. */
+  background: var(--form-surface);
+}
+
+/* A titled strip above the form, so the embed reads as part of the portal. */
+.cognito-embed-head {
+  padding: 13px 20px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* The seamless embed renders into our DOM, so the portal's type and tokens
+   apply directly to Cognito's own markup. These pull its defaults (heavy sans
+   headings, blue accents, square controls) onto the CSCD system. Selectors are
+   deliberately broad — Cognito's class names are not a public contract, so the
+   element-level rules are what carry the look if the .cog-* names change. */
+.cognito-embed-body {
+  background: var(--form-surface);
+  padding: 4px 18px 18px;
+  font-family: var(--font-body);
+  color: var(--ink);
+}
+
+.cognito-embed-body h1,
+.cognito-embed-body h2,
+.cognito-embed-body h3,
+.cognito-embed-body .cog-form__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink-strong);
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+}
+
+/* Cognito's default input corners are square; round them to the portal's. */
+.cognito-embed-body input,
+.cognito-embed-body select,
+.cognito-embed-body textarea,
+.cognito-embed-body .cog-input {
+  border-radius: var(--radius) !important;
+}
+
+.cognito-embed-body label,
+.cognito-embed-body .cog-label {
+  font-family: var(--font-body);
+  color: var(--ink-soft);
+}
+
+.cognito-embed-body input[type='text'],
+.cognito-embed-body input[type='email'],
+.cognito-embed-body input[type='tel'],
+.cognito-embed-body input[type='number'],
+.cognito-embed-body select,
+.cognito-embed-body textarea {
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+.cognito-embed-body button,
+.cognito-embed-body .cog-button {
+  background: var(--signal);
+  color: var(--signal-ink);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cognito-embed-fallback {
+  padding: 16px 18px;
+  border-top: 1px solid var(--line);
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
+
+.cognito-embed-fallback a {
+  color: var(--signal);
+  font-weight: 700;
+}
+
+/* Dark mode: the form stays light (it's someone else's page), so soften the
+   transition into it rather than pretending it can go dark. */
+[data-theme='dark'] .cognito-embed {
+  border-color: var(--line-strong);
 }
 
 .tile-grid {

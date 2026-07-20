@@ -23,20 +23,14 @@ const WITH_INTERVIEW: NavItem[] = [
   BASE[3],
 ];
 
-// The bar holds five tabs. Results is what applicants come back for, so it
-// takes the slot after Home and pushes the last event tab off.
-const RESULTS_TAB: NavItem = { screen: 'results', label: 'Result', icon: 'award' };
-
 export const BottomNav = ({
   showInterview,
-  showResults,
 }: {
   showInterview: boolean;
-  showResults: boolean;
 }) => {
   const { activeScreen, switchScreen } = useUIStore();
   const base = showInterview ? WITH_INTERVIEW : BASE;
-  const items = showResults ? [base[0], RESULTS_TAB, ...base.slice(1, 4)] : base;
+  const items = base;
 
   return (
     <nav className="bottom-nav">

@@ -1,7 +1,7 @@
 // Authenticated app shell: sidebar (desktop), topbar, bottom nav (mobile),
 // updates rail, mobile menu drawer, and the active screen.
 import { useEffect } from 'react';
-import { showInterviewTab, showResultsTab, useAuthStore } from '../../stores/authStore';
+import { showInterviewTab, useAuthStore } from '../../stores/authStore';
 import { useDelegateStore } from '../../stores/delegateStore';
 import { useUIStore } from '../../stores/uiStore';
 import { Sidebar } from './Sidebar';
@@ -16,7 +16,6 @@ import { Rundown } from '../screens/Rundown';
 import { Venue } from '../screens/Venue';
 import { Schedule } from '../screens/Schedule';
 import { Contact } from '../screens/Contact';
-import { Results } from '../screens/Results';
 
 const SCREENS = {
   dashboard: Dashboard,
@@ -25,7 +24,6 @@ const SCREENS = {
   rundown: Rundown,
   venue: Venue,
   schedule: Schedule,
-  results: Results,
   contact: Contact,
 } as const;
 
@@ -40,21 +38,19 @@ export const AppLayout = () => {
   }, [loadAll]);
 
   const showInterview = showInterviewTab(profile);
-  const showResults = showResultsTab(profile);
 
   // If a gated tab disappears (submitted / enrolled / no result yet) while it's
   // active, fall back to the dashboard.
   useEffect(() => {
     if (!profile) return;
     if (activeScreen === 'interview' && !showInterview) switchScreen('dashboard');
-    if (activeScreen === 'results' && !showResults) switchScreen('dashboard');
-  }, [activeScreen, profile, showInterview, showResults, switchScreen]);
+  }, [activeScreen, profile, showInterview, switchScreen]);
 
   const ScreenComponent = SCREENS[activeScreen] || Dashboard;
 
   return (
     <div className="layout">
-      <Sidebar showInterview={showInterview} showResults={showResults} />
+      <Sidebar showInterview={showInterview} />
 
       <main className="main">
         <TopBar />
@@ -76,7 +72,7 @@ export const AppLayout = () => {
         />
       )}
 
-      <BottomNav showInterview={showInterview} showResults={showResults} />
+      <BottomNav showInterview={showInterview} />
     </div>
   );
 };

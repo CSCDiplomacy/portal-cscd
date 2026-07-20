@@ -61,6 +61,8 @@ router.get('/profile', requireAuth, async (req, res) => {
     status: (delegate && delegate.status) || 'unenrolled',
     interview_status: (delegate && delegate.interview_status) || 'not_started',
     result_status: (delegate && delegate.result_status) || 'pending',
+    // null until scripts/reconcile-tiers.js has placed them in a scholarship tier.
+    result_tier: (delegate && delegate.result_tier) || null,
   });
 });
 

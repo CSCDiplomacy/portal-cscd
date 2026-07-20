@@ -178,11 +178,3 @@ export const isUnderReview = (profile: Profile | null) => {
   if (profile?.result_status === 'not_evaluated') return false;
   return profile?.status === 'underprocessing' || profile?.interview_status === 'submitted';
 };
-
-// An applicant who never gave an interview before the window closed.
-export const missedInterview = (profile: Profile | null) =>
-  isApplicant(profile) && !isUnderReview(profile);
-
-// The Results tab only appears once an applicant has an outcome to look at.
-export const showResultsTab = (profile: Profile | null) =>
-  isApplicant(profile) && (profile?.result_status || 'pending') !== 'pending';

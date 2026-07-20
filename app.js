@@ -26,14 +26,18 @@ app.use(
       directives: {
         defaultSrc: ["'self'"],
         // AidaForm's embed widget loads from widget.aidaform.com and needs eval.
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://widget.aidaform.com', 'https://*.aidaform.com'],
-        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        // AidaForm for the (now closed) interview; Cognito Forms for scholarship
+        // registration — its iframe.js loader is what auto-sizes the embed.
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://widget.aidaform.com', 'https://*.aidaform.com', 'https://www.cognitoforms.com', 'https://static.cognitoforms.com'],
+        // Cognito's seamless embed injects the form into our own DOM, so its
+        // stylesheet and fonts load as first-party subresources, not in a frame.
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://www.cognitoforms.com', 'https://static.cognitoforms.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://www.cognitoforms.com', 'https://static.cognitoforms.com'],
         imgSrc: ["'self'", 'data:', 'https:'],
-        connectSrc: ["'self'", 'https://*.supabase.co', 'https://*.aidaform.com'],
-        // The interview embeds an AidaForm in an <iframe>, so it must be an
-        // allowed frame source. AidaForm serves forms from *.aidaform.com.
-        frameSrc: ["'self'", 'https://*.aidaform.com'],
+        connectSrc: ["'self'", 'https://*.supabase.co', 'https://*.aidaform.com', 'https://www.cognitoforms.com', 'https://static.cognitoforms.com'],
+        // Both third-party forms are embedded in <iframe>s, so their hosts must
+        // be allowed frame sources: AidaForm (interview), Cognito (registration).
+        frameSrc: ["'self'", 'https://*.aidaform.com', 'https://www.cognitoforms.com'],
         manifestSrc: ["'self'"],
         objectSrc: ["'none'"],
       },

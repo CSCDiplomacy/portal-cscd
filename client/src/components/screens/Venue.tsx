@@ -1,8 +1,9 @@
-// Venue & stay. The shared venue (Tugu Kunstkring Paleis) comes from the public
-// /api/hotel endpoint so every user can explore it; a delegate's personal
-// booking (room, dates) is merged in from the auth'd /api/me/hotel when present.
+// Visit & stay. The delegate hotel comes from the public /api/hotel endpoint so
+// every user can explore it; a delegate's personal booking (room, dates) is
+// merged in from the auth'd /api/me/hotel when present. The institutional visits
+// and dinner (Tugu Kunstkring Paleis) are listed below it from /api/visits.
 import { useEffect, useState } from 'react';
-import type { HotelInfo, MyHotel, PublicHotel } from '../../types';
+import type { HotelInfo, MyHotel, PublicHotel, Visit, VisitsResponse } from '../../types';
 import { api } from '../../services/api';
 import { mapsLink } from '../../lib/utils';
 import { Icon } from '../Icon';
@@ -10,6 +11,7 @@ import { Icon } from '../Icon';
 export const Venue = () => {
   const [hotel, setHotel] = useState<HotelInfo | null>(null);
   const [booking, setBooking] = useState<MyHotel['delegate']>(null);
+  const [visits, setVisits] = useState<Visit[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,6 +25,12 @@ export const Venue = () => {
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
+    // Institutional visits & dinner — public, empty array renders nothing.
+    api<VisitsResponse>('/visits')
+      .then((d) => {
+        if (!cancelled) setVisits(d.visits || []);
+      })
+      .catch(() => {});
     // Personal booking if the delegate has one (ignore failures / applicants).
     api<MyHotel>('/me/hotel')
       .then((d) => {
@@ -88,6 +96,19 @@ export const Venue = () => {
         )}
       </div>
 
+      {/* Booking terms — CSCD books on the delegate's behalf, so this sets the
+          expectation before anyone tries to book or change a room themselves. */}
+      {!!hotel.policy?.length && (
+        <div className="card">
+          <div className="card-eyebrow">Booking &amp; accommodation</div>
+          <ul className="dot-list">
+            {hotel.policy.map((p) => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {hasBooking && (
         <div className="card">
           <div className="card-eyebrow">Your booking</div>
@@ -118,6 +139,37 @@ export const Venue = () => {
             )}
           </div>
         </div>
+      )}
+
+      {/* Institutional visits & the dinner reception. */}
+      {!!visits.length && (
+        <>
+          <div className="section-label">Visits &amp; dinner</div>
+          {visits.map((v) => (
+            <div className="card" key={v.id}>
+              {v.image && (
+                <figure className="venue-photo-frame">
+                  <img src={v.image} alt={v.name} className="venue-photo" loading="lazy" />
+                </figure>
+              )}
+              {v.type && <div className="card-eyebrow">{v.type}</div>}
+              <h2 className="card-title">{v.name}</h2>
+              {(v.date || v.duration) && (
+                <div className="t-venue">
+                  <Icon name="clock" size={12} /> {[v.date, v.duration].filter(Boolean).join(' · ')}
+                </div>
+              )}
+              {v.description && <p className="card-body-text">{v.description}</p>}
+              {!!v.highlights?.length && (
+                <ul className="dot-list">
+                  {v.highlights.map((h) => (
+                    <li key={h}>{h}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </>
       )}
     </div>
   );

@@ -56,3 +56,6 @@ responses/
 
 # Report output from scripts/check_missing_interviews.py (applicant PII)
 missing-interviews-report.json
+
+# Reconcile output (PII)
+reponses/unmatched.csv

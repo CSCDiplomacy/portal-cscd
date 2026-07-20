@@ -1,17 +1,17 @@
-// Dashboard. Interviews are now closed. Applicants get a card leading into the
-// Results screen — a countdown if their interview was evaluated, the
-// self-financed route if not. Event tiles stay visible but read "Coming soon"
-// until the delegate is enrolled and data is published.
+// Dashboard. Interviews are now closed and results are published here inline —
+// there is no separate Results screen. Evaluated applicants get the countdown,
+// then the announcement banner and their own scholarship outcome. Event tiles
+// stay visible but read "Coming soon" until data is published.
 import {
   isApplicant,
   isUnderReview,
-  showResultsTab,
   useAuthStore,
 } from '../../stores/authStore';
 import { useUIStore } from '../../stores/uiStore';
 import { Icon } from '../Icon';
 import type { IconName } from '../Icon';
 import type { Screen } from '../../types';
+import { SelectedBanner, TierResult } from './Results';
 
 const TILES: Array<{ screen: Screen; icon: IconName; title: string; sub: string }> = [
   { screen: 'about', icon: 'globe', title: 'The Summit', sub: 'Themes, story & lineage' },
@@ -26,10 +26,12 @@ export const Dashboard = () => {
 
   const applicant = isApplicant(profile);
   const underReview = isUnderReview(profile);
-  const hasResult = showResultsTab(profile);
+  const tier = profile?.result_tier || null;
 
-  const statusLabel = !applicant ? 'Confirmed delegate' : underReview ? 'Under review' : 'Applicant';
-  const statusChip = !applicant ? 'chip-ok' : underReview ? 'chip-review' : 'chip-pending';
+  // Results are published, so anyone with a tier reads "Result announced".
+  // Tier — not interview status — is what decides this.
+  const statusLabel = !applicant ? 'Confirmed delegate' : tier ? 'Result announced' : 'Applicant';
+  const statusChip = !applicant || tier ? 'chip-ok' : 'chip-pending';
   const interviewLabel = underReview ? 'Completed' : applicant ? 'Closed' : '—';
 
   return (
@@ -73,23 +75,16 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* Applicants with an outcome on record: lead them into the Results screen */}
-      {hasResult && (
-        <button className="result-cta" onClick={() => switchScreen('results')}>
-          <div className="result-cta-tag">
-            <Icon name={underReview ? 'check' : 'bell'} size={14} />
-            {underReview ? 'Interview received' : 'Interviews concluded'}
-          </div>
-          <div className="result-cta-title">
-            {underReview ? 'Your interview has been evaluated' : 'No interview on record'}
-          </div>
-          <div className="result-cta-sub">
-            {underReview
-              ? 'Decisions are being finalised — open your result for the countdown.'
-              : 'You can still join the summit self-financed. See your options.'}
-          </div>
-          <span className="result-cta-go">View your result →</span>
-        </button>
+      {/* Results live inline on the dashboard — there is no separate Results
+          screen. Before the announcement moment everyone evaluated sees the
+          countdown; after it, the banner plus their own scholarship outcome. */}
+      {/* Their own outcome leads; the cohort banner follows it. Anyone without
+          a tier has no outcome on record and sees neither. */}
+      {tier && (
+        <>
+          <TierResult tier={tier} />
+          <SelectedBanner />
+        </>
       )}
 
       {/* Featured banner */}
