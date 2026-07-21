@@ -12,8 +12,65 @@
 //   alumni  → parked, handled by the team (final treatment still TBD)
 //
 // No tier → nothing renders at all (see Dashboard).
+import { useState } from 'react';
 import { CognitoForm, COGNITO_FORM_IDS } from '../CognitoForm';
+import { useAuthStore } from '../../stores/authStore';
+import { api } from '../../services/api';
 import type { ResultTier } from '../../types';
+
+// The accept step for full-scholarship delegates. There is nothing to pay, so
+// instead of a registration form they confirm their place with one click; the
+// server records the acceptance (and an audit row in usage_events). Once
+// accepted the button flips to a permanent confirmed state.
+const AcceptScholarship = () => {
+  const profile = useAuthStore((s) => s.profile);
+  const refreshProfile = useAuthStore((s) => s.refreshProfile);
+  const acceptedAt = profile?.scholarship_accepted_at || null;
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(false);
+
+  const accept = async () => {
+    if (busy) return;
+    setBusy(true);
+    setError(false);
+    try {
+      await api<{ accepted_at: string }>('/me/accept-scholarship', { method: 'POST' });
+      await refreshProfile();
+    } catch {
+      setError(true);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (acceptedAt) {
+    const when = new Date(acceptedAt).toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    return (
+      <div className="accept-confirmed">
+        <span className="chip chip-ok">Scholarship accepted</span>
+        <p className="t-desc">
+          Thank you for confirming your place — accepted on {when}. Our team will be in touch
+          shortly with your travel and arrival details.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="accept-cta">
+      <button className="btn" onClick={accept} disabled={busy}>
+        {busy ? 'Confirming…' : 'Accept scholarship'}
+      </button>
+      {error && (
+        <p className="accept-error">Something went wrong. Please try again.</p>
+      )}
+    </div>
+  );
+};
 
 // The announcement artwork naming the full-scholarship cohort. The caption
 // matters: without it the banner reads as "the delegates", which would tell the
@@ -47,9 +104,10 @@ export const TierResult = ({ tier }: { tier: ResultTier }) => {
           Ten full scholarships were awarded across the whole applicant pool, and one of them is
           yours. The panel came away genuinely impressed — by the clarity of your thinking and the
           seriousness you brought to the interview. Your place at YPDS Jakarta 2026 is secured in
-          full, with nothing further to pay. Our team will be in touch shortly with your travel and
-          arrival details.
+          full, with nothing further to pay. Confirm your place below and our team will be in touch
+          shortly with your travel and arrival details.
         </p>
+        <AcceptScholarship />
       </div>
     );
   }

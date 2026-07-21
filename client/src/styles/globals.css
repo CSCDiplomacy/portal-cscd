@@ -1080,6 +1080,32 @@ textarea {
   font-weight: 700;
 }
 
+/* Full-scholarship accept step — a single confirming action, then its
+   permanent confirmed state. */
+.accept-cta {
+  margin-top: 16px;
+}
+
+.accept-cta .btn {
+  width: auto;
+}
+
+.accept-error {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--signal);
+}
+
+.accept-confirmed {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.accept-confirmed .t-desc {
+  margin-top: 8px;
+}
+
 /* Cognito's loader resizes the frame to its content; this just keeps it from
    inheriting a border and lets it fill the column. */
 /* The Cognito iframe renders on its own white ground, so it floats on the cream

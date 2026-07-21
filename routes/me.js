@@ -63,7 +63,55 @@ router.get('/profile', requireAuth, async (req, res) => {
     result_status: (delegate && delegate.result_status) || 'pending',
     // null until scripts/reconcile-tiers.js has placed them in a scholarship tier.
     result_tier: (delegate && delegate.result_tier) || null,
+    // Set when a full-scholarship delegate accepts their award in the portal.
+    scholarship_accepted_at: (delegate && delegate.scholarship_accepted_at) || null,
   });
+});
+
+// A full-scholarship delegate accepting their award from the dashboard button.
+// Only `result_tier = 'full'` may accept — the client hides the button for
+// everyone else, and this re-checks the tier server-side (gating is UX, not
+// security). Idempotent: the guarded WHERE means a second click / double-submit
+// is a no-op and returns the original acceptance time.
+router.post('/accept-scholarship', requireAuth, async (req, res) => {
+  if (!serviceClient) return res.status(503).json({ error: 'Database not configured' });
+
+  const delegate = await getDelegate(req.user.id);
+  if (!delegate) return res.status(404).json({ error: 'No delegate profile found' });
+  if (delegate.result_tier !== 'full') {
+    return res.status(403).json({ error: 'Not eligible to accept a scholarship' });
+  }
+
+  // Already accepted — return the recorded time without touching the row.
+  if (delegate.scholarship_accepted_at) {
+    return res.json({ accepted_at: delegate.scholarship_accepted_at });
+  }
+
+  const acceptedAt = new Date().toISOString();
+  const { data, error } = await serviceClient
+    .from('delegates')
+    .update({ scholarship_accepted_at: acceptedAt })
+    .eq('id', delegate.id)
+    .is('scholarship_accepted_at', null)
+    .select('scholarship_accepted_at')
+    .maybeSingle();
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  // If the guard matched nothing, another request won the race — re-read it.
+  const finalAt = (data && data.scholarship_accepted_at) || acceptedAt;
+
+  serviceClient
+    .from('usage_events')
+    .insert({
+      user_id: delegate.id,
+      email: req.user.email,
+      event_type: 'scholarship_accepted',
+      detail: delegate.applicant_id || null,
+    })
+    .then(() => {}, () => {});
+
+  return res.json({ accepted_at: finalAt });
 });
 
 // The interview form URL is a secret: anyone holding it can submit without ever

@@ -9,6 +9,8 @@ export interface Profile {
   interview_status: 'not_started' | 'submitted';
   result_status: 'pending' | 'evaluated' | 'not_evaluated';
   result_tier: ResultTier | null;
+  /** Set once a full-scholarship delegate accepts their award in the portal. */
+  scholarship_accepted_at: string | null;
 }
 
 // Scholarship outcome from the video-submission evaluation. `full` is the
