@@ -26,17 +26,20 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(ba, bb);
 }
 
-const APPLICANT_ID_RE = /^YPDS-JKT-F\d+$/i;
+// Applicant ids look like YPDS-JKT-F123. We search for them ANYWHERE inside a
+// string value (not just an exact whole-field match) because Cognito may deliver
+// the id embedded in a larger string — a formatted field value, a label, etc.
+const APPLICANT_ID_RE = /YPDS-JKT-F\d+/gi;
 
 // Cognito's Entry JSON nests fields differently depending on how the form is
 // built, and the hidden field may surface under any key. Rather than guess a
-// path, collect every applicant-id-looking string and let the DB decide which
-// one is a real delegate.
+// path, collect every applicant-id-looking substring and let the DB decide
+// which one is a real delegate.
 function collectApplicantIds(value, found = new Set(), depth = 0) {
   if (depth > 8 || found.size > 50) return found;
   if (typeof value === 'string') {
-    const s = value.trim();
-    if (APPLICANT_ID_RE.test(s)) found.add(s.toUpperCase());
+    const matches = value.toUpperCase().match(APPLICANT_ID_RE);
+    if (matches) matches.forEach((m) => found.add(m));
   } else if (Array.isArray(value)) {
     value.forEach((v) => collectApplicantIds(v, found, depth + 1));
   } else if (value && typeof value === 'object') {
@@ -67,7 +70,11 @@ router.post('/webhook/:secret?', webhookLimiter, async (req, res) => {
 
   const candidates = [...collectApplicantIds(req.body)];
   if (!candidates.length) {
-    console.warn('[registration] webhook payload carried no applicant_id');
+    // Log the payload's key structure (not values — these forms carry PII and
+    // payment context) so a mis-mapped id field can be diagnosed without a
+    // redeploy. Just the top-level keys is enough to see if an id field arrived.
+    const keys = req.body && typeof req.body === 'object' ? Object.keys(req.body).join(',') : typeof req.body;
+    console.warn('[registration] webhook payload carried no applicant_id; top-level keys=' + keys);
     return res.status(400).json({ error: 'No candidate applicant_id in payload' });
   }
 
