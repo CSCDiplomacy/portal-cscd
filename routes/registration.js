@@ -29,7 +29,15 @@ function safeEqual(a, b) {
 // Applicant ids look like YPDS-JKT-F123. We search for them ANYWHERE inside a
 // string value (not just an exact whole-field match) because Cognito may deliver
 // the id embedded in a larger string — a formatted field value, a label, etc.
-const APPLICANT_ID_RE = /YPDS-JKT-F\d+/gi;
+// The `F` is treated as optional and normalised back in: people typing the id by
+// hand routinely drop it (YPDS-JKT-123), but the canonical DB value has it. The
+// `YPDS-JKT-` prefix is still required, so Cognito's bare numeric entry `Id`
+// field can never be mistaken for an applicant id.
+const APPLICANT_ID_RE = /YPDS-JKT-F?\d+/gi;
+
+function normaliseApplicantId(raw) {
+  return raw.toUpperCase().replace(/^(YPDS-JKT-)F?(\d+)$/, '$1F$2');
+}
 
 // Cognito's Entry JSON nests fields differently depending on how the form is
 // built, and the hidden field may surface under any key. Rather than guess a
@@ -38,8 +46,8 @@ const APPLICANT_ID_RE = /YPDS-JKT-F\d+/gi;
 function collectApplicantIds(value, found = new Set(), depth = 0) {
   if (depth > 8 || found.size > 50) return found;
   if (typeof value === 'string') {
-    const matches = value.toUpperCase().match(APPLICANT_ID_RE);
-    if (matches) matches.forEach((m) => found.add(m));
+    const matches = value.match(APPLICANT_ID_RE);
+    if (matches) matches.forEach((m) => found.add(normaliseApplicantId(m)));
   } else if (Array.isArray(value)) {
     value.forEach((v) => collectApplicantIds(v, found, depth + 1));
   } else if (value && typeof value === 'object') {
