@@ -11,6 +11,9 @@ export interface Profile {
   result_tier: ResultTier | null;
   /** Set once a full-scholarship delegate accepts their award in the portal. */
   scholarship_accepted_at: string | null;
+  /** Flipped to 'submitted' by the Cognito registration webhook (partial/self). */
+  registration_status: 'not_started' | 'submitted';
+  registration_submitted_at: string | null;
 }
 
 // Scholarship outcome from the video-submission evaluation. `full` is the

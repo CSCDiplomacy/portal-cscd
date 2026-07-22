@@ -92,7 +92,30 @@ export const SelectedBanner = () => (
   </div>
 );
 
+// Shown once the Cognito registration webhook has recorded a partial/self
+// delegate's submission — replaces the embed so they aren't left staring at a
+// form they've already completed. Mirrors the AcceptScholarship confirmed state.
+const RegistrationConfirmed = ({ submittedAt }: { submittedAt: string | null }) => {
+  const when = submittedAt
+    ? new Date(submittedAt).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : null;
+  return (
+    <div className="accept-confirmed">
+      <span className="chip chip-ok">Registration received</span>
+      <p className="t-desc">
+        Thank you — we've received your registration{when ? ` on ${when}` : ''}. Our team will
+        confirm your place and be in touch with your next steps shortly.
+      </p>
+    </div>
+  );
+};
+
 export const TierResult = ({ tier }: { tier: ResultTier }) => {
+  const profile = useAuthStore((s) => s.profile);
   // A full scholarship covers the fee, so there is nothing to pay and no
   // registration form — the team confirms these places directly.
   if (tier === 'full') {
@@ -114,6 +137,7 @@ export const TierResult = ({ tier }: { tier: ResultTier }) => {
 
   if (tier === 'partial' || tier === 'self') {
     const partial = tier === 'partial';
+    const registered = profile?.registration_status === 'submitted';
     return (
       <div className="stack">
         <div className="t-card is-award">
@@ -129,10 +153,15 @@ export const TierResult = ({ tier }: { tier: ResultTier }) => {
               : 'You have been accepted to YPDS Jakarta 2026 on a self-financed basis. We were glad to meet you at interview and would be delighted to welcome you to Jakarta. Complete the registration form below to confirm your place.'}
           </p>
         </div>
-        <CognitoForm
-          formId={COGNITO_FORM_IDS[tier]}
-          title={partial ? 'Partial scholarship registration' : 'Self-financed registration'}
-        />
+        {registered ? (
+          <RegistrationConfirmed submittedAt={profile?.registration_submitted_at || null} />
+        ) : (
+          <CognitoForm
+            formId={COGNITO_FORM_IDS[tier]}
+            title={partial ? 'Partial scholarship registration' : 'Self-financed registration'}
+            applicantId={profile?.applicant_id}
+          />
+        )}
       </div>
     );
   }

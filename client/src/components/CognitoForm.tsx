@@ -24,7 +24,23 @@ const ACCOUNT_KEY = 'ufIsh1RjbUCGYxX0PV-sug';
 // Full-scholarship delegates have nothing to pay, so there is no form for them.
 export const COGNITO_FORM_IDS = { self: '78', partial: '79' } as const;
 
-export const CognitoForm = ({ formId, title }: { formId: string; title: string }) => {
+// Cognito's seamless embed prefills fields from the host page's query string,
+// keyed by each field's Internal Name. We pass the delegate's applicant_id into
+// a hidden `ApplicantId` field on forms 78/79 so the registration webhook can
+// tie the submission back to the delegate. The param is set on the URL just
+// before seamless.js runs (it reads window.location at execution) and removed on
+// cleanup — there is no router, so mutating the query string is otherwise inert.
+const PREFILL_FIELD = 'ApplicantId';
+
+export const CognitoForm = ({
+  formId,
+  title,
+  applicantId,
+}: {
+  formId: string;
+  title: string;
+  applicantId?: string | null;
+}) => {
   const host = useRef<HTMLDivElement>(null);
   const [stalled, setStalled] = useState(false);
 
@@ -33,6 +49,15 @@ export const CognitoForm = ({ formId, title }: { formId: string; title: string }
     if (!el) return;
     el.innerHTML = '';
     setStalled(false);
+
+    // Add the prefill param before injecting the script; restore on cleanup.
+    const originalSearch = window.location.search;
+    if (applicantId) {
+      const params = new URLSearchParams(window.location.search);
+      params.set(PREFILL_FIELD, applicantId);
+      const qs = params.toString();
+      window.history.replaceState(null, '', `${window.location.pathname}?${qs}${window.location.hash}`);
+    }
 
     const s = document.createElement('script');
     s.src = SEAMLESS_SRC;
@@ -50,8 +75,11 @@ export const CognitoForm = ({ formId, title }: { formId: string; title: string }
     return () => {
       clearTimeout(t);
       el.innerHTML = '';
+      if (applicantId) {
+        window.history.replaceState(null, '', `${window.location.pathname}${originalSearch}${window.location.hash}`);
+      }
     };
-  }, [formId]);
+  }, [formId, applicantId]);
 
   return (
     <div className="cognito-embed">

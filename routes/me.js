@@ -65,6 +65,10 @@ router.get('/profile', requireAuth, async (req, res) => {
     result_tier: (delegate && delegate.result_tier) || null,
     // Set when a full-scholarship delegate accepts their award in the portal.
     scholarship_accepted_at: (delegate && delegate.scholarship_accepted_at) || null,
+    // Flipped to 'submitted' by the Cognito registration webhook — swaps the
+    // dashboard embed for a "Registration received" card for partial/self tiers.
+    registration_status: (delegate && delegate.registration_status) || 'not_started',
+    registration_submitted_at: (delegate && delegate.registration_submitted_at) || null,
   });
 });
 
